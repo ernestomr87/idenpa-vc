@@ -7,8 +7,8 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 // import styled from 'styled-components';
-
-import { MapComponent } from '@terrestris/react-geo';
+import { Button } from 'antd';
+import { MapComponent, AddWmsPanel, SimpleButton, CapabilitiesUtil } from '@terrestris/react-geo';
 import styled from 'styled-components';
 import OlMap from 'ol/map';
 import OlView from 'ol/view';
@@ -17,8 +17,11 @@ import OlLayerVector from 'ol/layer/vector';
 import OlSourceVector from 'ol/source/vector';
 import OlLayerTile from 'ol/layer/tile';
 import OlSourceOsm from 'ol/source/osm';
+
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+
+const OlProj = require('ol/proj').default;
 
 const MapWrapper = styled(MapComponent)`
 	height: 100%;
@@ -44,13 +47,47 @@ const map = new OlMap({
 		zoom: 10
 	}),
 	controls: [],
-	layers: [ layer ]
+	layers: [ layer, layer1 ]
 });
-
+const WMS_CAPABILITIES_URL =
+	'http://geoservicios.enpa.vcl.minag.cu/geoserver/cuba/ows?service=wms&version=1.3.0&request=GetCapabilities';
 /* eslint-disable react/prefer-stateless-function */
 class Header extends React.Component {
+	state = {
+		layers: []
+	};
+
+	onClick() {
+		CapabilitiesUtil.parseWmsCapabilities(WMS_CAPABILITIES_URL)
+			.then((layers) => {
+				console.log(layers);
+				this.setState({
+					layers: layers
+				});
+			})
+			.catch(() => alert('Could not parse capabilities document.'));
+	}
 	render() {
-		return <MapWrapper map={map} />;
+		return (
+			<div>
+				<SimpleButton onClick={this.onClick.bind(this)}>Fetch capabilities of OWS terrestris</SimpleButton>
+				<AddWmsPanel
+					style={{
+						position: 'relative',
+						height: '500px'
+					}}
+					key="1"
+					map={this.map}
+					wmsLayers={this.state.layers}
+					draggable={true}
+					width={500}
+					height={400}
+					x={0}
+					y={100}
+				/>
+				<MapWrapper map={map} />
+			</div>
+		);
 	}
 }
 
