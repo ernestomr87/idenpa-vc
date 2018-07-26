@@ -7,8 +7,7 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
 // import styled from 'styled-components';
-import { Button } from 'antd';
-import { MapComponent, AddWmsPanel, SimpleButton, CapabilitiesUtil } from '@terrestris/react-geo';
+import { MapComponent, CapabilitiesUtil } from '@terrestris/react-geo';
 import styled from 'styled-components';
 import OlMap from 'ol/map';
 import OlView from 'ol/view';
@@ -24,7 +23,7 @@ import messages from './messages';
 const OlProj = require('ol/proj').default;
 
 const MapWrapper = styled(MapComponent)`
-	height: 100%;
+	height: 100vh;
 `;
 
 const layer1 = new OlLayerVector({
@@ -68,11 +67,7 @@ class Header extends React.Component {
 			.catch(() => alert('Could not parse capabilities document.'));
 	}
 	render() {
-		return (
-			<div>
-				<MapWrapper map={map} />
-			</div>
-		);
+		return <MapWrapper map={map} />;
 	}
 }
 
