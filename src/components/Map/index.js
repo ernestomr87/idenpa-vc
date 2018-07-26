@@ -70,21 +70,6 @@ class Header extends React.Component {
 	render() {
 		return (
 			<div>
-				<SimpleButton onClick={this.onClick.bind(this)}>Fetch capabilities of OWS terrestris</SimpleButton>
-				<AddWmsPanel
-					style={{
-						position: 'relative',
-						height: '500px'
-					}}
-					key="1"
-					map={this.map}
-					wmsLayers={this.state.layers}
-					draggable={true}
-					width={500}
-					height={400}
-					x={0}
-					y={100}
-				/>
 				<MapWrapper map={map} />
 			</div>
 		);
