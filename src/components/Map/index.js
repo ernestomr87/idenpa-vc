@@ -17,11 +17,6 @@ import OlSourceVector from 'ol/source/vector';
 import OlLayerTile from 'ol/layer/tile';
 import OlSourceOsm from 'ol/source/osm';
 
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-
-const OlProj = require('ol/proj').default;
-
 const MapWrapper = styled(MapComponent)`
 	height: 100vh;
 `;
