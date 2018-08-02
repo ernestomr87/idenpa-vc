@@ -15,7 +15,7 @@ import withSaga from '../../utils/withSaga';
 import makeSelectSider from './selectors';
 import reducer from './reducer';
 import saga from './saga';
-import { selectModules } from './actions';
+import { selectModules, addLayers, delLayers } from './actions';
 
 import MoneyBagImg from './icons/money-bag.svg';
 import IrrigationImg from './icons/farm.svg';
@@ -74,6 +74,14 @@ class Sider extends Component {
 		submenu: 'rb_layers'
 	};
 
+	componentWillReceiveProps = (nextProps) => {
+		console.log(nextProps.sider);
+		console.log(nextProps.sider);
+		console.log(nextProps.sider);
+		console.log(nextProps.sider);
+		console.log(nextProps.sider);
+	};
+
 	showDrawer = () => {
 		this.setState({
 			visible: true
@@ -86,31 +94,17 @@ class Sider extends Component {
 		});
 	};
 
-	onExpand = (expandedKeys) => {
-		console.log('onExpand', expandedKeys);
-		// if not set autoExpandParent to false, if children expanded, parent can not collapse.
-		// or, you can remove all expanded children keys.
-		this.setState({
-			expandedKeys,
-			autoExpandParent: false
-		});
-	};
-
 	onCheck = (checkedKeys) => {
-		console.log('onCheck', checkedKeys);
+		const { sider: { item }, add } = this.props;
+		add({ item, checkedKeys });
 		this.setState({ checkedKeys });
-	};
-
-	onSelect = (selectedKeys, info) => {
-		console.log('onSelect', info);
-		this.setState({ selectedKeys });
 	};
 
 	renderTreeNodes = (data) => {
 		const { sider: { item } } = this.props;
 		if (!item) return;
 		return data[item].map((item, index) => {
-			return <TreeNodeWrapper title={item.name} key={`irrigation${index}`} dataRef={item} />;
+			return <TreeNodeWrapper title={item.name} key={item.name} dataRef={item} />;
 		});
 	};
 
@@ -125,7 +119,6 @@ class Sider extends Component {
 	render() {
 		const modules = Modules;
 		const { sider: { item } } = this.props;
-		console.log(modules[item]);
 
 		return (
 			<LayoutWrapper>
@@ -221,12 +214,8 @@ class Sider extends Component {
 								</Radio.Group>
 								<Tree
 									checkable
-									onExpand={this.onExpand}
-									expandedKeys={this.state.expandedKeys}
-									autoExpandParent={this.state.autoExpandParent}
 									onCheck={this.onCheck}
 									checkedKeys={this.state.checkedKeys}
-									onSelect={this.onSelect}
 									selectedKeys={this.state.selectedKeys}
 								>
 									{this.renderTreeNodes(modules)}
@@ -244,7 +233,8 @@ class Sider extends Component {
 
 Sider.defaultProps = {
 	sider: {
-		item: null
+		item: null,
+		layers: []
 	}
 };
 
@@ -255,7 +245,9 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const withConnect = connect(mapStateToProps, {
-	selectModule: selectModules
+	selectModule: selectModules,
+	add: addLayers,
+	del: delLayers
 });
 
 export default compose(withConnect, withSaga({ key: 'sider', saga }), withReducer({ key: 'sider', reducer }))(Sider);
