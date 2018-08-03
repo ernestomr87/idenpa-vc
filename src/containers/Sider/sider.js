@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
@@ -62,6 +61,39 @@ const ImgSecondChoice = styled.img`
 	height: 20px;
 	margin-top: -5px;
 	margin-left: -10px;
+`;
+
+const ButtonClose = styled(Button)`
+	&.ant-btn{
+		position: absolute;
+		top: 0px;
+		right: -15px;
+		background-color: #fd5d65;
+		border-color: #fff;
+	}
+
+	&.ant-btn:hover{
+		background-color: #fd5d65;
+		border-color: #fff;
+	}
+
+	&.ant-btn.element-animation{
+		background-color: #fd5d65;
+		border-color: #fff;
+		animation: animationFrames linear 3s;
+		animation-iteration-count: 1;
+		transform-origin: 50% 50%;
+	  }
+	  
+	  @keyframes animationFrames{
+		0% {
+		  transform:  translate(0px,0px)  rotate(0deg) ;
+		}
+		100% {
+		  transform:  translate(-52px,3px)  rotate(180deg) ;
+		}
+	  }
+	  
 `;
 
 class Sider extends Component {
@@ -260,6 +292,11 @@ class Sider extends Component {
 							<Alert message="No existe información para mostrar" type="info" showIcon />
 						) : null}
 					</Row>
+					{this.state.visible ? (
+						<ButtonClose onClick={this.onClose} type="primary" shape="circle" icon="close" />
+					) : (
+						null
+					)}
 				</Drawer>
 			</LayoutWrapper>
 		);
