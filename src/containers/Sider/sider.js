@@ -75,11 +75,10 @@ class Sider extends Component {
 	};
 
 	componentWillReceiveProps = (nextProps) => {
-		console.log(nextProps.sider);
-		console.log(nextProps.sider);
-		console.log(nextProps.sider);
-		console.log(nextProps.sider);
-		console.log(nextProps.sider);
+		const { sider } = this.props;
+		if (nextProps.sider.item !== sider.item) {
+			this.setState({ checkedKeys: nextProps.sider.layers[nextProps.sider.item] });
+		}
 	};
 
 	showDrawer = () => {
