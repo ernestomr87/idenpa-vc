@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import Map from './../../components/Map';
 import Modules from './../../data/index';
-import { Layout, Tree, Icon, Row, Col, Button, Drawer, Tooltip, Divider, Radio, Alert } from 'antd';
+import { Layout, Tree, Icon, Row, Col, Button, Drawer, Tooltip, Divider, Radio, Alert, Badge } from 'antd';
 
 import withReducer from '../../utils/withReducer';
 import withSaga from '../../utils/withSaga';
@@ -115,9 +115,19 @@ class Sider extends Component {
 		this.props.selectModule(string);
 	};
 
+	countLayers = (layer) => {
+		const { sider: { layers } } = this.props;
+		if (typeof layers[layer] !== 'undefined') {
+			return layers[layer].length;
+			console.log(layers[layer].length);
+		}
+		console.log('undefine');
+		return 1;
+	};
+
 	render() {
 		const modules = Modules;
-		const { sider: { item } } = this.props;
+		const { sider: { item, layers } } = this.props;
 
 		return (
 			<LayoutWrapper>
@@ -137,62 +147,88 @@ class Sider extends Component {
 					<Row>
 						<Col xs={4} style={{ margin: '0 4px' }}>
 							<Tooltip placement="bottom" title="Riego">
-								<Button
-									onClick={this.handleChangeModule.bind(this, 'irrigation')}
-									className={item === 'irrigation' ? 'active' : null}
-									shape="circle"
-									size="large"
+								<Badge
+									count={
+										typeof layers['irrigation'] !== 'undefined' ? layers['irrigation'].length : 0
+									}
 								>
-									<ImgInversion src={IrrigationImg} alt="" />
-								</Button>
+									<Button
+										onClick={this.handleChangeModule.bind(this, 'irrigation')}
+										className={item === 'irrigation' ? 'active' : null}
+										shape="circle"
+										size="large"
+									>
+										<ImgInversion src={IrrigationImg} alt="" />
+									</Button>
+								</Badge>
 							</Tooltip>
 						</Col>
 						<Col xs={4} style={{ margin: '0 4px' }}>
 							<Tooltip placement="bottom" title="Inverciones">
-								<Button
-									onClick={this.handleChangeModule.bind(this, 'investments')}
-									className={item === 'investments' ? 'active' : null}
-									shape="circle"
-									size="large"
+								<Badge
+									count={
+										typeof layers['investments'] !== 'undefined' ? layers['investments'].length : 0
+									}
 								>
-									<ImgInversion src={MoneyBagImg} alt="" />
-								</Button>
+									<Button
+										onClick={this.handleChangeModule.bind(this, 'investments')}
+										className={item === 'investments' ? 'active' : null}
+										shape="circle"
+										size="large"
+									>
+										<ImgInversion src={MoneyBagImg} alt="" />
+									</Button>
+								</Badge>
 							</Tooltip>
 						</Col>
 						<Col xs={4} style={{ margin: '0 4px' }}>
 							<Tooltip placement="bottom" title="Maquinarias">
-								<Button
-									onClick={this.handleChangeModule.bind(this, 'machinery')}
-									className={item === 'machinery' ? 'active' : null}
-									shape="circle"
-									size="large"
+								<Badge
+									count={typeof layers['machinery'] !== 'undefined' ? layers['machinery'].length : 0}
 								>
-									<ImgInversion src={TractorImg} alt="" />
-								</Button>
+									<Button
+										onClick={this.handleChangeModule.bind(this, 'machinery')}
+										className={item === 'machinery' ? 'active' : null}
+										shape="circle"
+										size="large"
+									>
+										<ImgInversion src={TractorImg} alt="" />
+									</Button>
+								</Badge>
 							</Tooltip>
 						</Col>
 						<Col xs={4} style={{ margin: '0 4px' }}>
 							<Tooltip placement="bottom" title="Costa Norte">
-								<Button
-									onClick={this.handleChangeModule.bind(this, 'northCoast')}
-									className={item === 'northCoast' ? 'active' : null}
-									shape="circle"
-									size="large"
+								<Badge
+									count={
+										typeof layers['northCoast'] !== 'undefined' ? layers['northCoast'].length : 0
+									}
 								>
-									<ImgInversion src={CoastImg} alt="" />
-								</Button>
+									<Button
+										onClick={this.handleChangeModule.bind(this, 'northCoast')}
+										className={item === 'northCoast' ? 'active' : null}
+										shape="circle"
+										size="large"
+									>
+										<ImgInversion src={CoastImg} alt="" />
+									</Button>
+								</Badge>
 							</Tooltip>
 						</Col>
 						<Col xs={4} style={{ margin: '0 4px' }}>
 							<Tooltip placement="bottom" title="Tarea Vida">
-								<Button
-									onClick={this.handleChangeModule.bind(this, 'lifeTask')}
-									className={item === 'lifeTask' ? 'active' : null}
-									shape="circle"
-									size="large"
+								<Badge
+									count={typeof layers['lifeTask'] !== 'undefined' ? layers['lifeTask'].length : 0}
 								>
-									<ImgInversion src={CareImg} alt="" />
-								</Button>
+									<Button
+										onClick={this.handleChangeModule.bind(this, 'lifeTask')}
+										className={item === 'lifeTask' ? 'active' : null}
+										shape="circle"
+										size="large"
+									>
+										<ImgInversion src={CareImg} alt="" />
+									</Button>
+								</Badge>
 							</Tooltip>
 						</Col>
 					</Row>
