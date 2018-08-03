@@ -50,6 +50,9 @@ const MenuUnfold = styled(Icon)`
 		top: 10px;
 		cursor: pointer;
 	}	
+	&.anticon:hover{
+		transform: scale(1.05, 1.05)
+	}	
 `;
 const ImgInversion = styled.img`
 	width: 25px;

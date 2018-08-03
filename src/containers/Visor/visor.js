@@ -44,7 +44,6 @@ class Visor extends Component {
 			<LayoutWrapper>
 				<Layout>
 					<Content>
-						<MenuUnfold onClick={this.showDrawer} type="menu-unfold" />
 						<Map />
 					</Content>
 				</Layout>
