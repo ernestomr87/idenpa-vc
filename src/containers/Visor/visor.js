@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import Map from './../../components/Map';
 import Sider from './../Sider';
-import Modules from './../../data/index';
 import { Layout, Icon } from 'antd';
-
+import makeSelectSider from './../Sider/selectors';
 const { Content } = Layout;
 
 const LayoutWrapper = styled(Layout)`
@@ -40,11 +41,12 @@ class Visor extends Component {
 	};
 
 	render() {
+		const { sider: { layers } } = this.props;
 		return (
 			<LayoutWrapper>
 				<Layout>
 					<Content>
-						<Map />
+						<Map layers={layers} />
 					</Content>
 				</Layout>
 				<Sider />
@@ -53,10 +55,19 @@ class Visor extends Component {
 	}
 }
 
-const mapStateToProps = (state) => ({
-	route: state.route
+Visor.defaultProps = {
+	sider: {
+		item: null,
+		layers: []
+	}
+};
+
+Visor.propTypes = {};
+
+const mapStateToProps = createStructuredSelector({
+	sider: makeSelectSider()
 });
 
-const WrappedVisor = connect(mapStateToProps, {})(Visor);
+const withConnect = connect(mapStateToProps, {});
 
-export default WrappedVisor;
+export default compose(withConnect)(Visor);
