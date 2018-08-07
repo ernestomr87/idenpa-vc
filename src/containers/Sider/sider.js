@@ -178,6 +178,8 @@ class Sider extends Component {
 					closable={false}
 					onClose={this.onClose}
 					visible={this.state.visible}
+					maskClosable={false}
+					mask={false}
 				>
 					<Row>
 						<Col xs={4} style={{ margin: '0 4px' }}>
@@ -297,9 +299,7 @@ class Sider extends Component {
 					</Row>
 					{this.state.visible ? (
 						<ButtonClose onClick={this.onClose} type="primary" shape="circle" icon="close" />
-					) : (
-						null
-					)}
+					) : null}
 				</Drawer>
 			</LayoutWrapper>
 		);

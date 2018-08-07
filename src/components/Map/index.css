@@ -1,0 +1,25 @@
+.ol-popup {
+    position: absolute;
+    background-color: white;
+    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+    min-width: 280px;
+}
+
+.ol-popup .arrow {
+	background: #fff;
+	width: 8.48528137px;
+	height: 8.48528137px;
+	transform: rotate(45deg);
+	position: absolute;
+	display: block;
+	border-color: transparent;
+	border-style: solid;
+	bottom: -4px;
+	left: 44px;
+}
