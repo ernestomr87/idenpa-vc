@@ -175,6 +175,7 @@ class MapContainer extends React.Component {
 		var selectedfeatures = select.getFeatures();
 		selectedfeatures.on([ 'add', 'remove' ], function() {
 			selectedfeatures.getArray().map(function(feature, index) {
+				console.log(feature.getProperties());
 				_this.setState({ visible: true, properties: feature.getProperties() });
 			});
 		});

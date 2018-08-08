@@ -42,8 +42,8 @@ const TreeNodeWrapper = styled(TreeNode)`
 
 const MenuUnfold = styled(Icon)`
 	&.anticon{
-		font-size: 40px;
-		color: rgb(0, 136, 204);
+		font-size: 35px;
+		color: rgb(91, 120, 77);
 		position: absolute;
 		z-index: 1000;
 		left: 10px;
