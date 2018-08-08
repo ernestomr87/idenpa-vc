@@ -7,6 +7,7 @@ import Map from './../../components/Map';
 import Sider from './../Sider';
 import { Layout, Icon } from 'antd';
 import makeSelectSider from './../Sider/selectors';
+import Logo from './icons/logo.svg';
 const { Content } = Layout;
 
 const LayoutWrapper = styled(Layout)`
@@ -17,16 +18,22 @@ const LayoutWrapper = styled(Layout)`
 	}
 `;
 
-const MenuUnfold = styled(Icon)`
-	&.anticon{
-		font-size: 40px;
-		color: rgb(0, 136, 204);
-		position: absolute;
-		z-index: 1000;
-		left: 10px;
-		top: 10px;
-		cursor: pointer;
-	}	
+const LogoImg = styled.img`
+	width: 50px;
+	height: 50px;
+	filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.8));
+`;
+const Span = styled.span`
+	font-weight: 500;
+	font-size: 20px;
+	font-family: Consolas, Menlo, Courier, monospace;
+	color: #fff;
+	filter: drop-shadow(0 0 2px #5b784d);
+`;
+const LogoContainer = styled.div`
+	position: absolute;
+	top: 1px;
+	right: 50%;
 `;
 
 class Visor extends Component {
@@ -48,6 +55,12 @@ class Visor extends Component {
 					<Content>
 						<Map layers={layers} />
 					</Content>
+					<LogoContainer>
+						<LogoImg src={Logo} alt="" />
+						<Span>
+							AGRO <small style={{ color: '#5b784d', margin: '0px 0px 0px -10px' }}>map</small>
+						</Span>
+					</LogoContainer>
 				</Layout>
 				<Sider />
 			</LayoutWrapper>
