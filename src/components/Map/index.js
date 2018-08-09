@@ -68,24 +68,37 @@ const DescriptionItem = ({ title, content }) => {
 	);
 };
 
+const map = new OlMap({
+	view: new OlView({
+		layers: [ layer ],
+		projection: 'EPSG:4326',
+		center: [ -80.009, 22.6083 ],
+		zoom: 11
+	}),
+	controls: [],
+	layers: [ layer ]
+});
+
 /* eslint-disable react/prefer-stateless-function */
 class MapContainer extends React.Component {
 	state = {
+		test: '',
 		layers: [],
 		model: {},
 		module: null,
 		visible: false,
 		properties: null,
-		map: new OlMap({
-			view: new OlView({
-				layers: [ layer ],
-				projection: 'EPSG:4326',
-				center: [ -80.009, 22.6083 ],
-				zoom: 11
-			}),
-			controls: [],
-			layers: [ layer ]
-		})
+		interaction: null
+	};
+
+	changeState = (feature, model, select) => {
+		this.setState({
+			visible: true,
+			properties: feature,
+			model: model.nomenclature,
+			dataLayer: { module: model.data.mod, layer: model.data.layer },
+			interaction: select
+		});
 	};
 
 	componentWillReceiveProps = (nextProps) => {
@@ -138,9 +151,9 @@ class MapContainer extends React.Component {
 			})
 		});
 
-		if (!this.state.map.getLayers().getArray().includes(aux)) {
+		if (!map.getLayers().getArray().includes(aux)) {
 			nlayers.push({ item: diff, layer: aux });
-			this.state.map.addLayer(aux);
+			map.addLayer(aux);
 
 			aux.getSource().on('change', function() {
 				message.success(`Capa "${diff.name}" cargada.`, 1);
@@ -170,34 +183,11 @@ class MapContainer extends React.Component {
 			}
 		}
 
-		if (this.state.map.getLayers().getArray().includes(diff.layer)) {
-			this.state.map.removeLayer(diff.layer);
+		if (map.getLayers().getArray().includes(diff.layer)) {
+			map.removeLayer(diff.layer);
 		}
 
 		this.setState({ layers: nlayers });
-	};
-
-	addFeature = () => {
-		const { map } = this.state;
-		const _this = this;
-
-		const select = new OlInteractionSelect();
-		map.addInteraction(select);
-		let selectedfeatures = select.getFeatures();
-
-		selectedfeatures.on([ 'add', 'remove' ], function() {
-			selectedfeatures.getArray().map(function(feature) {
-				let selectedLayer = select.getLayer(feature);
-				const model = getModelByJson(selectedLayer.getSource().url_);
-
-				_this.setState({
-					visible: true,
-					properties: feature.getProperties(),
-					model: model.nomenclature,
-					dataLayer: { module: model.data.mod, layer: model.data.layer }
-				});
-			});
-		});
 	};
 
 	showDrawer = () => {
@@ -207,8 +197,11 @@ class MapContainer extends React.Component {
 	};
 
 	onClose = () => {
+		const { interaction } = this.state;
+		interaction.clear();
 		this.setState({
-			visible: false
+			visible: false,
+			interaction: null
 		});
 	};
 
@@ -259,8 +252,19 @@ class MapContainer extends React.Component {
 	};
 
 	render() {
-		const { map } = this.state;
-		this.addFeature();
+		const _this = this;
+		const select = new OlInteractionSelect();
+		map.addInteraction(select);
+		const selectedfeatures = select.getFeatures();
+
+		selectedfeatures.on([ 'add', 'remove' ], () => {
+			selectedfeatures.getArray().map((feature) => {
+				let selectedLayer = select.getLayer(feature);
+				const model = getModelByJson(selectedLayer.getSource().url_);
+				_this.changeState(feature.getProperties(), model, selectedfeatures);
+			});
+		});
+
 		return (
 			<Div>
 				<MapWrapper map={map} />
@@ -272,7 +276,6 @@ class MapContainer extends React.Component {
 					visible={this.state.visible}
 				>
 					{this.renderDataView()}
-					{/* <Divider /> */}
 				</Drawer>
 			</Div>
 		);
