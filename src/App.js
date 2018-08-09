@@ -1,34 +1,30 @@
 import React, { Component } from 'react';
-import { MapComponent } from '@terrestris/react-geo';
+
+import './App.css';
+import 'ol/ol.css';
+import 'antd/dist/antd.css';
+import './react-geo.css';
 
 import OlMap from 'ol/map';
 import OlView from 'ol/view';
-import OlFormatGeoJSON from 'ol/format/geojson';
-import OlLayerVector from 'ol/layer/vector';
-import OlSourceVector from 'ol/source/vector';
 import OlLayerTile from 'ol/layer/tile';
 import OlSourceOsm from 'ol/source/osm';
 
-const layer1 = new OlLayerVector({
-	source: new OlSourceVector({
-		format: new OlFormatGeoJSON(),
-		url:
-			'http://geoservicios.enpa.vcl.minag.cu/geoserver/cuba/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=cuba:riego_maquina_pivot&outputFormat=application%2Fjson'
-	})
-});
+import { MapComponent } from '@terrestris/react-geo';
 
 const layer = new OlLayerTile({
 	source: new OlSourceOsm()
 });
 
+const center = [ 788453.4890155146, 6573085.729161344 ];
+
 // create a new instance of ol.map in ES6 syntax
 const map = new OlMap({
 	view: new OlView({
-		projection: 'EPSG:4326',
-		center: [ -80.009, 22.6083 ],
-		zoom: 10
+		center: center,
+		zoom: 16
 	}),
-	layers: [ layer, layer1 ]
+	layers: [ layer ]
 });
 
 class App extends Component {

@@ -1,40 +1,40 @@
-const nomenclatureMicropresas = {
+export const nomenclatureMicropresas = {
+	emp: 'Empresa',
+	nombre: 'Nombre',
+	municip: 'Municipio',
 	aconst: 'Año de construcción',
+	rio_asoc: 'Río asociado',
 	caliv: 'Cortina y aliviadero',
+	otoma: 'Obra de toma',
 	cx: 'Coordenada X',
 	cy: 'Coordenada Y',
 	eact: 'Estado actual',
 	egarant: 'Entrega garantizada',
-	emp: 'Empresa',
 	etec: 'Estado técnico',
-	municip: 'Municipio',
 	no_invent: '# Inventario',
-	nombre: 'Nombre',
 	obj_aaba: 'Objetivos aguas abajo',
-	otoma: 'Obra de toma',
-	rio_asoc: 'Río asociado',
 	vol_act: 'Volumen actual',
 	vol_emb: 'Volumen de embalse',
 	vol_mant: 'Volumen de mantenimiento',
 	vuso: 'Valor de uso'
 };
 
-const nomenclatureEnrolladores = {
+export const nomenclatureEnrolladores = {
+	nombre: 'Nombre',
+	lugar: 'Lugar',
+	cultivo: 'Cultivo',
 	actual: 'Actual',
 	area: 'Área',
-	cultivo: 'Cultivo',
-	lugar: 'Lugar',
-	nombre: 'Nombre',
 	observ: 'Observación'
 };
 
-const nomenclatureCanales = {
+export const nomenclatureCanales = {
 	longitud: 'Longitud',
 	nombre: 'Nombre',
 	sriego: 'Sistema de Riego'
 };
 
-const nomenclatureRiegoxGoteo = {
+export const nomenclatureRiegoxGoteo = {
 	actual: 'Actual',
 	area: 'Área',
 	cultivo: 'Cultivo',
@@ -43,7 +43,7 @@ const nomenclatureRiegoxGoteo = {
 	observ: 'Observación'
 };
 
-const nomenclatureEstacionesBombeo = {
+export const nomenclatureEstacionesBombeo = {
 	area_ha: 'Área (ha)',
 	cant_bomba: 'Cantidad de bombas',
 	carga_m: 'Carga (m)',
@@ -56,19 +56,19 @@ const nomenclatureEstacionesBombeo = {
 	tipo_eb: 'Tipo de estación'
 };
 
-const nomenclatureMaquinasPivot = {
-	area_ha: 'Área (ha)',
+export const nomenclatureMaquinasPivot = {
+	empresa: 'Empresa',
+	f_prod: 'Forma productiva',
 	cult_p: 'Cultivo principal',
+	nom_maq: 'Nombre',
+	exist: 'Existencia',
 	cx_pivot: 'Coordenada X del Pivot',
 	cy_pivot: 'Coordenada Y del Pivot',
-	empresa: 'Empresa',
-	exist: 'Existencia',
-	f_prod: 'Forma productiva',
-	nom_maq: 'Nombre',
-	radio: 'Radio'
+	radio: 'Radio',
+	area_ha: 'Área (ha)'
 };
 
-const nomenclatureEntidadesInv = {
+export const nomenclatureEntidadesInv = {
 	constructor: 'Constructor',
 	empresa: 'Empresa',
 	inversion: 'Inversión',
@@ -81,18 +81,18 @@ const nomenclatureEntidadesInv = {
 	plan_otros_mcuc: 'Plan otros (mcuc)',
 	plan_otros_mp: 'Plan otros (mp)',
 	real_consty_montaje_mcuc: 'Real construcción y montaje (mcuc)',
-    real_consty_montaje_mp: 'Real construcción y montajes (mp)',
-    real_equipos_mcuc: 'Real equipos (mcuc)',
+	real_consty_montaje_mp: 'Real construcción y montajes (mp)',
+	real_equipos_mcuc: 'Real equipos (mcuc)',
 	real_equipos_mp: 'Real equipos (mp)',
 	real_otros_mcuc: 'Real otros (mcuc)',
-	real_otros_mp: 'Real otros (mp)',
+	real_otros_mp: 'Real otros (mp)'
 };
 
-const nomenclatureObrasEjec = {
-	constructor: 'Constructor',
-	municipio: 'Municipio',
+export const nomenclatureObrasEjec = {
 	obra: 'Obra',
 	programa: 'Programa',
 	provincia: 'Provincia',
-	valor_total_inver_mp: 'Valor total de inversión (mp)',
+	municipio: 'Municipio',
+	constructor: 'Constructor',
+	valor_total_inver_mp: 'Valor total inversión (mp)'
 };

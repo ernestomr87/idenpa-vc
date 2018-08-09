@@ -18,12 +18,6 @@ export default [
 			'http://geoservicios.enpa.vcl.minag.cu/geoserver/ws_ide_vcl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ws_ide_vcl:cvertedor&maxFeatures=50&outputFormat=application%2Fjson'
 	},
 	{
-		name: 'Canales Primarios de riego',
-		nomenclature: 'nomenclatureCanales',
-		json:
-			'http://geoservicios.enpa.vcl.minag.cu/geoserver/ws_ide_vcl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ws_ide_vcl:crprimario&maxFeatures=50&outputFormat=application%2Fjson'
-	},
-	{
 		name: 'Canales secundarios de riego',
 		nomenclature: 'nomenclatureCanales',
 		json:

@@ -21,14 +21,6 @@ import DeleteIco from './icons/delete.svg';
 
 const { Content } = Layout;
 
-const LayoutWrapper = styled(Layout)`
-	min-height: 100vh;
-	.ant-layout-header {
-		height: 60px;
-		line-height: 60px;
-	}
-`;
-
 const ImgContent = styled.img`
 	width: 15px;
 	height: 15px;
@@ -105,11 +97,11 @@ class Visor extends Component {
 	render() {
 		const { sider: { layers } } = this.props;
 		return (
-			<LayoutWrapper>
-				<Layout>
-					<Content>
-						<Map layers={layers} />
-						<LogoContainer>
+			<div>
+			<Map layers={layers} />
+				<Content>
+					
+					<LogoContainer>
 						<LogoImg src={Logo} alt="" />
 						<Span>
 							AGRO <small style={{ color: '#5b784d', margin: '0px 0px 0px -10px' }}>map</small>
@@ -143,11 +135,9 @@ class Visor extends Component {
 							<ImgContent src={DeleteIco} alt="" />
 						</Tooltip>
 					</ToolsBar>
-					</Content>
-					
-				</Layout>
+				</Content>
 				<Sider />
-			</LayoutWrapper>
+			</div>
 		);
 	}
 }

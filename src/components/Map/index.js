@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, message, Divider, Col, Row } from 'antd';
+import { Drawer, message, Divider, Col, Row, List, Table } from 'antd';
 import { MapComponent } from '@terrestris/react-geo';
 import styled from 'styled-components';
 import OlMap from 'ol/map';
@@ -11,18 +11,26 @@ import OlInteractionSelect from 'ol/interaction/select';
 import OlLayerTile from 'ol/layer/tile';
 import OlSourceOsm from 'ol/source/osm';
 
-import modules from './../../data/index';
+import MoneyBagImg from './../../containers/Sider/icons/money-bag.svg';
+import IrrigationImg from './../../containers/Sider/icons/farm.svg';
+import TractorImg from './../../containers/Sider/icons/tractor.svg';
+import CoastImg from './../../containers/Sider/icons/coast.svg';
+import CareImg from './../../containers/Sider/icons/care.svg';
+
+import Modules, { getModelByJson } from './../../data/index';
+import './../../react-geo.css';
 
 const MapWrapper = styled(MapComponent)`
 	height: 100vh;
 `;
-const ColWrapper = styled(Col)`
-	&.ant-col-12{
-		height: 29px;
-	}
-	
+const ImgInversion = styled.img`
+	width: 25px;
+	height: 25px;
+	margin-top: -7px;
+	margin-right: 10px;
 `;
 const P = styled.p`
+	font-weight: 500;
 	margin-right: 8px;
 	display: inline-block;
 	color: rgba(0, 0, 0, 0.85);
@@ -36,16 +44,17 @@ const DI = styled.div`
     font-family: "Monospaced Number", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 	"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
 `;
+const Div = styled.div`height: 100vh;`;
 
 const layer = new OlLayerTile({
 	source: new OlSourceOsm()
 });
 
 const pStyle = {
+	fontWeight: 500,
 	fontSize: 16,
 	color: 'rgba(0,0,0,0.85)',
 	display: 'block',
-	marginBottom: 16,
 	fontFamily: `"Monospaced Number", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
 	"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif`
 };
@@ -63,6 +72,8 @@ const DescriptionItem = ({ title, content }) => {
 class MapContainer extends React.Component {
 	state = {
 		layers: [],
+		model: {},
+		module: null,
 		visible: false,
 		properties: null,
 		map: new OlMap({
@@ -84,7 +95,7 @@ class MapContainer extends React.Component {
 			let array = [];
 			Object.keys(layers).forEach(function(key) {
 				layers[key].map((item) => {
-					const aux = modules[key].filter((mitem) => {
+					const aux = Modules[key].filter((mitem) => {
 						if (mitem.name === item) return mitem;
 					});
 					array.push(aux[0]);
@@ -172,11 +183,19 @@ class MapContainer extends React.Component {
 
 		const select = new OlInteractionSelect();
 		map.addInteraction(select);
-		var selectedfeatures = select.getFeatures();
+		let selectedfeatures = select.getFeatures();
+
 		selectedfeatures.on([ 'add', 'remove' ], function() {
-			selectedfeatures.getArray().map(function(feature, index) {
-				console.log(feature.getProperties());
-				_this.setState({ visible: true, properties: feature.getProperties() });
+			selectedfeatures.getArray().map(function(feature) {
+				let selectedLayer = select.getLayer(feature);
+				const model = getModelByJson(selectedLayer.getSource().url_);
+
+				_this.setState({
+					visible: true,
+					properties: feature.getProperties(),
+					model: model.nomenclature,
+					dataLayer: { module: model.data.mod, layer: model.data.layer }
+				});
 			});
 		});
 	};
@@ -193,11 +212,57 @@ class MapContainer extends React.Component {
 		});
 	};
 
+	renderDataView = () => {
+		const { model, properties, dataLayer } = this.state;
+		const dataSource = [];
+		const columns = [
+			{
+				dataIndex: 'key',
+				key: 'key',
+				render: (text) => {
+					return <span style={{ color: 'rgb(19, 116, 205)' }}>{text}</span>;
+				}
+			},
+			{
+				dataIndex: 'value',
+				key: 'value'
+			}
+		];
+		Object.keys(model).forEach(function(key, index) {
+			if (properties[key]) {
+				dataSource.push({ key: model[key], value: properties[key] });
+			}
+		});
+		if (dataSource.length > 1) {
+			return (
+				<div>
+					<p style={{ ...pStyle, marginBottom: 24 }}>
+						{/* Muestro el Icono del modulo al que pertenece la Feature seleccionada */}
+						{dataLayer.module === 'irrigation' ? <ImgInversion src={IrrigationImg} alt="" /> : null}
+						{dataLayer.module === 'investments' ? <ImgInversion src={MoneyBagImg} alt="" /> : null}
+						{dataLayer.module === 'machinery' ? <ImgInversion src={TractorImg} alt="" /> : null}
+						{dataLayer.module === 'northCoast' ? <ImgInversion src={CoastImg} alt="" /> : null}
+						{dataLayer.module === 'lifeTask' ? <ImgInversion src={CareImg} alt="" /> : null}
+
+						{dataLayer.layer}
+					</p>
+					<Table
+						size="small"
+						pagination={false}
+						showHeader={false}
+						dataSource={dataSource}
+						columns={columns}
+					/>
+				</div>
+			);
+		}
+	};
+
 	render() {
-		const { map, properties } = this.state;
+		const { map } = this.state;
 		this.addFeature();
 		return (
-			<div>
+			<Div>
 				<MapWrapper map={map} />
 				<Drawer
 					width={500}
@@ -206,49 +271,10 @@ class MapContainer extends React.Component {
 					onClose={this.onClose}
 					visible={this.state.visible}
 				>
-					<p style={{ ...pStyle, marginBottom: 24, textTransform: 'uppercase' }}>
-						{properties ? properties.empresa : null}
-					</p>
-					<Row>
-						<ColWrapper span={12}>
-							<DescriptionItem title="Radio" content={properties ? properties.radio : null} />{' '}
-						</ColWrapper>
-						<ColWrapper span={12}>
-							<DescriptionItem title="Area" content={properties ? properties.area : null} />
-						</ColWrapper>
-					</Row>
-					<Row>
-						<ColWrapper span={12}>
-							<DescriptionItem title="Cult_P" content={properties ? properties.cult_p : null} />
-						</ColWrapper>
-						<ColWrapper span={12}>
-							<DescriptionItem title="F_Prod" content={properties ? properties.f_prod : null} />{' '}
-						</ColWrapper>
-					</Row>
-					<Row>
-						<ColWrapper span={12}>
-							<DescriptionItem title="CX_Pivot" content={properties ? properties.cx_pivot : null} />
-						</ColWrapper>
-						<ColWrapper span={12}>
-							<DescriptionItem title="CY_Pivot" content={properties ? properties.cy_pivot : null} />
-						</ColWrapper>
-					</Row>
-					<Row>
-						<ColWrapper span={12}>
-							<DescriptionItem title="ID_Maq" content={properties ? properties.id_maq : null} />
-						</ColWrapper>
-						<ColWrapper span={12}>
-							<DescriptionItem title="Nom_Maq" content={properties ? properties.nom_maq : null} />
-						</ColWrapper>
-					</Row>
-					<Row>
-						<ColWrapper span={12}>
-							<DescriptionItem title="Exist" content={properties ? properties.exist : null} />
-						</ColWrapper>
-					</Row>
-					<Divider />
+					{this.renderDataView()}
+					{/* <Divider /> */}
 				</Drawer>
-			</div>
+			</Div>
 		);
 	}
 }

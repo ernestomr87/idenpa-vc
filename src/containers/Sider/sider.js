@@ -4,7 +4,6 @@ import { compose } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 
-import Map from './../../components/Map';
 import Modules from './../../data/index';
 import { Layout, Tree, Icon, Row, Col, Button, Drawer, Tooltip, Divider, Radio, Alert, Badge } from 'antd';
 
@@ -28,13 +27,6 @@ import PresentationImg from './icons/presentation.svg';
 const { Content } = Layout;
 const TreeNode = Tree.TreeNode;
 
-const LayoutWrapper = styled(Layout)`
-	min-height: 100vh;
-	.ant-layout-header {
-		height: 60px;
-		line-height: 60px;
-	}
-`;
 const TreeNodeWrapper = styled(TreeNode)`
 	.ant-tree-switcher{
 		display: none !important;
@@ -154,9 +146,7 @@ class Sider extends Component {
 		const { sider: { layers } } = this.props;
 		if (typeof layers[layer] !== 'undefined') {
 			return layers[layer].length;
-			console.log(layers[layer].length);
 		}
-		console.log('undefine');
 		return 1;
 	};
 
@@ -165,13 +155,10 @@ class Sider extends Component {
 		const { sider: { item, layers } } = this.props;
 
 		return (
-			<LayoutWrapper>
-				<Layout>
-					<Content>
-						<MenuUnfold onClick={this.showDrawer} type="menu-unfold" />
-						<Map />
-					</Content>
-				</Layout>
+			<Layout>
+				<Content>
+					<MenuUnfold onClick={this.showDrawer} type="menu-unfold" />
+				</Content>
 				<Drawer
 					width={300}
 					placement="left"
@@ -301,7 +288,7 @@ class Sider extends Component {
 						<ButtonClose onClick={this.onClose} type="primary" shape="circle" icon="close" />
 					) : null}
 				</Drawer>
-			</LayoutWrapper>
+			</Layout>
 		);
 	}
 }
