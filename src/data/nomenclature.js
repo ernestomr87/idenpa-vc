@@ -29,38 +29,38 @@ export const nomenclatureEnrolladores = {
 };
 
 export const nomenclatureCanales = {
-	longitud: 'Longitud',
 	nombre: 'Nombre',
-	sriego: 'Sistema de Riego'
+	sriego: 'Sistema de Riego',
+	longitud: 'Longitud'
 };
 
 export const nomenclatureRiegoxGoteo = {
+	nombre: 'Nombre',
+	lugar: 'Lugar',
+	cultivo: 'Cultivo',
 	actual: 'Actual',
 	area: 'Área',
-	cultivo: 'Cultivo',
-	lugar: 'Lugar',
-	nombre: 'Nombre',
 	observ: 'Observación'
 };
 
 export const nomenclatureEstacionesBombeo = {
-	area_ha: 'Área (ha)',
-	cant_bomba: 'Cantidad de bombas',
-	carga_m: 'Carga (m)',
+	nombre: 'Nombre',
+	tipo_eb: 'Tipo de estación',
+	tecnica_riego: 'Tecnica Riego',
 	forma_productiva: 'Forma productiva',
 	fuente_abasto: 'Fuente de abasto',
+	cant_bomba: 'Cantidad de bombas',
 	gasto_lxs: 'Gasto (L/s)',
-	nombre: 'Nombre',
 	potencia_kw: 'Potencia (Kw)',
-	tecnica_riego: 'Tecnica Riego',
-	tipo_eb: 'Tipo de estación'
+	area_ha: 'Área (ha)',
+	carga_m: 'Carga (m)',
 };
 
 export const nomenclatureMaquinasPivot = {
 	empresa: 'Empresa',
+	nom_maq: 'Nombre',
 	f_prod: 'Forma productiva',
 	cult_p: 'Cultivo principal',
-	nom_maq: 'Nombre',
 	exist: 'Existencia',
 	cx_pivot: 'Coordenada X del Pivot',
 	cy_pivot: 'Coordenada Y del Pivot',
@@ -69,8 +69,8 @@ export const nomenclatureMaquinasPivot = {
 };
 
 export const nomenclatureEntidadesInv = {
-	constructor: 'Constructor',
 	empresa: 'Empresa',
+	constructor: 'Constructor',
 	inversion: 'Inversión',
 	plan_ajustado_anual_mcuc: 'Plan ajustado anual (mcuc)',
 	plan_ajustado_anual_mp: 'Plan ajustado anual (mp)',
