@@ -107,34 +107,7 @@ class Visor extends Component {
 							AGRO <small style={{ color: '#5b784d', margin: '0px 0px 0px -10px' }}>map</small>
 						</Span>
 					</LogoContainer>
-					<PlusZoom type="plus-circle" />
-					<MinusZoom type="minus-circle" />
-					<ToolsBar>
-						<Tooltip placement="leftTop" title="Punto">
-							<ImgContent src={MapsIco} alt="" />
-						</Tooltip>
-						<Tooltip placement="leftTop" title="Línea">
-							<ImgContent src={PencilIco} alt="" />
-						</Tooltip>
-						<Tooltip placement="leftTop" title="Polígono">
-							<ImgContent src={PolygonIco} alt="" />
-						</Tooltip>
-						<Tooltip placement="leftTop" title="Círculo">
-							<ImgContent src={CompassIco} alt="" />
-						</Tooltip>
-						<Tooltip placement="leftTop" title="Rectángulo">
-							<ImgContent src={FrameIco} alt="" />
-						</Tooltip>
-						<Tooltip placement="leftTop" title="Selecciona y Modifica">
-							<ImgContent src={SelectIco} alt="" />
-						</Tooltip>
-						<Tooltip placement="leftTop" title="Copiar">
-							<ImgContent src={PapersIco} alt="" />
-						</Tooltip>
-						<Tooltip placement="leftTop" title="Eliminar">
-							<ImgContent src={DeleteIco} alt="" />
-						</Tooltip>
-					</ToolsBar>
+					
 				</Content>
 				<Sider />
 			</div>
