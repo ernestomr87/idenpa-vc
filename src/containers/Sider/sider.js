@@ -1,28 +1,27 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import styled from 'styled-components';
-
-import Modules from './../../data/index';
 import { Layout, Tree, Icon, Row, Col, Button, Drawer, Tooltip, Divider, Radio, Alert, Badge } from 'antd';
-
+import { selectModules, addLayers, delLayers } from './actions';
+import makeSelectSider from './selectors';
+import Modules from './../../data/index';
+import React, { Component } from 'react';
+import reducer from './reducer';
+import saga from './saga';
+import styled from 'styled-components';
 import withReducer from '../../utils/withReducer';
 import withSaga from '../../utils/withSaga';
 
-import makeSelectSider from './selectors';
-import reducer from './reducer';
-import saga from './saga';
-import { selectModules, addLayers, delLayers } from './actions';
-
-import MoneyBagImg from './icons/money-bag.svg';
-import IrrigationImg from './icons/farm.svg';
-import TractorImg from './icons/tractor.svg';
-import CoastImg from './icons/coast.svg';
-import CareImg from './icons/care.svg';
-import LayersImg from './icons/layers.svg';
-import QuestionImg from './icons/question.svg';
-import PresentationImg from './icons/presentation.svg';
+import {
+	CareImg,
+	CoastImg,
+	IrrigationImg,
+	LayersImg,
+	MoneyBagImg,
+	PresentationImg,
+	QuestionImg,
+	TractorImg
+} from './../../components/Icons';
 
 const { Content } = Layout;
 const TreeNode = Tree.TreeNode;
