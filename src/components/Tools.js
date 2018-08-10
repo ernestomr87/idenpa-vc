@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { ToggleGroup, DigitizeButton, MeasureButton, ZoomButton } from '@terrestris/react-geo';
-import { Tooltip, Popover } from 'antd';
+import { Tooltip, Popover, Button } from 'antd';
 
 import {
 	MapsIco,
@@ -25,8 +25,8 @@ import {
 const ImgContent = styled.img`
 	width: 15px;
 	height: 15px;
-	margin: 6px 0 6px 5px;
-	cursor: pointer
+	margin: 6px auto;
+	cursor: pointer;
 	&:hover {
 		transform: scale(1.10, 1.10);
 	}
@@ -36,9 +36,7 @@ const ToolsBar = styled.div`
 	position: absolute;
 	top: 80px;
 	right: 8px;
-	width: 25px;
-	background-color: rgba(0, 0, 0, 0.6);
-	border-radius: 25px;
+	width: 30px;
 `;
 const Digitize = styled(DigitizeButton)`
 	&.ant-btn{
@@ -94,6 +92,13 @@ const Zoom = styled(ZoomButton)`
 		&.anticon:hover{
 			transform: scale(1.05, 1.05)
 		}
+	}
+`;
+const ToolsButtons = styled(Button)`
+	&.ant-btn{
+		width: 30px;
+		height: 30px;
+		margin: 1px 0;
 	}
 `;
 
@@ -180,7 +185,11 @@ export class Tools extends Component {
 						content={popoverTool1(map)}
 						trigger="hover"
 					>
-						<ImgContent onClick={this.showTool.bind(this, 1)} src={PencilMIco} alt="" />
+						<Tooltip placement="leftTop" title="Herramientas de trazado">
+							<ToolsButtons shape="circle" onClick={this.showTool.bind(this, 1)}>
+								<ImgContent src={PencilMIco} alt="" />
+							</ToolsButtons>
+						</Tooltip>
 					</Popover>
 					<Popover
 						visible={this.state.visibleTool2}
@@ -188,30 +197,42 @@ export class Tools extends Component {
 						content={popoverTool2(map)}
 						trigger="hover"
 					>
-						<ImgContent onClick={this.showTool.bind(this, 2)} src={MeasuringIco} alt="" />
+						<Tooltip placement="leftTop" title="Herramientas de medición">
+							<ToolsButtons shape="circle" onClick={this.showTool.bind(this, 2)}>
+								<ImgContent src={MeasuringIco} alt="" />
+							</ToolsButtons>
+						</Tooltip>
 					</Popover>
 					<ToggleGroup>
 						<Digitize name="drawText" map={map} drawType="Text">
-							<Tooltip placement="leftTop" title="Eliminar">
-								<ImgContent src={TextIco} alt="" />
+							<Tooltip placement="leftTop" title="Textos">
+								<ToolsButtons shape="circle">
+									<ImgContent src={TextIco} alt="" />
+								</ToolsButtons>
 							</Tooltip>
 						</Digitize>
 
 						<Digitize name="selectAndModify" map={map} editType="Edit">
 							<Tooltip placement="leftTop" title="Selecciona y Modifica">
-								<ImgContent src={SelectIco} alt="" />
+								<ToolsButtons shape="circle">
+									<ImgContent src={SelectIco} alt="" />
+								</ToolsButtons>
 							</Tooltip>
 						</Digitize>
 
 						<Digitize name="copyFeature" map={map} editType="Copy">
 							<Tooltip placement="leftTop" title="Copiar">
-								<ImgContent src={PapersIco} alt="" />
+								<ToolsButtons shape="circle">
+									<ImgContent src={PapersIco} alt="" />
+								</ToolsButtons>
 							</Tooltip>
 						</Digitize>
 
 						<Digitize name="deleteFeature" map={map} editType="Delete">
 							<Tooltip placement="leftTop" title="Eliminar">
-								<ImgContent src={DeleteIco} alt="" />
+								<ToolsButtons shape="circle">
+									<ImgContent src={DeleteIco} alt="" />
+								</ToolsButtons>
 							</Tooltip>
 						</Digitize>
 					</ToggleGroup>
