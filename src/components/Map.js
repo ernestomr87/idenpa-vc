@@ -1,22 +1,50 @@
 import React from 'react';
 import { Drawer, message, Table } from 'antd';
-import { MapComponent } from '@terrestris/react-geo';
 import styled from 'styled-components';
-import OlMap from 'ol/map';
-import OlView from 'ol/view';
 import OlFormatGeoJSON from 'ol/format/geojson';
-import OlLayerVector from 'ol/layer/vector';
-import OlSourceVector from 'ol/source/vector';
 import OlInteractionSelect from 'ol/interaction/select';
-import OlLayerTile from 'ol/layer/tile';
-import OlSourceOsm from 'ol/source/osm';
-
 import { IrrigationImg, MoneyBagImg, TractorImg, CoastImg, CareImg } from './Icons';
+import { MapComponent } from '@terrestris/react-geo';
+import OlSourceOsm from 'ol/source/osm';
+import OlSourceVector from 'ol/source/vector';
+import OlLayerTile from 'ol/layer/tile';
+import OlLayerVector from 'ol/layer/vector';
+import OlView from 'ol/view';
+import OlMap from 'ol/map';
+
+import OlStroke from 'ol/style/stroke';
+import OlFill from 'ol/style/fill';
+import OlStyle from 'ol/style/style';
+import OlCircle from 'ol/style/circle';
+
+import OlExtent from 'ol/extent';
+import OlHas from 'ol/has';
+
 import Tools from './Tools';
+// import CircleMenu from './CircleMenu';
 import Modules, { getModelByJson } from './../data/index';
 
 import './../react-geo.css';
 
+const Div = styled.div`height: 100vh;`;
+
+const MapWrapper = styled(MapComponent)`
+	height: 100vh;
+`;
+
+const layer = new OlLayerTile({
+	source: new OlSourceOsm()
+});
+
+const map = new OlMap({
+	view: new OlView({
+		projection: 'EPSG:4326',
+		center: [ -80.009, 22.6083 ],
+		zoom: 11
+	}),
+	controls: [],
+	layers: [ layer ]
+});
 const pStyle = {
 	fontWeight: 500,
 	fontSize: 16,
@@ -26,35 +54,12 @@ const pStyle = {
 	"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif`
 };
 
-const MapWrapper = styled(MapComponent)`
-	height: 100vh;
-`;
-
 const ImgInversion = styled.img`
 	width: 25px;
 	height: 25px;
 	margin-top: -7px;
 	margin-right: 10px;
 `;
-
-const Div = styled.div`height: 100vh;`;
-
-const layer = new OlLayerTile({
-	source: new OlSourceOsm()
-});
-
-const map = new OlMap({
-	visibleTool1: false,
-	visibleTool2: false,
-	view: new OlView({
-		layers: [ layer ],
-		projection: 'EPSG:4326',
-		center: [ -80.009, 22.6083 ],
-		zoom: 8
-	}),
-	controls: [],
-	layers: [ layer ]
-});
 
 /* eslint-disable react/prefer-stateless-function */
 class MapContainer extends React.Component {
@@ -68,7 +73,15 @@ class MapContainer extends React.Component {
 		interaction: null
 	};
 
+
+
 	changeState = (feature, model, select) => {
+		const { interaction } = this.state;
+
+		if (interaction) {
+			interaction.clear();
+			console.info('cleaning layer');
+		}
 		this.setState({
 			visible: true,
 			properties: feature,
@@ -125,7 +138,22 @@ class MapContainer extends React.Component {
 		let aux = new OlLayerVector({
 			source: new OlSourceVector({
 				format: new OlFormatGeoJSON(),
-				url: diff.json
+				url: diff.json,
+				style: new OlStyle({
+					fill: new OlFill({
+						color: '#fd5d65'
+					}),
+					stroke: new OlStroke({
+						color: '#fd5d65',
+						width: 2
+					}),
+					image: new OlCircle({
+						radius: 7,
+						fill: new OlFill({
+							color: '#fd5d65'
+						})
+					})
+				})
 			})
 		});
 
@@ -230,22 +258,31 @@ class MapContainer extends React.Component {
 	};
 
 	render() {
-		// const _this = this;
-		// const select = new OlInteractionSelect();
-		// map.addInteraction(select);
-		// const selectedfeatures = select.getFeatures();
+		const _this = this;
+		const select = new OlInteractionSelect();
+		map.addInteraction(select);
+		const selectedfeatures = select.getFeatures();
 
-		// selectedfeatures.on([ 'add', 'remove' ], (evt) => {
-		// 	selectedfeatures.getArray().map((feature) => {
-		// 		let selectedLayer = select.getLayer(feature);
-		// 		const model = getModelByJson(selectedLayer.getSource().url_);
-		// 		_this.changeState(feature.getProperties(), model, selectedfeatures);
-		// 	});
-		// });
+		selectedfeatures.on([ 'add', 'remove' ], (evt) => {
+			console.log(selectedfeatures.getArray());
+			selectedfeatures.getArray().map((feature) => {
+				let selectedLayer = select.getLayer(feature);
+				if (selectedLayer && selectedLayer.getSource().url_) {
+					const model = getModelByJson(selectedLayer.getSource().url_);
+					_this.changeState(feature.getProperties(), model, selectedfeatures);
+				}
+			});
+		});
 
 		return (
 			<Div>
 				<MapWrapper map={map} />
+				{/* <div
+					id="agroMap"
+					style={{
+						height: '100vh'
+					}}
+				/> */}
 				<Tools map={map} />
 				<Drawer
 					width={500}
