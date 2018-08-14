@@ -19,6 +19,7 @@ import OlCircle from 'ol/style/circle';
 
 import Tools from './Tools';
 // import CircleMenu from './CircleMenu';
+import colors from './colors';
 import Modules, { getModelByJson } from './../data/index';
 
 import './../react-geo.css';
@@ -42,6 +43,7 @@ const map = new OlMap({
 	controls: [],
 	layers: [ layer ]
 });
+
 const pStyle = {
 	fontWeight: 500,
 	fontSize: 16,
@@ -56,6 +58,13 @@ const ImgInversion = styled.img`
 	height: 25px;
 	margin-top: -7px;
 	margin-right: 10px;
+`;
+
+const TableWrapper = styled(Table)`
+
+	  tr > td {
+		padding: 0px 0px !important;
+	}
 `;
 
 /* eslint-disable react/prefer-stateless-function */
@@ -133,25 +142,21 @@ class MapContainer extends React.Component {
 		let aux = new OlLayerVector({
 			source: new OlSourceVector({
 				format: new OlFormatGeoJSON(),
-				url: diff.json,
-				style: new OlStyle({
-					fill: new OlFill({
-						color: '#fd5d65'
-					}),
-					stroke: new OlStroke({
-						color: '#fd5d65',
-						width: 2
-					}),
-					image: new OlCircle({
-						radius: 7,
-						fill: new OlFill({
-							color: '#fd5d65'
-						})
-					})
-				})
+				url: diff.json
 			})
 		});
 
+		let color = colors.shift();
+		const styleF = new OlStyle({
+			fill: new OlFill({
+				color: color
+			}),
+			stroke: new OlStroke({
+				color: color
+			})
+		});
+		aux.setStyle(styleF);
+		diff[color] = color;
 		if (!map.getLayers().getArray().includes(aux)) {
 			nlayers.push({ item: diff, layer: aux });
 			map.addLayer(aux);
@@ -186,6 +191,7 @@ class MapContainer extends React.Component {
 
 		if (map.getLayers().getArray().includes(diff.layer)) {
 			map.removeLayer(diff.layer);
+			colors.push(diff.color);
 		}
 
 		this.setState({ layers: nlayers });
@@ -240,13 +246,7 @@ class MapContainer extends React.Component {
 
 						{dataLayer.layer}
 					</p>
-					<Table
-						size="small"
-						pagination={false}
-						showHeader={false}
-						dataSource={dataSource}
-						columns={columns}
-					/>
+					<TableWrapper pagination={false} showHeader={false} dataSource={dataSource} columns={columns} />
 				</div>
 			);
 		}

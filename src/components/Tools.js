@@ -40,14 +40,14 @@ const ToolsBar = styled.div`
 `;
 const Digitize = styled(DigitizeButton)`
 	&.ant-btn{
-		background-color: #fff;
+		background-color: rgba(0,0,0,0.6);
 		margin: 1px 0;
 	}
 
 `;
 const Measure = styled(MeasureButton)`
 	&.ant-btn{
-		background-color: #fff;
+		background-color: rgba(0,0,0,0.6);
 		margin: 1px 0;
 	}
 `;
