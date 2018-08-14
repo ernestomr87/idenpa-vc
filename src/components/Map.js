@@ -39,7 +39,7 @@ const map = new OlMap({
 	view: new OlView({
 		projection: 'EPSG:4326',
 		center: [ -80.009, 22.6083 ],
-		zoom: 11
+		zoom: 9
 	}),
 	controls: [],
 	layers: [ layer ]
