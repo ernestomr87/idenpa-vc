@@ -41,11 +41,17 @@ class Visor extends Component {
 		});
 	};
 
+	onClose = () => {
+		this.setState({
+			visible: false
+		});
+	};
+
 	render() {
 		const { sider: { layers } } = this.props;
 		return (
 			<div>
-				<Map layers={layers} />
+				<Map layers={layers} drawer={this.state.visible} />
 				<Content>
 					<LogoContainer>
 						<LogoImg src={Logo} alt="" />
@@ -54,7 +60,7 @@ class Visor extends Component {
 						</Span>
 					</LogoContainer>
 				</Content>
-				<Sider />
+				<Sider visible={this.state.visible} showDrawer={this.showDrawer} onClose={this.onClose} />
 			</div>
 		);
 	}

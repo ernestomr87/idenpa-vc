@@ -92,7 +92,6 @@ const ButtonClose = styled(Button)`
 
 class Sider extends Component {
 	state = {
-		visible: false,
 		expandedKeys: [],
 		autoExpandParent: true,
 		checkedKeys: [],
@@ -105,18 +104,6 @@ class Sider extends Component {
 		if (nextProps.sider.item !== sider.item) {
 			this.setState({ checkedKeys: nextProps.sider.layers[nextProps.sider.item] });
 		}
-	};
-
-	showDrawer = () => {
-		this.setState({
-			visible: true
-		});
-	};
-
-	onClose = () => {
-		this.setState({
-			visible: false
-		});
 	};
 
 	onCheck = (checkedKeys) => {
@@ -151,19 +138,19 @@ class Sider extends Component {
 
 	render() {
 		const modules = Modules;
-		const { sider: { item, layers } } = this.props;
+		const { sider: { item, layers }, visible, showDrawer, onClose } = this.props;
 
 		return (
 			<Layout>
 				<Content>
-					<MenuUnfold onClick={this.showDrawer} type="menu-unfold" />
+					<MenuUnfold onClick={showDrawer} type="menu-unfold" />
 				</Content>
 				<Drawer
 					width={300}
 					placement="left"
 					closable={false}
-					onClose={this.onClose}
-					visible={this.state.visible}
+					onClose={onClose}
+					visible={visible}
 					maskClosable={false}
 					mask={false}
 				>
@@ -283,9 +270,7 @@ class Sider extends Component {
 							<Alert message="No existe información para mostrar" type="info" showIcon />
 						) : null}
 					</Row>
-					{this.state.visible ? (
-						<ButtonClose onClick={this.onClose} type="primary" shape="circle" icon="close" />
-					) : null}
+					{visible ? <ButtonClose onClick={onClose} type="primary" shape="circle" icon="close" /> : null}
 				</Drawer>
 			</Layout>
 		);

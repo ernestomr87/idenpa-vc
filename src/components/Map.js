@@ -18,6 +18,7 @@ import OlStyle from 'ol/style/style';
 import OlCircle from 'ol/style/circle';
 
 import Tools from './Tools';
+import Legend from './Legend';
 // import CircleMenu from './CircleMenu';
 import colors from './colors';
 import Modules, { getModelByJson } from './../data/index';
@@ -156,7 +157,7 @@ class MapContainer extends React.Component {
 			})
 		});
 		aux.setStyle(styleF);
-		diff[color] = color;
+		diff['color'] = color;
 		if (!map.getLayers().getArray().includes(aux)) {
 			nlayers.push({ item: diff, layer: aux });
 			map.addLayer(aux);
@@ -273,6 +274,7 @@ class MapContainer extends React.Component {
 			<Div>
 				<MapWrapper map={map} />
 				<Tools map={map} />
+				<Legend layers={this.state.layers} drawer={this.props.drawer} />
 				<Drawer
 					width={500}
 					placement="right"
@@ -288,7 +290,8 @@ class MapContainer extends React.Component {
 }
 
 MapContainer.defaultProps = {
-	layers: []
+	layers: [],
+	drawer: false
 };
 
 export default MapContainer;
