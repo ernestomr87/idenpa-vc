@@ -34,47 +34,21 @@ const ImgContent = styled.img`
 
 const ToolsBar = styled.div`
 	position: absolute;
-	top: 80px;
+	bottom: 10px;
 	right: 8px;
 	width: 30px;
 `;
 const Digitize = styled(DigitizeButton)`
 	&.ant-btn{
-		background: none;
-		border: none;
-		padding: 0;
-		margin: 0;
-		color:#445459
-	}
-	&.ant-btn:hover,&.ant-btn:active,&.ant-btn:focus{
-		background-color: transparent;
-		color:#1890ff
+		background-color: #fff;
+		margin: 1px 0;
 	}
 
-	&.react-geo-togglebutton.btn-pressed {
-		background-color: transparent !important;
-		border-color: #e6e6e6;
-		color:#445459
-	}
 `;
 const Measure = styled(MeasureButton)`
 	&.ant-btn{
-		background: none;
-		border: none;
-		padding: 0;
-		margin: 0;
-		color: black;
-		text-align: left;
-	}
-	&.ant-btn:hover,&.ant-btn:active,&.ant-btn:focus{
-		background-color: transparent;
-		color:#1890ff
-	}
-
-	&.react-geo-togglebutton.btn-pressed {
-		background-color: transparent !important;
-		border-color: #e6e6e6;
-		color:#445459
+		background-color: #fff;
+		margin: 1px 0;
 	}
 `;
 
@@ -94,73 +68,16 @@ const Zoom = styled(ZoomButton)`
 		}
 	}
 `;
-const ToolsButtons = styled(Button)`
-	&.ant-btn{
-		width: 30px;
-		height: 30px;
-		margin: 1px 0;
-	}
-`;
-
-const popoverTool1 = (map) => (
-	<ToggleGroup>
-		<Digitize name="drawPoint" map={map} drawType="Point">
-			<ImgContent src={MapsIco} alt="" /> Punto
-		</Digitize>
-
-		<Digitize name="drawLine" map={map} drawType="LineString">
-			<Tooltip placement="leftTop" title="Línea">
-				<ImgContent src={PencilIco} alt="" /> Línea
-			</Tooltip>
-		</Digitize>
-
-		<Digitize name="drawPolygon" map={map} drawType="Polygon">
-			<Tooltip placement="leftTop" title="Polígono">
-				<ImgContent src={PolygonIco} alt="" /> Polígono
-			</Tooltip>
-		</Digitize>
-
-		<Digitize name="drawCircle" map={map} drawType="Circle">
-			<Tooltip placement="leftTop" title="Círculo">
-				<ImgContent src={CompassIco} alt="" /> Círculo
-			</Tooltip>
-		</Digitize>
-
-		<Digitize name="drawRectangle" map={map} drawType="Rectangle">
-			<Tooltip placement="leftTop" title="Rectángulo">
-				<ImgContent src={FrameIco} alt="" /> Rectángulo
-			</Tooltip>
-		</Digitize>
-	</ToggleGroup>
-);
-const popoverTool2 = (map) => (
-	<ToggleGroup>
-		<Measure name="line" map={map} measureType="line">
-			<ImgContent src={DistancedIco} alt="" /> Distancia
-		</Measure>
-
-		<Measure name="steps" map={map} measureType="line" showMeasureInfoOnClickedPoints>
-			<ImgContent src={DistanceIco} alt="" /> Distancia por pasos
-		</Measure>
-
-		<Measure name="multi" map={map} measureType="line" multipleDrawing>
-			<ImgContent src={DistancemIco} alt="" /> Distancia multiples puntos
-		</Measure>
-
-		<Measure name="poly" map={map} measureType="polygon">
-			<ImgContent src={AreaIco} alt="" /> Área
-		</Measure>
-
-		<Measure name="angle" map={map} measureType="angle">
-			<ImgContent src={AngleIco} alt="" /> Ángulo
-		</Measure>
-	</ToggleGroup>
-);
+const SpaceDiv = styled.div`margin: 5px 0;`;
 
 export class Tools extends Component {
 	state = {
 		visibleTool1: false,
 		visibleTool2: false
+	};
+
+	hideTool = () => {
+		return this.setState({ visibleTool1: false, visibleTool2: false });
 	};
 
 	showTool = (view) => {
@@ -179,60 +96,106 @@ export class Tools extends Component {
 				<Zoom shape="circle" icon="plus-circle" map={map} />
 				<Zoom shape="circle" icon="minus-circle" style={{ top: 45 }} map={map} delta={-1} />
 				<ToolsBar>
-					<Popover
-						visible={this.state.visibleTool1}
-						placement="left"
-						content={popoverTool1(map)}
-						trigger="hover"
-					>
-						<Tooltip placement="leftTop" title="Herramientas de trazado">
-							<ToolsButtons shape="circle" onClick={this.showTool.bind(this, 1)}>
-								<ImgContent src={PencilMIco} alt="" />
-							</ToolsButtons>
-						</Tooltip>
-					</Popover>
-					<Popover
-						visible={this.state.visibleTool2}
-						placement="left"
-						content={popoverTool2(map)}
-						trigger="hover"
-					>
-						<Tooltip placement="leftTop" title="Herramientas de medición">
-							<ToolsButtons shape="circle" onClick={this.showTool.bind(this, 2)}>
-								<ImgContent src={MeasuringIco} alt="" />
-							</ToolsButtons>
-						</Tooltip>
-					</Popover>
 					<ToggleGroup>
-						<Digitize name="drawText" map={map} drawType="Text">
-							<Tooltip placement="leftTop" title="Textos">
-								<ToolsButtons shape="circle">
-									<ImgContent src={TextIco} alt="" />
-								</ToolsButtons>
+						<Digitize shape="circle" name="drawPoint" map={map} drawType="Point">
+							<Tooltip placement="leftTop" title="Dibujar Punto">
+								<ImgContent src={MapsIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
-						<Digitize name="selectAndModify" map={map} editType="Edit">
-							<Tooltip placement="leftTop" title="Selecciona y Modifica">
-								<ToolsButtons shape="circle">
-									<ImgContent src={SelectIco} alt="" />
-								</ToolsButtons>
+						<Digitize shape="circle" name="drawLine" map={map} drawType="LineString">
+							<Tooltip placement="leftTop" title="Dibujar Línea">
+								<ImgContent src={PencilIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
-						<Digitize name="copyFeature" map={map} editType="Copy">
-							<Tooltip placement="leftTop" title="Copiar">
-								<ToolsButtons shape="circle">
-									<ImgContent src={PapersIco} alt="" />
-								</ToolsButtons>
+						<Digitize shape="circle" name="drawPolygon" map={map} drawType="Polygon">
+							<Tooltip placement="leftTop" title="Dibujar Polígono">
+								<ImgContent src={PolygonIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
-						<Digitize name="deleteFeature" map={map} editType="Delete">
-							<Tooltip placement="leftTop" title="Eliminar">
-								<ToolsButtons shape="circle">
-									<ImgContent src={DeleteIco} alt="" />
-								</ToolsButtons>
+						<Digitize shape="circle" name="drawCircle" map={map} drawType="Circle">
+							<Tooltip placement="leftTop" title="Dibujar Círculo">
+								<ImgContent src={CompassIco} alt="" />
+							</Tooltip>
+						</Digitize>
+
+						<Digitize shape="circle" name="drawRectangle" map={map} drawType="Rectangle">
+							<Tooltip placement="leftTop" title="Dibujar Rectángulo">
+								<ImgContent src={FrameIco} alt="" />
+							</Tooltip>
+						</Digitize>
+
+						<Digitize name="drawText" map={map} drawType="Text" shape="circle" onClick={this.hideTool}>
+							<Tooltip placement="leftTop" title="Insertar Texto">
+								<ImgContent src={TextIco} alt="" />
+							</Tooltip>
+						</Digitize>
+						<SpaceDiv />
+						<Measure shape="circle" name="line" map={map} measureType="line">
+							<Tooltip placement="leftTop" title="Medir Distancia">
+								<ImgContent src={DistancedIco} alt="" />
+							</Tooltip>
+						</Measure>
+
+						<Measure
+							shape="circle"
+							name="steps"
+							map={map}
+							measureType="line"
+							showMeasureInfoOnClickedPoints
+						>
+							<Tooltip placement="leftTop" title="Medir Distancia por pasos">
+								<ImgContent src={DistanceIco} alt="" />
+							</Tooltip>
+						</Measure>
+
+						<Measure shape="circle" name="multi" map={map} measureType="line" multipleDrawing>
+							<Tooltip placement="leftTop" title="Medir Distancia multiples puntos">
+								<ImgContent src={DistancemIco} alt="" />
+							</Tooltip>
+						</Measure>
+
+						<Measure shape="circle" name="poly" map={map} measureType="polygon">
+							<Tooltip placement="leftTop" title="Medir Área">
+								<ImgContent src={AreaIco} alt="" />
+							</Tooltip>
+						</Measure>
+
+						<Measure shape="circle" name="angle" map={map} measureType="angle">
+							<Tooltip placement="leftTop" title="Medir Ángulo">
+								<ImgContent src={AngleIco} alt="" />
+							</Tooltip>
+						</Measure>
+						<SpaceDiv />
+						<Digitize
+							name="selectAndModify"
+							map={map}
+							editType="Edit"
+							shape="circle"
+							onClick={this.hideTool}
+						>
+							<Tooltip placement="leftTop" title="Modificar característica">
+								<ImgContent src={SelectIco} alt="" />
+							</Tooltip>
+						</Digitize>
+
+						<Digitize shape="circle" onClick={this.hideTool} name="copyFeature" map={map} editType="Copy">
+							<Tooltip placement="leftTop" title="Copiar característica">
+								<ImgContent src={PapersIco} alt="" />
+							</Tooltip>
+						</Digitize>
+
+						<Digitize
+							shape="circle"
+							onClick={this.hideTool}
+							name="deleteFeature"
+							map={map}
+							editType="Delete"
+						>
+							<Tooltip placement="leftTop" title="Eliminar característica">
+								<ImgContent src={DeleteIco} alt="" />
 							</Tooltip>
 						</Digitize>
 					</ToggleGroup>

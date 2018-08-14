@@ -17,9 +17,6 @@ import OlFill from 'ol/style/fill';
 import OlStyle from 'ol/style/style';
 import OlCircle from 'ol/style/circle';
 
-import OlExtent from 'ol/extent';
-import OlHas from 'ol/has';
-
 import Tools from './Tools';
 // import CircleMenu from './CircleMenu';
 import Modules, { getModelByJson } from './../data/index';
@@ -72,8 +69,6 @@ class MapContainer extends React.Component {
 		properties: null,
 		interaction: null
 	};
-
-
 
 	changeState = (feature, model, select) => {
 		const { interaction } = this.state;
@@ -277,12 +272,6 @@ class MapContainer extends React.Component {
 		return (
 			<Div>
 				<MapWrapper map={map} />
-				{/* <div
-					id="agroMap"
-					style={{
-						height: '100vh'
-					}}
-				/> */}
 				<Tools map={map} />
 				<Drawer
 					width={500}
