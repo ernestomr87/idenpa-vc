@@ -32,7 +32,7 @@ const LogoContainer = styled.div`
 
 class Visor extends Component {
 	state = {
-		visible: false
+		visible: true
 	};
 
 	showDrawer = () => {
@@ -56,7 +56,7 @@ class Visor extends Component {
 					<LogoContainer>
 						<LogoImg src={Logo} alt="" />
 						<Span>
-							AGRO <small style={{ color: '#5b784d', margin: '0px 0px 0px -10px' }}>map</small>
+							IDE <small style={{ color: '#5b784d', margin: '0px 0px 0px -10px' }}>vc</small>
 						</Span>
 					</LogoContainer>
 				</Content>

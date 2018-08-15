@@ -27,21 +27,23 @@ const ListWrapper = styled(List)`
 export class Legend extends Component {
 	render() {
 		const { layers, drawer } = this.props;
-		console.log(layers);
+
 		return (
 			<LegendDiv drawer={drawer}>
-				<ListWrapper
-					size="small"
-					dataSource={layers}
-					renderItem={(item) => {
-						return (
-							<List.Item>
-								<ColorDiv style={{ backgroundColor: item.item.color }} />
-								{item.item.name}
-							</List.Item>
-						);
-					}}
-				/>
+				{layers.length ? (
+					<ListWrapper
+						size="small"
+						dataSource={layers}
+						renderItem={(item) => {
+							return (
+								<List.Item>
+									<ColorDiv style={{ backgroundColor: item.item.color }} />
+									{item.item.name}
+								</List.Item>
+							);
+						}}
+					/>
+				) : null}
 			</LegendDiv>
 		);
 	}

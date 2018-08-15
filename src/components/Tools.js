@@ -35,13 +35,15 @@ const ImgContent = styled.img`
 const ToolsBar = styled.div`
 	position: absolute;
 	bottom: 10px;
-	right: 8px;
-	width: 30px;
+	right: 100px;
+	height: 30px;
 `;
 const Digitize = styled(DigitizeButton)`
 	&.ant-btn{
 		background-color: rgba(0,0,0,0.6);
 		margin: 1px 0;
+		width: 30px;
+    	height: 30px;
 	}
 
 `;
@@ -49,6 +51,8 @@ const Measure = styled(MeasureButton)`
 	&.ant-btn{
 		background-color: rgba(0,0,0,0.6);
 		margin: 1px 0;
+		width: 30px;
+    	height: 30px;
 	}
 `;
 
@@ -90,51 +94,51 @@ export class Tools extends Component {
 	};
 
 	render() {
-		const { map } = this.props;
+		const { map, drawer } = this.props;
 		return (
 			<div>
-				<Zoom shape="circle" icon="plus-circle" map={map} />
-				<Zoom shape="circle" icon="minus-circle" style={{ top: 45 }} map={map} delta={-1} />
+				<Zoom drawer={drawer} shape="circle" icon="plus-circle" map={map} />
+				<Zoom drawer={drawer} shape="circle" icon="minus-circle" style={{ top: 45 }} map={map} delta={-1} />
 				<ToolsBar>
-					<ToggleGroup>
+					<ToggleGroup orientation="horizontal-toggle-group">
 						<Digitize shape="circle" name="drawPoint" map={map} drawType="Point">
-							<Tooltip placement="leftTop" title="Dibujar Punto">
+							<Tooltip placement="top" title="Dibujar Punto">
 								<ImgContent src={MapsIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
 						<Digitize shape="circle" name="drawLine" map={map} drawType="LineString">
-							<Tooltip placement="leftTop" title="Dibujar Línea">
+							<Tooltip placement="top" title="Dibujar Línea">
 								<ImgContent src={PencilIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
 						<Digitize shape="circle" name="drawPolygon" map={map} drawType="Polygon">
-							<Tooltip placement="leftTop" title="Dibujar Polígono">
+							<Tooltip placement="top" title="Dibujar Polígono">
 								<ImgContent src={PolygonIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
 						<Digitize shape="circle" name="drawCircle" map={map} drawType="Circle">
-							<Tooltip placement="leftTop" title="Dibujar Círculo">
+							<Tooltip placement="top" title="Dibujar Círculo">
 								<ImgContent src={CompassIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
 						<Digitize shape="circle" name="drawRectangle" map={map} drawType="Rectangle">
-							<Tooltip placement="leftTop" title="Dibujar Rectángulo">
+							<Tooltip placement="top" title="Dibujar Rectángulo">
 								<ImgContent src={FrameIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
 						<Digitize name="drawText" map={map} drawType="Text" shape="circle" onClick={this.hideTool}>
-							<Tooltip placement="leftTop" title="Insertar Texto">
+							<Tooltip placement="top" title="Insertar Texto">
 								<ImgContent src={TextIco} alt="" />
 							</Tooltip>
 						</Digitize>
 						<SpaceDiv />
 						<Measure shape="circle" name="line" map={map} measureType="line">
-							<Tooltip placement="leftTop" title="Medir Distancia">
+							<Tooltip placement="top" title="Medir Distancia">
 								<ImgContent src={DistancedIco} alt="" />
 							</Tooltip>
 						</Measure>
@@ -146,25 +150,25 @@ export class Tools extends Component {
 							measureType="line"
 							showMeasureInfoOnClickedPoints
 						>
-							<Tooltip placement="leftTop" title="Medir Distancia por pasos">
+							<Tooltip placement="top" title="Medir Distancia por pasos">
 								<ImgContent src={DistanceIco} alt="" />
 							</Tooltip>
 						</Measure>
 
 						<Measure shape="circle" name="multi" map={map} measureType="line" multipleDrawing>
-							<Tooltip placement="leftTop" title="Medir Distancia multiples puntos">
+							<Tooltip placement="top" title="Medir Distancia multiples puntos">
 								<ImgContent src={DistancemIco} alt="" />
 							</Tooltip>
 						</Measure>
 
 						<Measure shape="circle" name="poly" map={map} measureType="polygon">
-							<Tooltip placement="leftTop" title="Medir Área">
+							<Tooltip placement="top" title="Medir Área">
 								<ImgContent src={AreaIco} alt="" />
 							</Tooltip>
 						</Measure>
 
 						<Measure shape="circle" name="angle" map={map} measureType="angle">
-							<Tooltip placement="leftTop" title="Medir Ángulo">
+							<Tooltip placement="top" title="Medir Ángulo">
 								<ImgContent src={AngleIco} alt="" />
 							</Tooltip>
 						</Measure>
@@ -176,13 +180,13 @@ export class Tools extends Component {
 							shape="circle"
 							onClick={this.hideTool}
 						>
-							<Tooltip placement="leftTop" title="Modificar característica">
+							<Tooltip placement="top" title="Modificar característica">
 								<ImgContent src={SelectIco} alt="" />
 							</Tooltip>
 						</Digitize>
 
 						<Digitize shape="circle" onClick={this.hideTool} name="copyFeature" map={map} editType="Copy">
-							<Tooltip placement="leftTop" title="Copiar característica">
+							<Tooltip placement="top" title="Copiar característica">
 								<ImgContent src={PapersIco} alt="" />
 							</Tooltip>
 						</Digitize>
@@ -194,7 +198,7 @@ export class Tools extends Component {
 							map={map}
 							editType="Delete"
 						>
-							<Tooltip placement="leftTop" title="Eliminar característica">
+							<Tooltip placement="top" title="Eliminar característica">
 								<ImgContent src={DeleteIco} alt="" />
 							</Tooltip>
 						</Digitize>

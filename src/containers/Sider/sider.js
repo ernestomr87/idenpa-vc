@@ -153,6 +153,7 @@ class Sider extends Component {
 					visible={visible}
 					maskClosable={false}
 					mask={false}
+					style={{ boxShadow: '0 2px 8px #f0f1f2' }}
 				>
 					<Row>
 						<Col xs={4} style={{ margin: '0 4px' }}>

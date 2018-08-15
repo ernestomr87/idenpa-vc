@@ -1,11 +1,12 @@
 import React from 'react';
-import { Drawer, message, Table } from 'antd';
+import { Drawer, message, Table, Card } from 'antd';
 import styled from 'styled-components';
 import OlFormatGeoJSON from 'ol/format/geojson';
 import OlInteractionSelect from 'ol/interaction/select';
 import { IrrigationImg, MoneyBagImg, TractorImg, CoastImg, CareImg } from './Icons';
 import { MapComponent } from '@terrestris/react-geo';
 import OlSourceOsm from 'ol/source/osm';
+import OlSourceBingMaps from 'ol/source/bingmaps';
 import OlSourceVector from 'ol/source/vector';
 import OlLayerTile from 'ol/layer/tile';
 import OlLayerVector from 'ol/layer/vector';
@@ -22,6 +23,8 @@ import Legend from './Legend';
 // import CircleMenu from './CircleMenu';
 import colors from './colors';
 import Modules, { getModelByJson } from './../data/index';
+import SateliteImg from './satelite.png';
+import MapaImg from './mapa.png';
 
 import './../react-geo.css';
 
@@ -33,6 +36,13 @@ const MapWrapper = styled(MapComponent)`
 
 const layer = new OlLayerTile({
 	source: new OlSourceOsm()
+});
+
+const satelite = new OlLayerTile({
+	source: new OlSourceBingMaps({
+		key: 'AifwTHqYsEbvQy6u9dXXiG22H45XSZaCe22JdZmpuwDvWLxtqTjmcN5Br5DueBBA',
+		imagerySet: 'AerialWithLabels'
+	})
 });
 
 const map = new OlMap({
@@ -67,6 +77,19 @@ const TableWrapper = styled(Table)`
 		padding: 0px 0px !important;
 	}
 `;
+const CardWrapper = styled(Card)`
+	&.ant-card{
+		position: absolute;
+		bottom: 10px;
+		right: 8px;
+		width: 74px;
+		height: 74px;
+		padding: 0;
+		margin: 0;
+		cursor:pointer;
+		background-image: ${(props) => (props.map === 0 ? `url(${SateliteImg})` : `url(${MapaImg})`)};
+	}
+`;
 
 /* eslint-disable react/prefer-stateless-function */
 class MapContainer extends React.Component {
@@ -77,7 +100,8 @@ class MapContainer extends React.Component {
 		module: null,
 		visible: false,
 		properties: null,
-		interaction: null
+		interaction: null,
+		typeMap: 0 //		0->normal map 1->satelite map
 	};
 
 	changeState = (feature, model, select) => {
@@ -120,6 +144,21 @@ class MapContainer extends React.Component {
 		return;
 	};
 
+	changeMap = () => {
+		let layers = map.getLayers();
+		if (layers.getArray().includes(layer)) {
+			// map.addLayer(satelite);
+			layers.insertAt(0, satelite);
+			map.removeLayer(layer);
+			this.setState({ typeMap: 1 });
+		} else if (layers.getArray().includes(satelite)) {
+			// map.addLayer(layer);
+			layers.insertAt(0, layer);
+			map.removeLayer(satelite);
+			this.setState({ typeMap: 0 });
+		}
+	};
+
 	addLayer = (array) => {
 		let nlayers = this.state.layers;
 		let diff;
@@ -150,21 +189,21 @@ class MapContainer extends React.Component {
 		let color = colors.shift();
 		const styleF = new OlStyle({
 			fill: new OlFill({
-				color: '#fff'
+				color: color
 			}),
 			stroke: new OlStroke({
 				color: color
 			}),
-			width: 3,
+			width: 4,
 			image: new OlCircle({
 				radius: 5,
 				fill: new OlFill({
-					color: '#fff'
+					color: color
 				}),
 				stroke: new OlStroke({
 					color: color
 				}),
-				width: 3
+				width: 4
 			})
 		});
 		aux.setStyle(styleF);
@@ -284,8 +323,13 @@ class MapContainer extends React.Component {
 		return (
 			<Div>
 				<MapWrapper map={map} />
-				<Tools map={map} />
+				<Tools map={map} drawer={this.props.drawer} />
 				<Legend layers={this.state.layers} drawer={this.props.drawer} />
+				<CardWrapper
+					map={this.state.typeMap}
+					onClick={this.changeMap}
+					style={{ boxShadow: '0 2px 8px #f0f1f2' }}
+				/>
 				<Drawer
 					width={500}
 					placement="right"
