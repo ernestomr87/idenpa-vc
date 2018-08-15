@@ -150,10 +150,21 @@ class MapContainer extends React.Component {
 		let color = colors.shift();
 		const styleF = new OlStyle({
 			fill: new OlFill({
-				color: color
+				color: '#fff'
 			}),
 			stroke: new OlStroke({
 				color: color
+			}),
+			width: 3,
+			image: new OlCircle({
+				radius: 5,
+				fill: new OlFill({
+					color: '#fff'
+				}),
+				stroke: new OlStroke({
+					color: color
+				}),
+				width: 3
 			})
 		});
 		aux.setStyle(styleF);
