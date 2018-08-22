@@ -53,7 +53,7 @@ export const nomenclatureEstacionesBombeo = {
 	gasto_lxs: 'Gasto (L/s)',
 	potencia_kw: 'Potencia (Kw)',
 	area_ha: 'Área (ha)',
-	carga_m: 'Carga (m)',
+	carga_m: 'Carga (m)'
 };
 
 export const nomenclatureMaquinasPivot = {
@@ -69,23 +69,25 @@ export const nomenclatureMaquinasPivot = {
 };
 
 export const nomenclatureEntidadesInv = {
-	empresa: 'Empresa',
-	constructor: 'Constructor',
-	inversion: 'Inversión',
-	plan_ajustado_anual_mcuc: 'Plan ajustado anual (mcuc)',
-	plan_ajustado_anual_mp: 'Plan ajustado anual (mp)',
-	plan_consty_montaje_mcuc: 'Plan construcción y montaje (mcuc)',
-	plan_consty_montaje_mp: 'Plan construcción y montaje (mp)',
-	plan_equipos_mcuc: 'Plan equipos (mcuc)',
-	plan_equipos_mp: 'Plan equipos (mp)',
-	plan_otros_mcuc: 'Plan otros (mcuc)',
-	plan_otros_mp: 'Plan otros (mp)',
-	real_consty_montaje_mcuc: 'Real construcción y montaje (mcuc)',
-	real_consty_montaje_mp: 'Real construcción y montajes (mp)',
-	real_equipos_mcuc: 'Real equipos (mcuc)',
-	real_equipos_mp: 'Real equipos (mp)',
-	real_otros_mcuc: 'Real otros (mcuc)',
-	real_otros_mp: 'Real otros (mp)'
+	nombre: 'Nombre',
+	tipo: 'Tipo'
+	// empresa: 'Empresa',
+	// constructor: 'Constructor',
+	// inversion: 'Inversión',
+	// plan_ajustado_anual_mcuc: 'Plan ajustado anual (mcuc)',
+	// plan_ajustado_anual_mp: 'Plan ajustado anual (mp)',
+	// plan_consty_montaje_mcuc: 'Plan construcción y montaje (mcuc)',
+	// plan_consty_montaje_mp: 'Plan construcción y montaje (mp)',
+	// plan_equipos_mcuc: 'Plan equipos (mcuc)',
+	// plan_equipos_mp: 'Plan equipos (mp)',
+	// plan_otros_mcuc: 'Plan otros (mcuc)',
+	// plan_otros_mp: 'Plan otros (mp)',
+	// real_consty_montaje_mcuc: 'Real construcción y montaje (mcuc)',
+	// real_consty_montaje_mp: 'Real construcción y montajes (mp)',
+	// real_equipos_mcuc: 'Real equipos (mcuc)',
+	// real_equipos_mp: 'Real equipos (mp)',
+	// real_otros_mcuc: 'Real otros (mcuc)',
+	// real_otros_mp: 'Real otros (mp)'
 };
 
 export const nomenclatureObrasEjec = {
