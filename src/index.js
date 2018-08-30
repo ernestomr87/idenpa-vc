@@ -13,7 +13,6 @@ import enUS from 'antd/lib/locale-provider/en_US';
 import { IntlProvider } from 'react-intl';
 
 import App from './containers/App';
-// import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import configureStore from './store';
 

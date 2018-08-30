@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Layout } from 'antd';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 
 import Visor from '../Visor';
+import Dashboard from '../Dashboard';
 
 const { Content } = Layout;
 
@@ -15,7 +16,8 @@ class App extends Component {
 				<Helmet titleTemplate="%s | Fetch-Api-News" />
 				<Content>
 					<Switch>
-						<Route exact path="/" component={Visor} />
+						<Route path="/" component={Visor} />
+						<Route path="/dashboard" component={Dashboard} />
 					</Switch>
 				</Content>
 			</Layout>

@@ -23,6 +23,8 @@ import QuestionImg from './icons/question.svg';
 import SelectIco from './icons/select.svg';
 import TextIco from './icons/text.svg';
 import TractorImg from './icons/tractor.svg';
+import SpeedometerImg from './icons/speedometer.svg';
+import MapImg from './icons/map.svg';
 
 export default Logo;
 export {
@@ -49,5 +51,7 @@ export {
 	QuestionImg,
 	SelectIco,
 	TextIco,
-	TractorImg
+	TractorImg,
+	SpeedometerImg,
+	MapImg
 };

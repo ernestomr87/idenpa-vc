@@ -20,7 +20,7 @@ import OlCircle from 'ol/style/circle';
 
 import Tools from './Tools';
 import Legend from './Legend';
-// import CircleMenu from './CircleMenu';
+import EntitiesInv from './EntitiesInv';
 import colors from './colors';
 import Modules, { getModelByJson } from './../data/index';
 import SateliteImg from './satelite.png';
@@ -109,7 +109,6 @@ class MapContainer extends React.Component {
 
 		if (interaction) {
 			interaction.clear();
-			console.info('cleaning layer');
 		}
 		this.setState({
 			visible: true,
@@ -265,6 +264,7 @@ class MapContainer extends React.Component {
 
 	renderDataView = () => {
 		const { model, properties, dataLayer } = this.state;
+
 		const dataSource = [];
 		const columns = [
 			{
@@ -298,6 +298,9 @@ class MapContainer extends React.Component {
 						{dataLayer.layer}
 					</p>
 					<TableWrapper pagination={false} showHeader={false} dataSource={dataSource} columns={columns} />
+					{dataLayer && dataLayer.layer === 'Entidades Inversionistas' ? (
+						<EntitiesInv model={model} properties={properties} dataLayer={dataLayer} />
+					) : null}
 				</div>
 			);
 		}
@@ -323,7 +326,7 @@ class MapContainer extends React.Component {
 		return (
 			<Div>
 				<MapWrapper map={map} />
-				<Tools map={map} drawer={this.props.drawer} />
+				<Tools map={map} drawer={this.props.drawer.toString()} />
 				<Legend layers={this.state.layers} drawer={this.props.drawer} />
 				<CardWrapper
 					map={this.state.typeMap}

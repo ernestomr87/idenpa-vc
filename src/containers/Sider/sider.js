@@ -1,16 +1,32 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Layout, Tree, Icon, Row, Col, Button, Drawer, Tooltip, Divider, Radio, Alert, Badge } from 'antd';
+import {
+	Layout,
+	Tree,
+	Icon,
+	Row,
+	Col,
+	Button,
+	Drawer,
+	Tooltip,
+	Divider,
+	Radio,
+	Alert,
+	Badge,
+	Menu,
+	Breadcrumb
+} from 'antd';
 import { selectModules, addLayers, delLayers } from './actions';
 import makeSelectSider from './selectors';
 import Modules from './../../data/index';
 import React, { Component } from 'react';
 import reducer from './reducer';
 import saga from './saga';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import withReducer from '../../utils/withReducer';
 import withSaga from '../../utils/withSaga';
+import { bounceInLeft, bounceOutLeft, fadeInRight } from 'react-animations';
 
 import {
 	CareImg,
@@ -20,16 +36,34 @@ import {
 	MoneyBagImg,
 	PresentationImg,
 	QuestionImg,
-	TractorImg
+	TractorImg,
+	MapImg
 } from './../../components/Icons';
+
+import Logo from './../../components/Logo';
+
+const bounceInLeftAnimation = keyframes`${fadeInRight}`;
+const bounceOutLeftAnimation = keyframes`${bounceOutLeft}`;
 
 const { Content } = Layout;
 const TreeNode = Tree.TreeNode;
+
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 
 const TreeNodeWrapper = styled(TreeNode)`
 	.ant-tree-switcher{
 		display: none !important;
 	}`;
+
+const MenuWrapper = styled(Menu)`
+	&.ant-menu-inline .ant-menu-item:not(:last-child) {
+		margin: 0px;
+	}
+	&.ant-menu-inline .ant-menu-item{
+		margin: 0px;
+	}
+	`;
 
 const MenuUnfold = styled(Icon)`
 	&.anticon{
@@ -46,10 +80,22 @@ const MenuUnfold = styled(Icon)`
 	}	
 `;
 const ImgInversion = styled.img`
-	width: 25px;
-	height: 25px;
-	margin-top: -7px;
+	width: 20px;
+	height: 20px;
+	margin-top: -5px;
+	margin-right: 10px;
+	float: left;
 `;
+
+const ImgInversionV = styled.img`
+	width: 15px;
+	height: 15px;
+	margin-top: -2px;
+	margin-right: 3px;
+`;
+
+const Animate = styled.div`display: ${(props) => (props.visible ? 'block' : 'none')};`;
+
 const ImgSecondChoice = styled.img`
 	width: 20px;
 	height: 20px;
@@ -96,7 +142,9 @@ class Sider extends Component {
 		autoExpandParent: true,
 		checkedKeys: [],
 		selectedKeys: [],
-		submenu: 'rb_layers'
+		submenu: 'rb_layers',
+		view: 1,
+		display: 1
 	};
 
 	componentWillReceiveProps = (nextProps) => {
@@ -125,7 +173,14 @@ class Sider extends Component {
 	};
 
 	handleChangeModule = (string) => {
-		this.props.selectModule(string);
+		if (string !== 'map') {
+			if (string === 1) {
+				this.setState({ view: 1 });
+			} else {
+				this.setState({ view: 0 });
+				this.props.selectModule(string);
+			}
+		}
 	};
 
 	countLayers = (layer) => {
@@ -146,105 +201,94 @@ class Sider extends Component {
 					<MenuUnfold onClick={showDrawer} type="menu-unfold" />
 				</Content>
 				<Drawer
-					width={300}
 					placement="left"
 					closable={false}
 					onClose={onClose}
 					visible={visible}
 					maskClosable={false}
 					mask={false}
-					style={{ boxShadow: '0 2px 8px #f0f1f2' }}
+					style={{ boxShadow: '0 2px 8px #f0f1f2', padding: '10px 0 10px 0', height: '100%' }}
 				>
-					<Row>
-						<Col xs={4} style={{ margin: '0 4px' }}>
-							<Tooltip placement="bottom" title="Riego">
+					<Logo />
+					<Divider dashed style={{ margin: '10px 0' }} />
+
+					<Animate visible={this.state.view === 1}>
+						<MenuWrapper onClick={this.handleClick} mode="inline">
+							<Menu.Item key="1" onClick={this.handleChangeModule.bind(this, 'investments')}>
 								<Badge
-									count={
-										typeof layers['irrigation'] !== 'undefined' ? layers['irrigation'].length : 0
-									}
-								>
-									<Button
-										onClick={this.handleChangeModule.bind(this, 'irrigation')}
-										className={item === 'irrigation' ? 'active' : null}
-										shape="circle"
-										size="large"
-									>
-										<ImgInversion src={IrrigationImg} alt="" />
-									</Button>
-								</Badge>
-							</Tooltip>
-						</Col>
-						<Col xs={4} style={{ margin: '0 4px' }}>
-							<Tooltip placement="bottom" title="Inverciones">
-								<Badge
+									style={{ right: -30 }}
 									count={
 										typeof layers['investments'] !== 'undefined' ? layers['investments'].length : 0
 									}
 								>
-									<Button
-										onClick={this.handleChangeModule.bind(this, 'investments')}
-										className={item === 'investments' ? 'active' : null}
-										shape="circle"
-										size="large"
-									>
-										<ImgInversion src={MoneyBagImg} alt="" />
-									</Button>
+									<ImgInversion src={MoneyBagImg} alt="" />
+									<span>Inverciones</span>
 								</Badge>
-							</Tooltip>
-						</Col>
-						<Col xs={4} style={{ margin: '0 4px' }}>
-							<Tooltip placement="bottom" title="Maquinarias">
+							</Menu.Item>
+							<Menu.Item key="2" onClick={this.handleChangeModule.bind(this, 'irrigation')}>
 								<Badge
+									style={{ right: -30 }}
+									count={
+										typeof layers['irrigation'] !== 'undefined' ? layers['irrigation'].length : 0
+									}
+								>
+									<ImgInversion src={IrrigationImg} alt="" />
+									<span>Riego</span>
+								</Badge>
+							</Menu.Item>
+							<Menu.Item key="3" onClick={this.handleChangeModule.bind(this, 'machinery')}>
+								<Badge
+									style={{ right: -30 }}
 									count={typeof layers['machinery'] !== 'undefined' ? layers['machinery'].length : 0}
 								>
-									<Button
-										onClick={this.handleChangeModule.bind(this, 'machinery')}
-										className={item === 'machinery' ? 'active' : null}
-										shape="circle"
-										size="large"
-									>
-										<ImgInversion src={TractorImg} alt="" />
-									</Button>
+									<ImgInversion src={TractorImg} alt="" />
+									<span>Maquinarias</span>
 								</Badge>
-							</Tooltip>
-						</Col>
-						<Col xs={4} style={{ margin: '0 4px' }}>
-							<Tooltip placement="bottom" title="Costa Norte">
+							</Menu.Item>
+							<Menu.Item key="4" onClick={this.handleChangeModule.bind(this, 'northCoast')}>
 								<Badge
+									style={{ right: -30 }}
 									count={
 										typeof layers['northCoast'] !== 'undefined' ? layers['northCoast'].length : 0
 									}
 								>
-									<Button
-										onClick={this.handleChangeModule.bind(this, 'northCoast')}
-										className={item === 'northCoast' ? 'active' : null}
-										shape="circle"
-										size="large"
-									>
-										<ImgInversion src={CoastImg} alt="" />
-									</Button>
+									<ImgInversion src={CoastImg} alt="" />
+									<span>Costa Norte</span>
 								</Badge>
-							</Tooltip>
-						</Col>
-						<Col xs={4} style={{ margin: '0 4px' }}>
-							<Tooltip placement="bottom" title="Tarea Vida">
+							</Menu.Item>
+							<Menu.Item key="5" onClick={this.handleChangeModule.bind(this, 'lifeTask')}>
 								<Badge
+									style={{ right: -30 }}
 									count={typeof layers['lifeTask'] !== 'undefined' ? layers['lifeTask'].length : 0}
 								>
-									<Button
-										onClick={this.handleChangeModule.bind(this, 'lifeTask')}
-										className={item === 'lifeTask' ? 'active' : null}
-										shape="circle"
-										size="large"
-									>
-										<ImgInversion src={CareImg} alt="" />
-									</Button>
+									<ImgInversion src={CareImg} alt="" />
+									<span>Tarea Vida</span>
 								</Badge>
-							</Tooltip>
-						</Col>
-					</Row>
-					<Divider dashed />
-					<Row>
+							</Menu.Item>
+							<Divider dashed style={{ margin: '10px 0' }} />
+							<Menu.Item key="6" onClick={this.handleChangeModule.bind(this, 'map')}>
+								<Badge style={{ right: -30 }} count={0}>
+									<ImgInversion src={MapImg} alt="" />
+									<span>Añadir mapas/Nodos IDE</span>
+								</Badge>
+							</Menu.Item>
+						</MenuWrapper>
+					</Animate>
+					<Animate style={{ padding: 10 }} visible={this.state.view === 0}>
+						<Row style={{ marginBottom: 20 }}>
+							<Breadcrumb separator=">">
+								<Breadcrumb.Item onClick={this.handleChangeModule.bind(this, 1)}>
+									<a href="#" style={{ fontSize: 15 }}>
+										<Icon type="menu-fold" /> Menu
+									</a>
+								</Breadcrumb.Item>
+								<Breadcrumb.Item>
+									<a href="#" style={{ fontSize: 15 }}>
+										<ImgInversionV src={IrrigationImg} alt="" />Inverciones
+									</a>
+								</Breadcrumb.Item>
+							</Breadcrumb>
+						</Row>
 						{item && modules[item].length ? (
 							<Col>
 								<Radio.Group value={this.state.submenu} onChange={this.handleChangeSubMenu}>
@@ -268,9 +312,9 @@ class Sider extends Component {
 								</Tree>
 							</Col>
 						) : item ? (
-							<Alert message="No existe información para mostrar" type="info" showIcon />
+							<Alert message="No hay capas dispon" type="info" showIcon />
 						) : null}
-					</Row>
+					</Animate>
 					{visible ? <ButtonClose onClick={onClose} type="primary" shape="circle" icon="close" /> : null}
 				</Drawer>
 			</Layout>
