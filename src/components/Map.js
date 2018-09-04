@@ -7,7 +7,9 @@ import { IrrigationImg, MoneyBagImg, TractorImg, CoastImg, CareImg } from './Ico
 import { MapComponent } from '@terrestris/react-geo';
 import OlSourceOsm from 'ol/source/osm';
 import OlSourceBingMaps from 'ol/source/bingmaps';
+
 import OlSourceVector from 'ol/source/vector';
+import OlSourceXYS from 'ol/source/xyz';
 import OlLayerTile from 'ol/layer/tile';
 import OlLayerVector from 'ol/layer/vector';
 import OlView from 'ol/view';
@@ -34,25 +36,43 @@ const MapWrapper = styled(MapComponent)`
 	height: 100vh;
 `;
 
-const layer = new OlLayerTile({
-	source: new OlSourceOsm()
+// const layer = new OlLayerTile({
+// 	source: new OlSourceOsm()
+// });
+
+// const satelite = new OlLayerTile({
+// 	source: new OlSourceBingMaps({
+// 		key: 'AifwTHqYsEbvQy6u9dXXiG22H45XSZaCe22JdZmpuwDvWLxtqTjmcN5Br5DueBBA',
+// 		imagerySet: 'AerialWithLabels'
+// 	})
+// });
+
+var osm = new OlLayerTile({
+	name: 'tms',
+	projection: 'EPSG:4326',
+	source: new OlSourceXYS({
+		url: 'http://ide.enpa.minag.cu/geoserver/www/tms/2017/osmmapmapnik/{z}/{x}/{-y}.png'
+	}),
+	type: 'base'
 });
 
-const satelite = new OlLayerTile({
-	source: new OlSourceBingMaps({
-		key: 'AifwTHqYsEbvQy6u9dXXiG22H45XSZaCe22JdZmpuwDvWLxtqTjmcN5Br5DueBBA',
-		imagerySet: 'AerialWithLabels'
-	})
+var satelite = new OlLayerTile({
+	name: 'tms',
+	projection: 'EPSG:4326',
+	source: new OlSourceXYS({
+		url: 'http://ide.enpa.minag.cu/geoserver/www/tms/2017/sat/{z}/{x}/{-y}.jpg'
+	}),
+	type: 'base'
 });
 
 const map = new OlMap({
 	view: new OlView({
 		projection: 'EPSG:4326',
 		center: [ -80.009, 22.6083 ],
-		zoom: 9
+		zoom: 7
 	}),
 	controls: [],
-	layers: [ layer ]
+	layers: [ satelite ]
 });
 
 const pStyle = {
@@ -145,15 +165,14 @@ class MapContainer extends React.Component {
 
 	changeMap = () => {
 		let layers = map.getLayers();
-		if (layers.getArray().includes(layer)) {
-			// map.addLayer(satelite);
-			layers.insertAt(0, satelite);
-			map.removeLayer(layer);
-			this.setState({ typeMap: 1 });
-		} else if (layers.getArray().includes(satelite)) {
-			// map.addLayer(layer);
-			layers.insertAt(0, layer);
+		if (layers.getArray().includes(satelite)) {
+			layers.insertAt(0, osm);
 			map.removeLayer(satelite);
+			this.setState({ typeMap: 1 });
+		} else if (layers.getArray().includes(osm)) {
+			// map.addLayer(layer);
+			layers.insertAt(0, satelite);
+			map.removeLayer(osm);
 			this.setState({ typeMap: 0 });
 		}
 	};
