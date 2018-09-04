@@ -5,6 +5,7 @@ import northCoast from './northCoast';
 import lifeTask from './lifeTask';
 
 import * as nomenclature from './nomenclature';
+import nodes, { node_services, getLayersFromWmsCapabilties } from './nodes';
 
 const Modules = { irrigation, investments, machinery, northCoast, lifeTask };
 
@@ -27,4 +28,4 @@ const getModelByJson = (json) => {
 };
 
 export default Modules;
-export { getModelByJson };
+export { getModelByJson, nodes, node_services, getLayersFromWmsCapabilties };
