@@ -1,17 +1,19 @@
+import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Layout, Tree, Icon, Row, Col, Button, Select, Divider, Radio, Alert, Badge, Menu, Breadcrumb } from 'antd';
+import { Layout, Tree, Icon, Row, Col, Button, Divider, Radio, Alert, Badge, Menu, Breadcrumb } from 'antd';
+import styled from 'styled-components';
+
+import withReducer from '../../utils/withReducer';
+import withSaga from '../../utils/withSaga';
 
 import { selectModules, addLayers, delLayers } from './actions';
 import makeSelectSider from './selectors';
-import Modules from './../../data/index';
-import React, { Component } from 'react';
 import reducer from './reducer';
 import saga from './saga';
-import styled from 'styled-components';
-import withReducer from '../../utils/withReducer';
-import withSaga from '../../utils/withSaga';
+
+import Modules from './../../data/index';
 
 import {
 	CareImg,
@@ -27,7 +29,6 @@ import {
 
 import Logo from './../../components/Logo';
 const TreeNode = Tree.TreeNode;
-const Option = Select.Option;
 const { Sider } = Layout;
 
 const TreeNodeWrapper = styled(TreeNode)`
@@ -77,6 +78,13 @@ const SiderWrapper = styled(Sider)`
 	.ant-layout-sider-zero-width-trigger{
 		z-index: 2000;
 		top: 0px;
+	}
+`;
+
+const A = styled.a`
+	hover {
+		background-color: transparent;
+		color: #fff;
 	}
 `;
 
@@ -138,44 +146,44 @@ class SiderComponent extends Component {
 		switch (item) {
 			case 'investments':
 				aux = (
-					<a href="#" style={{ fontSize: 15 }}>
+					<A style={{ fontSize: 15 }}>
 						<ImgInversionV src={MoneyBagImg} alt="" />Inverciones
-					</a>
+					</A>
 				);
 				break;
 			case 'irrigation':
 				aux = (
-					<a href="#" style={{ fontSize: 15 }}>
+					<A style={{ fontSize: 15 }}>
 						<ImgInversionV src={IrrigationImg} alt="" />Riego
-					</a>
+					</A>
 				);
 				break;
 			case 'machinery':
 				aux = (
-					<a href="#" style={{ fontSize: 15 }}>
+					<A style={{ fontSize: 15 }}>
 						<ImgInversionV src={TractorImg} alt="" />Maquinarias
-					</a>
+					</A>
 				);
 				break;
 			case 'northCoast':
 				aux = (
-					<a href="#" style={{ fontSize: 15 }}>
+					<A style={{ fontSize: 15 }}>
 						<ImgInversionV src={CoastImg} alt="" />Costa Norte
-					</a>
+					</A>
 				);
 				break;
 			case 2:
 				aux = (
-					<a href="#" style={{ fontSize: 15 }}>
+					<A href="#" style={{ fontSize: 15 }}>
 						<ImgInversionV src={MapImg} alt="" />Nodos IDE
-					</a>
+					</A>
 				);
 				break;
 			default:
 				aux = (
-					<a href="#" style={{ fontSize: 15 }}>
+					<A style={{ fontSize: 15 }}>
 						<ImgInversionV src={CareImg} alt="" />Tarea Vida
-					</a>
+					</A>
 				);
 				break;
 		}
@@ -184,7 +192,7 @@ class SiderComponent extends Component {
 			<Row style={{ marginBottom: 20 }}>
 				<Breadcrumb separator=">">
 					<Breadcrumb.Item onClick={this.handleChangeModule.bind(this, 1)}>
-						<a href="#" style={{ fontSize: 15 }}>
+						<a style={{ fontSize: 15 }}>
 							<Icon type="menu-fold" /> Menu
 						</a>
 					</Breadcrumb.Item>
@@ -197,11 +205,12 @@ class SiderComponent extends Component {
 	render() {
 		const modules = Modules;
 		const { sider: { item, layers }, collapsed, onCollapse, showModal } = this.props;
-		console.log(item);
+
+		console.log(this.props);
 		return (
 			<SiderWrapper
 				width={250}
-				theme="light "
+				theme="light"
 				collapsedWidth={0}
 				collapsible
 				collapsed={collapsed}
@@ -210,7 +219,7 @@ class SiderComponent extends Component {
 				<Logo />
 				<Divider dashed style={{ margin: '5px 0 0 0' }} />
 				<Animate visible={this.state.view === 1}>
-					<MenuWrapper onClick={this.handleClick} mode="inline">
+					<MenuWrapper onClick={this.handleClick}>
 						<Menu.Item key="1" onClick={this.handleChangeModule.bind(this, 'investments')}>
 							<Badge
 								style={{ right: -30 }}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { ToggleGroup, DigitizeButton, MeasureButton, ZoomButton } from '@terrestris/react-geo';
-import { Tooltip, Popover, Button } from 'antd';
+import { Tooltip } from 'antd';
 
 import {
 	MapsIco,
@@ -14,8 +14,6 @@ import {
 	DistancemIco,
 	AreaIco,
 	AngleIco,
-	PencilMIco,
-	MeasuringIco,
 	TextIco,
 	SelectIco,
 	PapersIco,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { List, Badge } from 'antd';
+import { List } from 'antd';
 
 const LegendDiv = styled.div`
 	position: absolute;

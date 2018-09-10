@@ -15,7 +15,7 @@ const getModelByJson = (json) => {
 	let layer = null;
 	Object.keys(Modules).forEach(function(key) {
 		const select = Modules[key].filter((mitem) => {
-			if (mitem.json === json) return mitem;
+			return mitem.json === json ? mitem : null;
 		});
 		if (select.length) {
 			model = select[0].nomenclature;

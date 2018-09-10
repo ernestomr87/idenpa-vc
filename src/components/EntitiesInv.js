@@ -1,9 +1,8 @@
 import React from 'react';
-import { Timeline, message, Icon, Col, Row, Divider, Table, List } from 'antd';
+import { Timeline, message, Icon, Col, Row, List } from 'antd';
 import axios from 'axios';
 
-const { Column, ColumnGroup } = Table;
-const API = 'http://192.168.1.112:3001';
+const API = 'http://192.168.0.10:3001';
 
 export class EntitiesInv extends React.Component {
 	state = {
@@ -50,20 +49,7 @@ export class EntitiesInv extends React.Component {
 
 	render() {
 		const { items } = this.state;
-		const columns = [
-			{
-				title: 'Nombre',
-				dataIndex: 'nombre_inversion'
-			},
-			{
-				title: 'OSDE',
-				dataIndex: 'osde'
-			},
-			{
-				title: 'Programa',
-				dataIndex: 'programa'
-			}
-		];
+
 		return (
 			<div>
 				<h4 style={{ margin: '20px 0 20px 0' }}>Inversiones planificadas por año</h4>

@@ -5,8 +5,6 @@ import OlFormatGeoJSON from 'ol/format/geojson';
 import OlInteractionSelect from 'ol/interaction/select';
 import { IrrigationImg, MoneyBagImg, TractorImg, CoastImg, CareImg } from './Icons';
 import { MapComponent } from '@terrestris/react-geo';
-import OlSourceOsm from 'ol/source/osm';
-import OlSourceBingMaps from 'ol/source/bingmaps';
 
 import OlSourceVector from 'ol/source/vector';
 import OlSourceXYS from 'ol/source/xyz';
@@ -35,17 +33,6 @@ const Div = styled.div`height: 100vh;`;
 const MapWrapper = styled(MapComponent)`
 	height: 100vh;
 `;
-
-// const layer = new OlLayerTile({
-// 	source: new OlSourceOsm()
-// });
-
-// const satelite = new OlLayerTile({
-// 	source: new OlSourceBingMaps({
-// 		key: 'AifwTHqYsEbvQy6u9dXXiG22H45XSZaCe22JdZmpuwDvWLxtqTjmcN5Br5DueBBA',
-// 		imagerySet: 'AerialWithLabels'
-// 	})
-// });
 
 var osm = new OlLayerTile({
 	name: 'tms',
