@@ -1,21 +1,55 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
-import { addNodeAction, removeNodeAction } from './actions';
+import { addNodeRequest, addNodeResponse } from './actions';
+
+import { CapabilitiesUtil } from '@terrestris/react-geo';
+import OlFormatCapabilities from 'ol/format/wmscapabilities';
+import { getLayersFromWmsCapabilties } from './../../data/index';
+
+const loading = handleActions(
+	{
+		[addNodeRequest]() {
+			return true;
+		},
+		[addNodeResponse]() {
+			return false;
+		}
+	},
+	false
+);
 
 const nodes = handleActions(
 	{
-		[addNodeAction](state, action) {
-			let aux = {};
-			aux[action.payload.item] = action.payload.checkedKeys;
-			return Object.assign({}, state, aux);
+		[addNodeRequest](state) {
+			return state;
 		},
-		[removeNodeAction](state, action) {
-			return action.error ? state : state.concat(action.payload);
+
+		[addNodeResponse](state, action) {
+			if (!action.error) {
+				let wmsCapabilitiesParser = new OlFormatCapabilities();
+				return getLayersFromWmsCapabilties(wmsCapabilitiesParser.read(action.payload));
+			}
+			return action.error ? state : action.payload;
 		}
 	},
 	[]
 );
 
+const error = handleActions(
+	{
+		[addNodeRequest]() {
+			return false;
+		},
+
+		[addNodeResponse](state, action) {
+			return action.error ? action.payload : false;
+		}
+	},
+	false
+);
+
 export default combineReducers({
-	nodes
+	nodes,
+	loading,
+	error
 });

@@ -1,2 +1,5 @@
-export const ADD_NODE = 'app/Visor/ADD_NODE';
-export const REMOVE_NODE = 'app/Visor/REMOVE_NODE';
+export const ADD_NODE_REQUEST = 'app/Visor/ADD_NODE_REQUEST';
+export const ADD_NODE_RESPONSE = 'app/Visor/ADD_NODE_RESPONSE';
+
+export const REMOVE_NODE_REQUEST = 'app/Visor/REMOVE_NODE_REQUEST';
+export const REMOVE_NODE_RESPONSE = 'app/Visor/REMOVE_NODE_RESPONSE';

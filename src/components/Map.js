@@ -94,7 +94,7 @@ const CardWrapper = styled(Card)`
 		padding: 0;
 		margin: 0;
 		cursor:pointer;
-		background-image: ${(props) => (props.map === 0 ? `url(${SateliteImg})` : `url(${MapaImg})`)};
+		background-image: ${(props) => (props.map !== 0 ? `url(${SateliteImg})` : `url(${MapaImg})`)};
 	}
 `;
 

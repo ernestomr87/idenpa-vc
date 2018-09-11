@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
 import { Layout, Modal, Form, Input, Select, Tabs, Button, Row, Col, Icon } from 'antd';
-import { CapabilitiesUtil } from '@terrestris/react-geo';
 
 import reducer from './reducer';
 import saga from './saga';
@@ -13,20 +12,16 @@ import withSaga from '../../utils/withSaga';
 
 import makeSelectSider from './../Sider/selectors';
 import makeSelectVisor from './selectors';
-import { addNodeAction } from './actions';
+import { addNodeRequest, addNodeResponse } from './actions';
 
 import Map from './../../components/Map.js';
 import Sider from './../Sider';
-import { nodes, node_services, getLayersFromWmsCapabilties } from './../../data/index';
+import { nodes, node_services } from './../../data/index';
 
 const { Content } = Layout;
 const FormItem = Form.Item;
 const Option = Select.Option;
 const { TabPane } = Tabs;
-
-function hasErrors(fieldsError) {
-	return Object.keys(fieldsError).some((field) => fieldsError[field]);
-}
 
 const FormItemWrapper = styled(FormItem)`
 	width: 100%;
@@ -45,6 +40,12 @@ class Visor extends Component {
 		node: 0
 	};
 
+	componentWillReceiveProps = (nextProps) => {
+		if (!nextProps.visor.loading && this.props.visor.loading) {
+			this.hideModal();
+		}
+	};
+
 	onCollapse = (collapsed) => {
 		console.log(collapsed);
 		this.setState({ collapsed });
@@ -56,15 +57,7 @@ class Visor extends Component {
 		});
 	};
 
-	handleOk = (e) => {
-		console.log(e);
-		this.setState({
-			visible: false
-		});
-	};
-
-	handleCancel = (e) => {
-		console.log(e);
+	hideModal = () => {
 		this.setState({
 			visible: false
 		});
@@ -80,29 +73,21 @@ class Visor extends Component {
 	};
 
 	handleChange = (value) => {
-		console.log(value);
+		this.setState({
+			node: value
+		});
 	};
 
 	addNodo = () => {
-		const _this = this;
-		const { nodo } = this.state;
-		let nodoUrl = `${nodo}${nodes.node_services}`;
-		CapabilitiesUtil.parseWmsCapabilities(nodoUrl)
-			.then((response) => {
-				let nlayers = getLayersFromWmsCapabilties(response);
-				_this.setState({
-					layers: nlayers
-				});
-			})
-			.catch(() => alert('Could not parse capabilities document.'));
+		const { node } = this.state;
+
+		let nodeUrl = `${nodes[node].url}${node_services}`;
+		this.props.addNodeReq({ nodeUrl });
 	};
 
 	render() {
-		const { sider: { layers } } = this.props;
-		const { getFieldDecorator, getFieldsError, getFieldError, isFieldTouched } = this.props.form;
-
-		// Only show error after a field is touched.
-		const nodeUrlError = isFieldTouched('nodeUrl') && getFieldError('nodeUrl');
+		const { sider: { layers }, visor: { loading } } = this.props;
+		const { getFieldDecorator } = this.props.form;
 
 		const nodesOptions = nodes.map((item, index) => (
 			<Option key={item.name} value={index}>
@@ -138,7 +123,7 @@ class Visor extends Component {
 									</Select>
 								</Col>
 								<Col xs={24} sm={4}>
-									<Button icon="plus" type="primary" onClick={this.addNodo} />
+									<Button icon="plus" type="primary" loading={loading} onClick={this.addNodo} />
 								</Col>
 							</Row>
 						</TabPane>
@@ -178,8 +163,10 @@ Visor.defaultProps = {
 		item: null,
 		layers: []
 	},
-	sider: {
-		nodes: []
+	visor: {
+		nodes: [],
+		loading: false,
+		error: false
 	}
 };
 
@@ -191,11 +178,10 @@ const mapStateToProps = createStructuredSelector({
 });
 
 const withConnect = connect(mapStateToProps, {
-	addNode: addNodeAction
+	addNodeReq: addNodeRequest,
+	addNodeRes: addNodeResponse
 });
 
 export default compose(withConnect, withSaga({ key: 'visor', saga }), withReducer({ key: 'visor', reducer }))(
 	Form.create()(Visor)
 );
-
-// export default compose(Form.create()(Visor));

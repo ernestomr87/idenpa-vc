@@ -1,5 +1,5 @@
 import { createAction } from 'redux-actions';
-import { ADD_NODE, REMOVE_NODE } from './constants';
+import { ADD_NODE_REQUEST, ADD_NODE_RESPONSE } from './constants';
 
-export const addNodeAction = createAction(ADD_NODE);
-export const removeNodeAction = createAction(REMOVE_NODE);
+export const addNodeRequest = createAction(ADD_NODE_REQUEST);
+export const addNodeResponse = createAction(ADD_NODE_RESPONSE);
