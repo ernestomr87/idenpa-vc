@@ -5,12 +5,16 @@ import { addNodeResponse } from './actions';
 import { loadNode } from './api';
 
 function* addNode(action) {
+	let nodeUrl = action.payload.nodeUrl;
+	let title = action.payload.title;
+	const hide = message.loading(`Adicionando nodo "${title}"`, 0);
+
 	try {
-		let nodeUrl = action.payload.nodeUrl;
 		const { data } = yield call(loadNode, nodeUrl);
-		console.log(data);
-		yield put(addNodeResponse(data));
+		yield put(addNodeResponse({ data, title }));
+		setTimeout(hide, 0);
 	} catch (error) {
+		setTimeout(hide, 0);
 		message.error(error.message);
 		yield put(addNodeResponse(error));
 	}

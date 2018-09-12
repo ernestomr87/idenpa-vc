@@ -27,9 +27,14 @@ const nodes = handleActions(
 		[addNodeResponse](state, action) {
 			if (!action.error) {
 				let wmsCapabilitiesParser = new OlFormatCapabilities();
-				return getLayersFromWmsCapabilties(wmsCapabilitiesParser.read(action.payload));
+				let node = {
+					title: action.payload.title,
+					key: action.payload.title,
+					children: getLayersFromWmsCapabilties(wmsCapabilitiesParser.read(action.payload.data))
+				};
+				return state.concat(node);
 			}
-			return action.error ? state : action.payload;
+			return state;
 		}
 	},
 	[]

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Layout, Tree, Icon, Row, Col, Button, Divider, Radio, Alert, Badge, Menu, Breadcrumb } from 'antd';
+import { Layout, Tree, Icon, Row, Col, Button, Divider, Radio, Alert, Badge, Menu, Breadcrumb, Modal } from 'antd';
 import styled from 'styled-components';
 
 import withReducer from '../../utils/withReducer';
@@ -24,7 +24,8 @@ import {
 	PresentationImg,
 	QuestionImg,
 	TractorImg,
-	MapImg
+	MapImg,
+	LinkImg
 } from './../../components/Icons';
 
 import Logo from './../../components/Logo';
@@ -34,6 +35,12 @@ const { Sider } = Layout;
 const TreeNodeWrapper = styled(TreeNode)`
 	.ant-tree-switcher{
 		display: none !important;
+	}`;
+
+const ModalWrapper = styled(Modal)`
+	.ant-modal-body{
+		max-height: 300px;
+		overflow: auto;
 	}`;
 
 const MenuWrapper = styled(Menu)`
@@ -96,7 +103,9 @@ class SiderComponent extends Component {
 		selectedKeys: [],
 		submenu: 'rb_layers',
 		view: 1,
-		layers: []
+		layers: [],
+		modalVisible: false,
+		selectNode: null
 	};
 
 	componentWillReceiveProps = (nextProps) => {
@@ -117,6 +126,20 @@ class SiderComponent extends Component {
 		if (!item) return;
 		return data[item].map((item, index) => {
 			return <TreeNodeWrapper title={item.name} key={item.name} dataRef={item} />;
+		});
+	};
+
+	renderTreeNodesUrl = (data) => {
+		return data.map((item) => {
+			if (item.children) {
+				return (
+					<TreeNode title={item.title} key={item.key} dataRef={item}>
+						{this.renderTreeNodesUrl(item.children)}
+					</TreeNode>
+				);
+			} else {
+				return <TreeNode {...item} />;
+			}
 		});
 	};
 
@@ -202,11 +225,32 @@ class SiderComponent extends Component {
 		);
 	};
 
+	handleLoad = (e) => {
+		console.log(e);
+		this.setState({
+			modalVisible: false
+		});
+	};
+
+	handleCancel = (e) => {
+		console.log(e);
+		this.setState({
+			modalVisible: false
+		});
+	};
+
+	showModal = (node) => {
+		this.setState({
+			selectNode: node,
+			modalVisible: true
+		});
+	};
+
 	render() {
 		const modules = Modules;
-		const { sider: { item, layers }, collapsed, onCollapse, showModal } = this.props;
+		const { sider: { item, layers }, collapsed, onCollapse, showModal, nodes } = this.props;
+		const { modalVisible, selectNode } = this.state;
 
-		console.log(this.props);
 		return (
 			<SiderWrapper
 				width={250}
@@ -272,6 +316,22 @@ class SiderComponent extends Component {
 								<span>Añadir mapas/Nodos IDE</span>
 							</Button>
 						</Badge>
+
+						{nodes.map((item, index) => {
+							return (
+								<Menu.Item key={6 + index} onClick={this.showModal.bind(this, item)}>
+									<Badge
+										style={{ right: -30 }}
+										count={
+											typeof layers['lifeTask'] !== 'undefined' ? layers['lifeTask'].length : 0
+										}
+									>
+										<ImgInversion src={LinkImg} alt="" />
+										<span>{item.title}</span>
+									</Badge>
+								</Menu.Item>
+							);
+						})}
 					</MenuWrapper>
 				</Animate>
 				<Animate style={{ padding: 10 }} visible={this.state.view === 0}>
@@ -303,6 +363,16 @@ class SiderComponent extends Component {
 						<Alert message="No hay capas disponibles" type="info" showIcon />
 					) : null}
 				</Animate>
+				<ModalWrapper
+					cancelText="Cancelar"
+					okText="Cargar"
+					title={selectNode ? selectNode.title : ''}
+					visible={modalVisible}
+					onOk={this.handleLoad}
+					onCancel={this.handleCancel}
+				>
+					{selectNode ? <Tree checkable>{this.renderTreeNodesUrl(selectNode.children)}</Tree> : null}
+				</ModalWrapper>
 			</SiderWrapper>
 		);
 	}

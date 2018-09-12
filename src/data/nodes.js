@@ -68,27 +68,33 @@ const nodes = [
 
 const buildTree = (layer, data) => {
 	if (!layer.Layer) {
-		return new OlLayerImage({
-			opacity: 1,
+		let aux = {
 			title: layer.Title,
-			name: layer.name,
-			abstract: layer.Abstract,
-			getFeatureInfoUrl: data.getFeatureInfoUrl,
-			getFeatureInfoFormats: data.wmsGetFeatureInfoConfig.Format,
-			queryable: layer.queryable,
-			source: new OlImageWms({
-				url: data.getMapUrl,
-				attributions: data.wmsAttribution,
-				params: {
-					LAYERS: layer.Name,
-					VERSION: data.wmsVersion
-				}
+			key: layer.Title,
+			layer: new OlLayerImage({
+				title: layer.Title,
+				opacity: 1,
+				name: layer.name,
+				abstract: layer.Abstract,
+				getFeatureInfoUrl: data.getFeatureInfoUrl,
+				getFeatureInfoFormats: data.wmsGetFeatureInfoConfig.Format,
+				queryable: layer.queryable,
+				source: new OlImageWms({
+					url: data.getMapUrl,
+					attributions: data.wmsAttribution,
+					params: {
+						LAYERS: layer.Name,
+						VERSION: data.wmsVersion
+					}
+				})
 			})
-		});
+		};
+		return aux;
 	} else {
 		let aux = {
 			title: layer.Title,
-			layers: layer.Layer.map((item) => {
+			key: layer.Title,
+			children: layer.Layer.map((item) => {
 				return buildTree(item, data);
 			})
 		};

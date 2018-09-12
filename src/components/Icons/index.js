@@ -25,6 +25,7 @@ import TextIco from './icons/text.svg';
 import TractorImg from './icons/tractor.svg';
 import SpeedometerImg from './icons/speedometer.svg';
 import MapImg from './icons/map.svg';
+import LinkImg from './icons/link.svg';
 
 export default Logo;
 export {
@@ -53,5 +54,6 @@ export {
 	TextIco,
 	TractorImg,
 	SpeedometerImg,
-	MapImg
+	MapImg,
+	LinkImg
 };

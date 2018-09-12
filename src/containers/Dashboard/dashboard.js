@@ -47,7 +47,6 @@ export class Dashboard extends Component {
 
 	render() {
 		const { route } = this.props;
-		console.log(route);
 
 		return (
 			<Layout style={{ minHeight: '100vh' }}>

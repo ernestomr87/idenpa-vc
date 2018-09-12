@@ -319,7 +319,6 @@ class MapContainer extends React.Component {
 		const selectedfeatures = select.getFeatures();
 
 		selectedfeatures.on([ 'add', 'remove' ], (evt) => {
-			console.log(selectedfeatures.getArray());
 			selectedfeatures.getArray().map((feature) => {
 				let selectedLayer = select.getLayer(feature);
 				if (selectedLayer && selectedLayer.getSource().url_) {

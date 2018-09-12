@@ -26,7 +26,6 @@ export class EntitiesInv extends React.Component {
 		axios
 			.get(`${API}/api/infrastructure/${gid}`)
 			.then(function(response) {
-				console.log(response.data.inversions);
 				let items = [];
 				response.data.inversions.map((item) => {
 					if (items[item.year]) {
@@ -36,7 +35,6 @@ export class EntitiesInv extends React.Component {
 						items[item.year].push(item);
 					}
 				});
-				console.log(items);
 				_this.setState({
 					items: items
 				});

@@ -3,7 +3,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 import styled from 'styled-components';
-import { Layout, Modal, Form, Input, Select, Tabs, Button, Row, Col, Icon } from 'antd';
+import { Layout, Modal, Form, Input, Select, Tabs, Button, Row, Col, Icon, Radio } from 'antd';
 
 import reducer from './reducer';
 import saga from './saga';
@@ -16,12 +16,14 @@ import { addNodeRequest, addNodeResponse } from './actions';
 
 import Map from './../../components/Map.js';
 import Sider from './../Sider';
-import { nodes, node_services } from './../../data/index';
+import { nodes as nodesList, node_services } from './../../data/index';
+
+import './index.css';
 
 const { Content } = Layout;
 const FormItem = Form.Item;
-const Option = Select.Option;
 const { TabPane } = Tabs;
+const RadioGroup = Radio.Group;
 
 const FormItemWrapper = styled(FormItem)`
 	width: 100%;
@@ -40,14 +42,7 @@ class Visor extends Component {
 		node: 0
 	};
 
-	componentWillReceiveProps = (nextProps) => {
-		if (!nextProps.visor.loading && this.props.visor.loading) {
-			this.hideModal();
-		}
-	};
-
 	onCollapse = (collapsed) => {
-		console.log(collapsed);
 		this.setState({ collapsed });
 	};
 
@@ -57,7 +52,17 @@ class Visor extends Component {
 		});
 	};
 
-	hideModal = () => {
+	handleOk = (e) => {
+		console.log(e);
+		this.setState({
+			visible: false
+		});
+
+		this.addNodo();
+	};
+
+	handleCancel = (e) => {
+		console.log(e);
 		this.setState({
 			visible: false
 		});
@@ -72,86 +77,63 @@ class Visor extends Component {
 		});
 	};
 
-	handleChange = (value) => {
+	handleChange = (e) => {
+		console.log('radio checked', e.target.value);
 		this.setState({
-			node: value
+			node: e.target.value
 		});
 	};
 
 	addNodo = () => {
 		const { node } = this.state;
-
-		let nodeUrl = `${nodes[node].url}${node_services}`;
-		this.props.addNodeReq({ nodeUrl });
+		let nodeUrl = `${nodesList[node].url}${node_services}`;
+		this.props.addNodeReq({ nodeUrl, title: nodesList[node].name });
+		this.handleCancel();
 	};
 
 	render() {
-		const { sider: { layers }, visor: { loading } } = this.props;
+		const { sider: { layers }, visor: { nodes } } = this.props;
 		const { getFieldDecorator } = this.props.form;
+		const radioStyle = {
+			display: 'block',
+			height: '30px',
+			lineHeight: '30px'
+		};
 
-		const nodesOptions = nodes.map((item, index) => (
-			<Option key={item.name} value={index}>
-				{item.name}
-			</Option>
+		const nodesOptions = nodesList.map((item, index) => (
+			<Col xs={24} sm={12}>
+				<Radio style={radioStyle} value={index}>
+					{item.name}
+				</Radio>
+			</Col>
 		));
 
 		return (
 			<Layout style={{ minHeight: '100vh' }}>
-				<Sider collapsed={this.state.collapsed} onCollapse={this.onCollapse} showModal={this.showModal} />
+				<Sider
+					collapsed={this.state.collapsed}
+					onCollapse={this.onCollapse}
+					showModal={this.showModal}
+					nodes={nodes}
+				/>
 				<Layout>
 					<Content>
 						<Map layers={layers} drawer={this.state.collapsed} />
 					</Content>
 				</Layout>
 				<Modal
-					width={370}
-					footer={null}
+					title="Nodos Predeterminados"
+					wrapClassName="vertical-center-modal"
+					zIndex={2000}
 					visible={this.state.visible}
 					onOk={this.handleOk}
 					onCancel={this.handleCancel}
+					cancelText="Cancelar"
+					okText="Cargar"
 				>
-					<Tabs defaultActiveKey="1">
-						<TabPane tab="Seleccionar Nodo" key="1">
-							<Row>
-								<Col xs={24} sm={20}>
-									<Select
-										style={{ width: '98%' }}
-										defaultValue={this.state.node}
-										onChange={this.handleChange}
-									>
-										{nodesOptions}
-									</Select>
-								</Col>
-								<Col xs={24} sm={4}>
-									<Button icon="plus" type="primary" loading={loading} onClick={this.addNodo} />
-								</Col>
-							</Row>
-						</TabPane>
-						<TabPane tab="Entrar la dirección" key="2">
-							<Form layout="inline" onSubmit={this.handleSubmit}>
-								<Row>
-									<Col xs={24} sm={20}>
-										<FormItemWrapper style={{ width: '100%' }} hasFeedback>
-											{getFieldDecorator('nodeUrl', {
-												rules: [ { required: true, message: 'Por favor entre la dirección!' } ]
-											})(
-												<Input
-													style={{ width: '98%' }}
-													prefix={<Icon type="text" style={{ color: 'rgba(0,0,0,.25)' }} />}
-													placeholder="Direccón del Nodo"
-												/>
-											)}
-										</FormItemWrapper>
-									</Col>
-									<Col xs={24} sm={4}>
-										<FormItem>
-											<Button icon="plus" type="primary" htmlType="submit" />
-										</FormItem>
-									</Col>
-								</Row>
-							</Form>
-						</TabPane>
-					</Tabs>
+					<RadioGroup onChange={this.handleChange} value={this.state.node}>
+						{nodesOptions}
+					</RadioGroup>
 				</Modal>
 			</Layout>
 		);
