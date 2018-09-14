@@ -5,7 +5,7 @@ import { List } from 'antd';
 const LegendDiv = styled.div`
 	position: absolute;
 	bottom: 10px;
-	left: ${(props) => (props.drawer ? '310px' : '10px')};
+	left: ${(props) => (!props.drawer ? '310px' : '10px')};
 	background-color: transparent;
 	width: auto;
 `;
@@ -20,7 +20,7 @@ const ListWrapper = styled(List)`
    &.ant-list-sm .ant-list-item {
         padding: 0;
         font-weight: 500;
-        color: #000;
+        color: #fff;
     }
 `;
 
@@ -37,8 +37,8 @@ export class Legend extends Component {
 						renderItem={(item) => {
 							return (
 								<List.Item>
-									<ColorDiv style={{ backgroundColor: item.item ? item.item.color : null }} />
-									{item.item ? item.item.name : null}
+									<ColorDiv style={{ backgroundColor: item.name ? '#000' : item.item.color }} />
+									{item.name ? item.name : item.item.name}
 								</List.Item>
 							);
 						}}

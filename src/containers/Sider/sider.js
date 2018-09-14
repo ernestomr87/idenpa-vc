@@ -416,13 +416,15 @@ class SiderComponent extends Component {
 						) : null}
 					</Div>
 				</Animate>
-				<DivBotton>
-					<TooltipWrapper placement="topLeft" title={'Añadir Nodo Predeterminado'}>
-						<Button shape="circle" style={{ marginLeft: 19 }} type="primary" onClick={showModal}>
-							<ImgInversion style={{ margin: '-2px 0 0 5px' }} src={MapImg} alt="" />
-						</Button>
-					</TooltipWrapper>
-				</DivBotton>
+				{!collapsed ? (
+					<DivBotton>
+						<TooltipWrapper placement="topLeft" title={'Añadir Nodo Predeterminado'}>
+							<Button shape="circle" style={{ marginLeft: 19 }} type="primary" onClick={showModal}>
+								<ImgInversion style={{ margin: '-2px 0 0 5px' }} src={MapImg} alt="" />
+							</Button>
+						</TooltipWrapper>
+					</DivBotton>
+				) : null}
 			</SiderWrapper>
 		);
 	}

@@ -178,14 +178,13 @@ class MapContainer extends React.Component {
 				}
 			});
 
-			if (array.length > this.state.layers.length) {
-				this.addLayer(array);
+			if (array.length + arrayN.length > this.state.layers.length) {
+				if (array.length) this.addLayer(array);
+				if (arrayN.length) this.addLayerN(arrayN);
 			}
-			if (array.length < this.state.layers.length) {
+			if (array.length + arrayN.length < this.state.layers.length) {
 				this.removeLayer(array);
-			}
-			if (arrayN.length > this.state.layers.length) {
-				this.addLayerN(arrayN);
+				this.removeLayerN(arrayN);
 			}
 		}
 		return;
@@ -256,7 +255,7 @@ class MapContainer extends React.Component {
 		diff['color'] = color;
 
 		if (!map.getLayers().getArray().includes(aux)) {
-			nlayers.push({ item: diff, layer: aux });
+			nlayers.push({ item: diff, layer: aux, node: false });
 			try {
 				map.addLayer(aux);
 				aux.getSource().on('change', function() {
@@ -268,6 +267,7 @@ class MapContainer extends React.Component {
 		}
 		this.setState({ layers: nlayers });
 	};
+
 	addLayerN = (array) => {
 		let nlayers = this.state.layers;
 		let diff;
@@ -294,15 +294,13 @@ class MapContainer extends React.Component {
 
 		array.map((item) => {
 			let aux = item.layer;
-			// aux.setStyle(styleF);
-			// diff['color'] = color;
 
 			if (!map.getLayers().getArray().includes(aux)) {
-				nlayers.push({ item: diff, layer: aux });
+				nlayers.push({ item: item.key, name: item.title, layer: aux, node: true });
 				try {
 					map.addLayer(aux);
 					aux.getSource().on('change', function() {
-						message.success(`Capa "${diff.name}" cargada.`, 1);
+						message.success(`Capa "${item.title}" cargada.`, 1);
 					});
 				} catch (err) {
 					console.log(err);
@@ -336,6 +334,49 @@ class MapContainer extends React.Component {
 		if (map.getLayers().getArray().includes(diff.layer)) {
 			map.removeLayer(diff.layer);
 			colors.push(diff.color);
+		}
+
+		this.setState({ layers: nlayers });
+	};
+
+	removeLayerN = (array) => {
+		let nlayers = [];
+		let diff = [];
+
+		if (array.length) {
+			for (let j = 0; j < this.state.layers.length; j++) {
+				let exist = false;
+				for (let i = 0; i < array.length; i++) {
+					if (this.state.layers[j].node) {
+						if (array[i].key === this.state.layers[j].item) {
+							exist = true;
+							break;
+						}
+					}
+				}
+				if (!exist) {
+					diff.push(this.state.layers[j]);
+				} else {
+					nlayers.push(this.state.layers[j]);
+				}
+
+				diff.map((item) => {
+					if (map.getLayers().getArray().includes(item.layer)) {
+						map.removeLayer(item.layer);
+						colors.push(item.color);
+					}
+				});
+			}
+		} else {
+			let rem = this.state.layers.filter((item) => {
+				if (item.node) return item;
+			});
+
+			rem.map((item) => {
+				if (map.getLayers().getArray().includes(item.layer)) {
+					map.removeLayer(item.layer);
+				}
+			});
 		}
 
 		this.setState({ layers: nlayers });
@@ -427,9 +468,9 @@ class MapContainer extends React.Component {
 					style={{ boxShadow: '0 2px 8px #f0f1f2' }}
 				/>
 				<Drawer
-					width={500}
+					width={400}
 					placement="right"
-					closable={false}
+					closable={true}
 					onClose={this.onClose}
 					visible={this.state.visible}
 				>
