@@ -1,6 +1,17 @@
 import OlImageWms from 'ol/source/imagewms';
 import OlLayerImage from 'ol/layer/image';
 
+const quitSpacesOfAstring = (str) => {
+	let cadena = '';
+	let arrayString = str.split(' ');
+	for (var i = 0; i < arrayString.length; i++) {
+		if (arrayString[i] != '') {
+			cadena += arrayString[i];
+		}
+	}
+	return cadena;
+};
+
 const node_services = '?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities';
 
 const nodes = [
@@ -70,7 +81,7 @@ const buildTree = (layer, data) => {
 	if (!layer.Layer) {
 		let aux = {
 			title: layer.Title,
-			key: layer.Title,
+			key: quitSpacesOfAstring(layer.Title),
 			layer: new OlLayerImage({
 				title: layer.Title,
 				opacity: 1,
@@ -93,7 +104,7 @@ const buildTree = (layer, data) => {
 	} else {
 		let aux = {
 			title: layer.Title,
-			key: layer.Title,
+			key: quitSpacesOfAstring(layer.Title),
 			children: layer.Layer.map((item) => {
 				return buildTree(item, data);
 			})

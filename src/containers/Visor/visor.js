@@ -93,7 +93,6 @@ class Visor extends Component {
 
 	render() {
 		const { sider: { layers }, visor: { nodes } } = this.props;
-		const { getFieldDecorator } = this.props.form;
 		const radioStyle = {
 			display: 'block',
 			height: '30px',
@@ -118,7 +117,7 @@ class Visor extends Component {
 				/>
 				<Layout>
 					<Content>
-						<Map layers={layers} drawer={this.state.collapsed} />
+						<Map layers={layers} nodes={nodes} drawer={this.state.collapsed} />
 					</Content>
 				</Layout>
 				<Modal

@@ -98,6 +98,29 @@ const CardWrapper = styled(Card)`
 	}
 `;
 
+const listLayerByNode = (node) => {
+	let array = [];
+
+	if (node.children) {
+		for (let i = 0; i < node.children.length; i++) {
+			if (node.children[i].children) {
+				for (let j = 0; j < node.children[i].children.length; j++) {
+					if (node.children[i].children[j].children) {
+						for (let x = 0; x < node.children[i].children[j].children.length; x++) {
+							array.push(node.children[i].children[j].children[x]);
+						}
+					} else {
+						array.push(node.children[i].children[j]);
+					}
+				}
+			} else {
+				array.push(node.children[i]);
+			}
+		}
+	}
+	return array;
+};
+
 /* eslint-disable react/prefer-stateless-function */
 class MapContainer extends React.Component {
 	state = {
@@ -127,17 +150,32 @@ class MapContainer extends React.Component {
 	};
 
 	componentWillReceiveProps = (nextProps) => {
-		const { layers } = nextProps;
+		const { layers, nodes } = nextProps;
 
 		if (layers !== this.props.layers) {
 			let array = [];
+			let arrayN = [];
 			Object.keys(layers).forEach(function(key) {
-				layers[key].map((item) => {
-					const aux = Modules[key].filter((mitem) => {
-						if (mitem.name === item) return mitem;
+				if (Modules[key]) {
+					layers[key].map((item) => {
+						const aux = Modules[key].filter((mitem) => {
+							if (mitem.name === item) return mitem;
+						});
+						array.push(aux[0]);
 					});
-					array.push(aux[0]);
-				});
+				} else {
+					layers[key].map((item) => {
+						nodes.map((node) => {
+							let nodelayers = listLayerByNode(node);
+							const aux = nodelayers.filter((mitem) => {
+								if (!mitem.children && mitem.key === item) {
+									return mitem.layer;
+								}
+							});
+							if (aux[0]) arrayN.push(aux[0]);
+						});
+					});
+				}
 			});
 
 			if (array.length > this.state.layers.length) {
@@ -145,6 +183,9 @@ class MapContainer extends React.Component {
 			}
 			if (array.length < this.state.layers.length) {
 				this.removeLayer(array);
+			}
+			if (arrayN.length > this.state.layers.length) {
+				this.addLayerN(arrayN);
 			}
 		}
 		return;
@@ -213,15 +254,62 @@ class MapContainer extends React.Component {
 		});
 		aux.setStyle(styleF);
 		diff['color'] = color;
+
 		if (!map.getLayers().getArray().includes(aux)) {
 			nlayers.push({ item: diff, layer: aux });
-			map.addLayer(aux);
-
-			aux.getSource().on('change', function() {
-				message.success(`Capa "${diff.name}" cargada.`, 1);
-			});
+			try {
+				map.addLayer(aux);
+				aux.getSource().on('change', function() {
+					message.success(`Capa "${diff.name}" cargada.`, 1);
+				});
+			} catch (err) {
+				console.log(err);
+			}
 		}
 		this.setState({ layers: nlayers });
+	};
+	addLayerN = (array) => {
+		let nlayers = this.state.layers;
+		let diff;
+		let color = colors.shift();
+		const styleF = new OlStyle({
+			fill: new OlFill({
+				color: color
+			}),
+			stroke: new OlStroke({
+				color: color
+			}),
+			width: 4,
+			image: new OlCircle({
+				radius: 5,
+				fill: new OlFill({
+					color: color
+				}),
+				stroke: new OlStroke({
+					color: color
+				}),
+				width: 4
+			})
+		});
+
+		array.map((item) => {
+			let aux = item.layer;
+			// aux.setStyle(styleF);
+			// diff['color'] = color;
+
+			if (!map.getLayers().getArray().includes(aux)) {
+				nlayers.push({ item: diff, layer: aux });
+				try {
+					map.addLayer(aux);
+					aux.getSource().on('change', function() {
+						message.success(`Capa "${diff.name}" cargada.`, 1);
+					});
+				} catch (err) {
+					console.log(err);
+				}
+			}
+			this.setState({ layers: nlayers });
+		});
 	};
 
 	removeLayer = (array) => {
@@ -354,6 +442,7 @@ class MapContainer extends React.Component {
 
 MapContainer.defaultProps = {
 	layers: [],
+	nodes: [],
 	drawer: false
 };
 

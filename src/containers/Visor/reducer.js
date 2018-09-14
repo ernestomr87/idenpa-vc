@@ -2,9 +2,19 @@ import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 import { addNodeRequest, addNodeResponse } from './actions';
 
-import { CapabilitiesUtil } from '@terrestris/react-geo';
 import OlFormatCapabilities from 'ol/format/wmscapabilities';
 import { getLayersFromWmsCapabilties } from './../../data/index';
+
+const quitSpacesOfAstring = (str) => {
+	let cadena = '';
+	let arrayString = str.split(' ');
+	for (var i = 0; i < arrayString.length; i++) {
+		if (arrayString[i] != '') {
+			cadena += arrayString[i];
+		}
+	}
+	return cadena;
+};
 
 const loading = handleActions(
 	{
@@ -29,7 +39,7 @@ const nodes = handleActions(
 				let wmsCapabilitiesParser = new OlFormatCapabilities();
 				let node = {
 					title: action.payload.title,
-					key: action.payload.title,
+					key: quitSpacesOfAstring(action.payload.title),
 					children: getLayersFromWmsCapabilties(wmsCapabilitiesParser.read(action.payload.data))
 				};
 				return state.concat(node);

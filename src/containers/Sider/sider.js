@@ -2,7 +2,22 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { Layout, Tree, Icon, Row, Col, Button, Divider, Radio, Alert, Badge, Menu, Breadcrumb, Modal } from 'antd';
+import {
+	Layout,
+	Tree,
+	Icon,
+	Row,
+	Col,
+	Button,
+	Divider,
+	Radio,
+	Alert,
+	Badge,
+	Menu,
+	Breadcrumb,
+	Modal,
+	Tooltip
+} from 'antd';
 import styled from 'styled-components';
 
 import withReducer from '../../utils/withReducer';
@@ -29,6 +44,8 @@ import {
 } from './../../components/Icons';
 
 import Logo from './../../components/Logo';
+import './index.css';
+
 const TreeNode = Tree.TreeNode;
 const { Sider } = Layout;
 
@@ -37,11 +54,10 @@ const TreeNodeWrapper = styled(TreeNode)`
 		display: none !important;
 	}`;
 
-const ModalWrapper = styled(Modal)`
-	.ant-modal-body{
-		max-height: 300px;
-		overflow: auto;
-	}`;
+const Div = styled.div`
+	max-height: 78vh;
+	overflow-y: auto;
+`;
 
 const MenuWrapper = styled(Menu)`
 	&.ant-menu-inline .ant-menu-item:not(:last-child) {
@@ -95,12 +111,30 @@ const A = styled.a`
 	}
 `;
 
+const DivBotton = styled.div`
+	background-color: #eff3f6;
+	padding: 10px 0px 10px 0px;
+	position: fixed;
+	bottom: 0;
+	width: 300px;
+	box-shadow: 0 12px 0px #d8e0e6;
+`;
+
+const TooltipWrapper = styled(Tooltip)`
+	&.ant-tooltip  {
+		z-index: 3000;
+	}
+	
+`;
+
 class SiderComponent extends Component {
 	state = {
 		expandedKeys: [],
 		autoExpandParent: true,
 		checkedKeys: [],
 		selectedKeys: [],
+		checkedNodeKeys: [],
+		selectedNodeKeys: [],
 		submenu: 'rb_layers',
 		view: 1,
 		layers: [],
@@ -121,6 +155,13 @@ class SiderComponent extends Component {
 		this.setState({ checkedKeys });
 	};
 
+	onNodeCheck = (checkedNodeKeys) => {
+		const { add } = this.props;
+		const { selectNode } = this.state;
+		add({ item: selectNode.key, checkedKeys: checkedNodeKeys });
+		this.setState({ checkedNodeKeys });
+	};
+
 	renderTreeNodes = (data) => {
 		const { sider: { item } } = this.props;
 		if (!item) return;
@@ -133,12 +174,12 @@ class SiderComponent extends Component {
 		return data.map((item) => {
 			if (item.children) {
 				return (
-					<TreeNode title={item.title} key={item.key} dataRef={item}>
+					<TreeNode style={{ fontSize: 11 }} title={item.title} key={item.key} dataRef={item}>
 						{this.renderTreeNodesUrl(item.children)}
 					</TreeNode>
 				);
 			} else {
-				return <TreeNode {...item} />;
+				return <TreeNode style={{ fontSize: 11 }} {...item} />;
 			}
 		});
 	};
@@ -165,6 +206,7 @@ class SiderComponent extends Component {
 	};
 
 	renderBreadcrumb = (item) => {
+		const { selectNode } = this.state;
 		let aux;
 		switch (item) {
 			case 'investments':
@@ -197,8 +239,9 @@ class SiderComponent extends Component {
 				break;
 			case 2:
 				aux = (
-					<A href="#" style={{ fontSize: 15 }}>
-						<ImgInversionV src={MapImg} alt="" />Nodos IDE
+					<A href="#" style={{ fontSize: 13 }}>
+						<ImgInversionV src={MapImg} alt="" />
+						{selectNode ? selectNode.title : null}
 					</A>
 				);
 				break;
@@ -239,21 +282,21 @@ class SiderComponent extends Component {
 		});
 	};
 
-	showModal = (node) => {
+	selectItem = (node) => {
 		this.setState({
 			selectNode: node,
-			modalVisible: true
+			view: 2
 		});
 	};
 
 	render() {
 		const modules = Modules;
 		const { sider: { item, layers }, collapsed, onCollapse, showModal, nodes } = this.props;
-		const { modalVisible, selectNode } = this.state;
+		const { selectNode } = this.state;
 
 		return (
 			<SiderWrapper
-				width={250}
+				width={300}
 				theme="light"
 				collapsedWidth={0}
 				collapsible
@@ -310,16 +353,10 @@ class SiderComponent extends Component {
 							</Badge>
 						</Menu.Item>
 						<Divider dashed style={{ margin: '10px 0' }} />
-						<Badge style={{ right: -30 }} count={0}>
-							<Button style={{ marginLeft: 19 }} type="primary" onClick={showModal}>
-								<ImgInversion style={{ marginTop: 0 }} src={MapImg} alt="" />
-								<span>Añadir mapas/Nodos IDE</span>
-							</Button>
-						</Badge>
 
 						{nodes.map((item, index) => {
 							return (
-								<Menu.Item key={6 + index} onClick={this.showModal.bind(this, item)}>
+								<Menu.Item key={6 + index} onClick={this.selectItem.bind(this, item)}>
 									<Badge
 										style={{ right: -30 }}
 										count={
@@ -351,6 +388,7 @@ class SiderComponent extends Component {
 							</Radio.Group>
 
 							<Tree
+								style={{ fontSize: 11 }}
 								checkable
 								onCheck={this.onCheck}
 								checkedKeys={this.state.checkedKeys}
@@ -363,16 +401,28 @@ class SiderComponent extends Component {
 						<Alert message="No hay capas disponibles" type="info" showIcon />
 					) : null}
 				</Animate>
-				<ModalWrapper
-					cancelText="Cancelar"
-					okText="Cargar"
-					title={selectNode ? selectNode.title : ''}
-					visible={modalVisible}
-					onOk={this.handleLoad}
-					onCancel={this.handleCancel}
-				>
-					{selectNode ? <Tree checkable>{this.renderTreeNodesUrl(selectNode.children)}</Tree> : null}
-				</ModalWrapper>
+				<Animate style={{ padding: 10 }} visible={this.state.view === 2}>
+					{this.renderBreadcrumb(2)}
+					<Div>
+						{selectNode ? (
+							<Tree
+								checkable
+								onCheck={this.onNodeCheck}
+								checkedKeys={this.state.checkedNodeKeys}
+								selectedKeys={this.state.selectedNodeKeys}
+							>
+								{this.renderTreeNodesUrl(selectNode.children)}
+							</Tree>
+						) : null}
+					</Div>
+				</Animate>
+				<DivBotton>
+					<TooltipWrapper placement="topLeft" title={'Añadir Nodo Predeterminado'}>
+						<Button shape="circle" style={{ marginLeft: 19 }} type="primary" onClick={showModal}>
+							<ImgInversion style={{ margin: '-2px 0 0 5px' }} src={MapImg} alt="" />
+						</Button>
+					</TooltipWrapper>
+				</DivBotton>
 			</SiderWrapper>
 		);
 	}

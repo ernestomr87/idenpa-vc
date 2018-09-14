@@ -37,8 +37,8 @@ export class Legend extends Component {
 						renderItem={(item) => {
 							return (
 								<List.Item>
-									<ColorDiv style={{ backgroundColor: item.item.color }} />
-									{item.item.name}
+									<ColorDiv style={{ backgroundColor: item.item ? item.item.color : null }} />
+									{item.item ? item.item.name : null}
 								</List.Item>
 							);
 						}}
