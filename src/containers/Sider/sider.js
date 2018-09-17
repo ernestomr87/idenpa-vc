@@ -359,9 +359,7 @@ class SiderComponent extends Component {
 								<Menu.Item key={6 + index} onClick={this.selectItem.bind(this, item)}>
 									<Badge
 										style={{ right: -30 }}
-										count={
-											typeof layers['lifeTask'] !== 'undefined' ? layers['lifeTask'].length : 0
-										}
+										count={typeof layers[item.key] !== 'undefined' ? layers[item.key].length : 0}
 									>
 										<ImgInversion src={LinkImg} alt="" />
 										<span>{item.title}</span>
