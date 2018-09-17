@@ -292,6 +292,7 @@ class MapContainer extends React.Component {
 
 	removeLayer = (array, arrayN) => {
 		let nlayers = [];
+		let nlayers2 = [];
 		let diff = [];
 		if (array.length) {
 			this.state.layers.map((lItem) => {
@@ -329,7 +330,43 @@ class MapContainer extends React.Component {
 			});
 		}
 
-		this.setState({ layers: nlayers });
+		if (arrayN.length) {
+			nlayers.map((lItem) => {
+				let exist = arrayN.filter((aItem) => {
+					if (aItem.key === lItem.item && lItem.node) {
+						return lItem;
+					}
+				});
+				if (!exist.length) {
+					diff.push(lItem);
+				} else {
+					nlayers2.push(lItem);
+				}
+			});
+
+			diff.map((item) => {
+				if (map.getLayers().getArray().includes(item.layer)) {
+					map.removeLayer(item.layer);
+					colors.push(item.color);
+				}
+			});
+		} else {
+			diff = nlayers.filter((lItem) => {
+				if (!lItem.node) {
+					nlayers2.push(lItem);
+				} else {
+					return lItem;
+				}
+			});
+			diff.map((item) => {
+				if (map.getLayers().getArray().includes(item.layer)) {
+					map.removeLayer(item.layer);
+					colors.push(item.color);
+				}
+			});
+		}
+
+		this.setState({ layers: nlayers2 });
 	};
 
 	removeLayerN = (array) => {
