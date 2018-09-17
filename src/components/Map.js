@@ -183,8 +183,7 @@ class MapContainer extends React.Component {
 				if (arrayN.length) this.addLayerN(arrayN);
 			}
 			if (array.length + arrayN.length < this.state.layers.length) {
-				this.removeLayer(array);
-				this.removeLayerN(arrayN);
+				this.removeLayer(array, arrayN);
 			}
 		}
 		return;
@@ -211,6 +210,7 @@ class MapContainer extends React.Component {
 			let exist = false;
 			for (let i = 0; i < this.state.layers.length; i++) {
 				if (
+					!this.state.layers[i].node &&
 					array[j].name === this.state.layers[i].item.name &&
 					array[j].json === this.state.layers[i].item.json
 				) {
@@ -270,27 +270,7 @@ class MapContainer extends React.Component {
 
 	addLayerN = (array) => {
 		let nlayers = this.state.layers;
-		let diff;
 		let color = colors.shift();
-		const styleF = new OlStyle({
-			fill: new OlFill({
-				color: color
-			}),
-			stroke: new OlStroke({
-				color: color
-			}),
-			width: 4,
-			image: new OlCircle({
-				radius: 5,
-				fill: new OlFill({
-					color: color
-				}),
-				stroke: new OlStroke({
-					color: color
-				}),
-				width: 4
-			})
-		});
 
 		array.map((item) => {
 			let aux = item.layer;
@@ -310,30 +290,43 @@ class MapContainer extends React.Component {
 		});
 	};
 
-	removeLayer = (array) => {
+	removeLayer = (array, arrayN) => {
 		let nlayers = [];
-		let diff;
-		for (let j = 0; j < this.state.layers.length; j++) {
-			let exist = false;
-			for (let i = 0; i < array.length; i++) {
-				if (
-					array[i].name === this.state.layers[j].item.name &&
-					array[i].json === this.state.layers[j].item.json
-				) {
-					exist = true;
-					break;
+		let diff = [];
+		if (array.length) {
+			this.state.layers.map((lItem) => {
+				let exist = array.filter((aItem) => {
+					if (aItem.name === lItem.item.name && aItem.json === lItem.item.json) {
+						return lItem;
+					}
+				});
+				if (!exist.length) {
+					diff.push(lItem);
+				} else {
+					nlayers.push(lItem);
 				}
-			}
-			if (!exist) {
-				diff = this.state.layers[j];
-			} else {
-				nlayers.push(this.state.layers[j]);
-			}
-		}
+			});
 
-		if (map.getLayers().getArray().includes(diff.layer)) {
-			map.removeLayer(diff.layer);
-			colors.push(diff.color);
+			diff.map((item) => {
+				if (map.getLayers().getArray().includes(item.layer)) {
+					map.removeLayer(item.layer);
+					colors.push(item.color);
+				}
+			});
+		} else {
+			diff = this.state.layers.filter((lItem) => {
+				if (lItem.node) {
+					nlayers.push(lItem);
+				} else {
+					return lItem;
+				}
+			});
+			diff.map((item) => {
+				if (map.getLayers().getArray().includes(item.layer)) {
+					map.removeLayer(item.layer);
+					colors.push(item.color);
+				}
+			});
 		}
 
 		this.setState({ layers: nlayers });
@@ -354,7 +347,7 @@ class MapContainer extends React.Component {
 						}
 					}
 				}
-				if (!exist) {
+				if (!exist && this.state.layers[j].node) {
 					diff.push(this.state.layers[j]);
 				} else {
 					nlayers.push(this.state.layers[j]);
