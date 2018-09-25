@@ -9,7 +9,7 @@ const quitSpacesOfAstring = (str) => {
 	let cadena = '';
 	let arrayString = str.split(' ');
 	for (var i = 0; i < arrayString.length; i++) {
-		if (arrayString[i] != '') {
+		if (arrayString[i] !== '') {
 			cadena += arrayString[i];
 		}
 	}

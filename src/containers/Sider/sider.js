@@ -2,22 +2,7 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import {
-	Layout,
-	Tree,
-	Icon,
-	Row,
-	Col,
-	Button,
-	Divider,
-	Radio,
-	Alert,
-	Badge,
-	Menu,
-	Breadcrumb,
-	Modal,
-	Tooltip
-} from 'antd';
+import { Layout, Tree, Icon, Row, Col, Button, Divider, Radio, Alert, Badge, Menu, Breadcrumb, Tooltip } from 'antd';
 import styled from 'styled-components';
 
 import withReducer from '../../utils/withReducer';
@@ -43,7 +28,7 @@ import {
 	LinkImg
 } from './../../components/Icons';
 
-import Logo from './../../components/Logo';
+import Logo from './../../components/Logo/';
 import './index.css';
 
 const TreeNode = Tree.TreeNode;

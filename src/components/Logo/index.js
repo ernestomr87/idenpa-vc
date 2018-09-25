@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import styled from 'styled-components';
-import Logo from './Icons';
+import Logo from './../Icons';
 
 const LogoImg = styled.img`
 	width: 38px;

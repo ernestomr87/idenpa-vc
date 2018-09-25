@@ -3,7 +3,7 @@ import { Drawer, message, Table, Card } from 'antd';
 import styled from 'styled-components';
 import OlFormatGeoJSON from 'ol/format/geojson';
 import OlInteractionSelect from 'ol/interaction/select';
-import { IrrigationImg, MoneyBagImg, TractorImg, CoastImg, CareImg } from './Icons';
+import { IrrigationImg, MoneyBagImg, TractorImg, CoastImg, CareImg } from './../Icons';
 import { MapComponent } from '@terrestris/react-geo';
 
 import OlSourceVector from 'ol/source/vector';
@@ -18,15 +18,16 @@ import OlFill from 'ol/style/fill';
 import OlStyle from 'ol/style/style';
 import OlCircle from 'ol/style/circle';
 
-import Tools from './Tools';
-import Legend from './Legend';
-import EntitiesInv from './EntitiesInv';
-import colors from './colors';
-import Modules, { getModelByJson } from './../data/index';
-import SateliteImg from './satelite.png';
-import MapaImg from './mapa.png';
+import Tools from './../Tools';
+import Legend from './../Legend';
+import EntitiesInv from './../EntitiesInv';
+import colors from './../../utils/colors';
+import Modules, { getModelByJson } from './../../data';
+import SateliteImg from './../Images/satelite.png';
+import MapaImg from './../Images/mapa.png';
 
-import './../react-geo.css';
+import './../../react-geo.css';
+import './index.css';
 
 const Div = styled.div`height: 100vh;`;
 
@@ -51,6 +52,10 @@ var satelite = new OlLayerTile({
 	}),
 	type: 'base'
 });
+
+
+
+
 
 const map = new OlMap({
 	view: new OlView({
@@ -478,6 +483,11 @@ class MapContainer extends React.Component {
 		const selectedfeatures = select.getFeatures();
 
 		selectedfeatures.on([ 'add', 'remove' ], (evt) => {
+			// var coordinate = evt.coordinate;
+
+			// content.innerHTML = '<p>You clicked here:</p><code>' + 'Hola' + '</code>';
+			// overlay.setPosition(coordinate);
+
 			selectedfeatures.getArray().map((feature) => {
 				let selectedLayer = select.getLayer(feature);
 				if (selectedLayer && selectedLayer.getSource().url_) {
@@ -490,6 +500,10 @@ class MapContainer extends React.Component {
 		return (
 			<Div>
 				<MapWrapper map={map} />
+				<div id="popup" className="ol-popup">
+					<a href="#" id="popup-closer" className="ol-popup-closer" />
+					<div id="popup-content" />
+				</div>
 				<Tools map={map} drawer={this.props.drawer.toString()} />
 				<Legend layers={this.state.layers} drawer={this.props.drawer} />
 				<CardWrapper

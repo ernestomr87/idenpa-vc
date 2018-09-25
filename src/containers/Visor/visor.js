@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import styled from 'styled-components';
-import { Layout, Modal, Form, Input, Select, Tabs, Button, Row, Col, Icon, Radio } from 'antd';
+import { Layout, Modal, Form, Col, Radio } from 'antd';
 
 import reducer from './reducer';
 import saga from './saga';
@@ -14,26 +13,14 @@ import makeSelectSider from './../Sider/selectors';
 import makeSelectVisor from './selectors';
 import { addNodeRequest, addNodeResponse } from './actions';
 
-import Map from './../../components/Map.js';
+import Map from './../../components/Map/';
 import Sider from './../Sider';
 import { nodes as nodesList, node_services } from './../../data/index';
 
 import './index.css';
 
 const { Content } = Layout;
-const FormItem = Form.Item;
-const { TabPane } = Tabs;
 const RadioGroup = Radio.Group;
-
-const FormItemWrapper = styled(FormItem)`
-	width: 100%;
-	.ant-form-item-control-wrapper{
-		width: 100%;
-	}
-	.ant-form-item-control-wrapper .has-error,.ant-form-item-control-wrapper .has-success{
-		width: 100%;
-	}
-`;
 
 class Visor extends Component {
 	state = {
@@ -100,7 +87,7 @@ class Visor extends Component {
 		};
 
 		const nodesOptions = nodesList.map((item, index) => (
-			<Col xs={24} sm={12}>
+			<Col key={'nodelist' + index} xs={24} sm={12}>
 				<Radio style={radioStyle} value={index}>
 					{item.name}
 				</Radio>
