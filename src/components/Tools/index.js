@@ -18,7 +18,7 @@ import {
 	SelectIco,
 	PapersIco,
 	DeleteIco
-} from './Icons';
+} from './../Icons';
 
 const ImgContent = styled.img`
 	width: 15px;

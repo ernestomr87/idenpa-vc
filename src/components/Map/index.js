@@ -1,80 +1,28 @@
 import React from 'react';
-import { Drawer, message, Table, Card } from 'antd';
+import { Drawer, Table, Card } from 'antd';
 import styled from 'styled-components';
-import OlFormatGeoJSON from 'ol/format/geojson';
+
 import OlInteractionSelect from 'ol/interaction/select';
 import { IrrigationImg, MoneyBagImg, TractorImg, CoastImg, CareImg } from './../Icons';
 import { MapComponent } from '@terrestris/react-geo';
 
-import OlSourceVector from 'ol/source/vector';
-import OlSourceXYS from 'ol/source/xyz';
-import OlLayerTile from 'ol/layer/tile';
-import OlLayerVector from 'ol/layer/vector';
-import OlView from 'ol/view';
-import OlMap from 'ol/map';
+import map, { addLayer, addLayerFromNode, listLayerByNode, changeMap, removeLayer } from './utils';
 
-import OlStroke from 'ol/style/stroke';
-import OlFill from 'ol/style/fill';
-import OlStyle from 'ol/style/style';
-import OlCircle from 'ol/style/circle';
-
-import Tools from './../Tools';
+import Tools from './../Tools/';
 import Legend from './../Legend';
 import EntitiesInv from './../EntitiesInv';
-import colors from './../../utils/colors';
+
 import Modules, { getModelByJson } from './../../data';
 import SateliteImg from './../Images/satelite.png';
 import MapaImg from './../Images/mapa.png';
 
 import './../../react-geo.css';
-import './index.css';
 
 const Div = styled.div`height: 100vh;`;
 
 const MapWrapper = styled(MapComponent)`
 	height: 100vh;
 `;
-
-var osm = new OlLayerTile({
-	name: 'tms',
-	projection: 'EPSG:4326',
-	source: new OlSourceXYS({
-		url: 'http://ide.enpa.minag.cu/geoserver/www/tms/2017/osmmapmapnik/{z}/{x}/{-y}.png'
-	}),
-	type: 'base'
-});
-
-var satelite = new OlLayerTile({
-	name: 'tms',
-	projection: 'EPSG:4326',
-	source: new OlSourceXYS({
-		url: 'http://ide.enpa.minag.cu/geoserver/www/tms/2017/sat/{z}/{x}/{-y}.jpg'
-	}),
-	type: 'base'
-});
-
-
-
-
-
-const map = new OlMap({
-	view: new OlView({
-		projection: 'EPSG:4326',
-		center: [ -80.009, 22.6083 ],
-		zoom: 7
-	}),
-	controls: [],
-	layers: [ satelite ]
-});
-
-const pStyle = {
-	fontWeight: 500,
-	fontSize: 16,
-	color: 'rgba(0,0,0,0.85)',
-	display: 'block',
-	fontFamily: `"Monospaced Number", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-	"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif`
-};
 
 const ImgInversion = styled.img`
 	width: 25px;
@@ -103,27 +51,13 @@ const CardWrapper = styled(Card)`
 	}
 `;
 
-const listLayerByNode = (node) => {
-	let array = [];
-
-	if (node.children) {
-		for (let i = 0; i < node.children.length; i++) {
-			if (node.children[i].children) {
-				for (let j = 0; j < node.children[i].children.length; j++) {
-					if (node.children[i].children[j].children) {
-						for (let x = 0; x < node.children[i].children[j].children.length; x++) {
-							array.push(node.children[i].children[j].children[x]);
-						}
-					} else {
-						array.push(node.children[i].children[j]);
-					}
-				}
-			} else {
-				array.push(node.children[i]);
-			}
-		}
-	}
-	return array;
+const pStyle = {
+	fontWeight: 500,
+	fontSize: 16,
+	color: 'rgba(0,0,0,0.85)',
+	display: 'block',
+	fontFamily: `"Monospaced Number", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+	"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif`
 };
 
 /* eslint-disable react/prefer-stateless-function */
@@ -137,21 +71,6 @@ class MapContainer extends React.Component {
 		properties: null,
 		interaction: null,
 		typeMap: 0 //		0->normal map 1->satelite map
-	};
-
-	changeState = (feature, model, select) => {
-		const { interaction } = this.state;
-
-		if (interaction) {
-			interaction.clear();
-		}
-		this.setState({
-			visible: true,
-			properties: feature,
-			model: model.nomenclature,
-			dataLayer: { module: model.data.mod, layer: model.data.layer },
-			interaction: select
-		});
 	};
 
 	componentWillReceiveProps = (nextProps) => {
@@ -185,236 +104,45 @@ class MapContainer extends React.Component {
 
 			if (array.length + arrayN.length > this.state.layers.length) {
 				if (array.length) this.addLayer(array);
-				if (arrayN.length) this.addLayerN(arrayN);
+				if (arrayN.length) this.addLayerFromNode(arrayN);
 			}
 			if (array.length + arrayN.length < this.state.layers.length) {
 				this.removeLayer(array, arrayN);
 			}
 		}
-		return;
+	};
+
+	changeState = (feature, model, select) => {
+		const { interaction } = this.state;
+
+		if (interaction) {
+			interaction.clear();
+		}
+		this.setState({
+			visible: true,
+			properties: feature,
+			model: model.nomenclature,
+			dataLayer: { module: model.data.mod, layer: model.data.layer },
+			interaction: select
+		});
 	};
 
 	changeMap = () => {
-		let layers = map.getLayers();
-		if (layers.getArray().includes(satelite)) {
-			layers.insertAt(0, osm);
-			map.removeLayer(satelite);
-			this.setState({ typeMap: 1 });
-		} else if (layers.getArray().includes(osm)) {
-			// map.addLayer(layer);
-			layers.insertAt(0, satelite);
-			map.removeLayer(osm);
-			this.setState({ typeMap: 0 });
-		}
+		this.setState({ typeMap: changeMap() });
 	};
 
-	addLayer = (array) => {
-		let nlayers = this.state.layers;
-		let diff;
-		for (let j = 0; j < array.length; j++) {
-			let exist = false;
-			for (let i = 0; i < this.state.layers.length; i++) {
-				if (
-					!this.state.layers[i].node &&
-					array[j].name === this.state.layers[i].item.name &&
-					array[j].json === this.state.layers[i].item.json
-				) {
-					exist = true;
-					break;
-				}
-			}
-			if (!exist) {
-				diff = array[j];
-				break;
-			}
-		}
-
-		let aux = new OlLayerVector({
-			source: new OlSourceVector({
-				format: new OlFormatGeoJSON(),
-				url: diff.json
-			})
-		});
-
-		let color = colors.shift();
-		const styleF = new OlStyle({
-			fill: new OlFill({
-				color: color
-			}),
-			stroke: new OlStroke({
-				color: color
-			}),
-			width: 4,
-			image: new OlCircle({
-				radius: 5,
-				fill: new OlFill({
-					color: color
-				}),
-				stroke: new OlStroke({
-					color: color
-				}),
-				width: 4
-			})
-		});
-		aux.setStyle(styleF);
-		diff['color'] = color;
-
-		if (!map.getLayers().getArray().includes(aux)) {
-			nlayers.push({ item: diff, layer: aux, node: false });
-			try {
-				map.addLayer(aux);
-				aux.getSource().on('change', function() {
-					message.success(`Capa "${diff.name}" cargada.`, 1);
-				});
-			} catch (err) {
-				console.log(err);
-			}
-		}
-		this.setState({ layers: nlayers });
+	addLayer = async (array) => {
+		let result = await addLayer(array, this.state.layers);
+		this.setState({ layers: result });
 	};
 
-	addLayerN = (array) => {
-		let nlayers = this.state.layers;
-		let color = colors.shift();
-
-		array.map((item) => {
-			let aux = item.layer;
-
-			if (!map.getLayers().getArray().includes(aux)) {
-				nlayers.push({ item: item.key, name: item.title, layer: aux, node: true });
-				try {
-					map.addLayer(aux);
-					aux.getSource().on('change', function() {
-						message.success(`Capa "${item.title}" cargada.`, 1);
-					});
-				} catch (err) {
-					console.log(err);
-				}
-			}
-			this.setState({ layers: nlayers });
-		});
+	addLayerFromNode = async (array) => {
+		let result = await addLayerFromNode(array, this.state.layers);
+		this.setState({ layers: result });
 	};
 
 	removeLayer = (array, arrayN) => {
-		let nlayers = [];
-		let nlayers2 = [];
-		let diff = [];
-		if (array.length) {
-			this.state.layers.map((lItem) => {
-				let exist = array.filter((aItem) => {
-					if (aItem.name === lItem.item.name && aItem.json === lItem.item.json) {
-						return lItem;
-					}
-				});
-				if (!exist.length) {
-					diff.push(lItem);
-				} else {
-					nlayers.push(lItem);
-				}
-			});
-
-			diff.map((item) => {
-				if (map.getLayers().getArray().includes(item.layer)) {
-					map.removeLayer(item.layer);
-					colors.push(item.color);
-				}
-			});
-		} else {
-			diff = this.state.layers.filter((lItem) => {
-				if (lItem.node) {
-					nlayers.push(lItem);
-				} else {
-					return lItem;
-				}
-			});
-			diff.map((item) => {
-				if (map.getLayers().getArray().includes(item.layer)) {
-					map.removeLayer(item.layer);
-					colors.push(item.color);
-				}
-			});
-		}
-
-		if (arrayN.length) {
-			nlayers.map((lItem) => {
-				let exist = arrayN.filter((aItem) => {
-					if (aItem.key === lItem.item && lItem.node) {
-						return lItem;
-					}
-				});
-				if (!exist.length) {
-					diff.push(lItem);
-				} else {
-					nlayers2.push(lItem);
-				}
-			});
-
-			diff.map((item) => {
-				if (map.getLayers().getArray().includes(item.layer)) {
-					map.removeLayer(item.layer);
-					colors.push(item.color);
-				}
-			});
-		} else {
-			diff = nlayers.filter((lItem) => {
-				if (!lItem.node) {
-					nlayers2.push(lItem);
-				} else {
-					return lItem;
-				}
-			});
-			diff.map((item) => {
-				if (map.getLayers().getArray().includes(item.layer)) {
-					map.removeLayer(item.layer);
-					colors.push(item.color);
-				}
-			});
-		}
-
-		this.setState({ layers: nlayers2 });
-	};
-
-	removeLayerN = (array) => {
-		let nlayers = [];
-		let diff = [];
-
-		if (array.length) {
-			for (let j = 0; j < this.state.layers.length; j++) {
-				let exist = false;
-				for (let i = 0; i < array.length; i++) {
-					if (this.state.layers[j].node) {
-						if (array[i].key === this.state.layers[j].item) {
-							exist = true;
-							break;
-						}
-					}
-				}
-				if (!exist && this.state.layers[j].node) {
-					diff.push(this.state.layers[j]);
-				} else {
-					nlayers.push(this.state.layers[j]);
-				}
-
-				diff.map((item) => {
-					if (map.getLayers().getArray().includes(item.layer)) {
-						map.removeLayer(item.layer);
-						colors.push(item.color);
-					}
-				});
-			}
-		} else {
-			let rem = this.state.layers.filter((item) => {
-				if (item.node) return item;
-			});
-
-			rem.map((item) => {
-				if (map.getLayers().getArray().includes(item.layer)) {
-					map.removeLayer(item.layer);
-				}
-			});
-		}
-
-		this.setState({ layers: nlayers });
+		this.setState({ layers: removeLayer(array, arrayN, this.state.layers) });
 	};
 
 	showDrawer = () => {
@@ -483,11 +211,6 @@ class MapContainer extends React.Component {
 		const selectedfeatures = select.getFeatures();
 
 		selectedfeatures.on([ 'add', 'remove' ], (evt) => {
-			// var coordinate = evt.coordinate;
-
-			// content.innerHTML = '<p>You clicked here:</p><code>' + 'Hola' + '</code>';
-			// overlay.setPosition(coordinate);
-
 			selectedfeatures.getArray().map((feature) => {
 				let selectedLayer = select.getLayer(feature);
 				if (selectedLayer && selectedLayer.getSource().url_) {

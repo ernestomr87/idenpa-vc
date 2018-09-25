@@ -51,7 +51,7 @@ export class Dashboard extends Component {
 			<Layout style={{ minHeight: '100vh' }}>
 				<Sider trigger={null} collapsible collapsed={this.state.collapsed}>
 					<Logo />
-					<Menu theme="dark" defaultSelectedKeys={[ '0' ]} mode="inline">
+					<Menu theme="dark" defaultSelectedKeys={[ '0' ]} >
 						<Menu.Item key="0">
 							<Link to="/dashboard/home">
 								<ImgIcon src={SpeedometerImg} alt="" />
