@@ -152,22 +152,20 @@ const addLayerFromNode = (newLayers, oldLayers) => {
 	newLayers.map((item) => {
 		let aux = item.layer;
 
-		return new Promise((resolve, reject) => {
-			if (!map.getLayers().getArray().includes(aux)) {
-				oldLayers.push({ item: item.key, name: item.title, layer: aux, node: true });
-				try {
-					map.addLayer(aux);
-					aux.getSource().on('change', function() {
-						message.success(`Capa "${item.title}" cargada.`, 1);
-						resolve(oldLayers);
-					});
-				} catch (err) {
-					console.log(err);
-					reject(err);
-				}
+		if (!map.getLayers().getArray().includes(aux)) {
+			oldLayers.push({ item: item.key, name: item.title, layer: aux, node: true });
+			try {
+				map.addLayer(aux);
+				aux.getSource().on('change', function() {
+					message.success(`Capa "${item.title}" cargada.`, 1);
+				});
+			} catch (err) {
+				console.log(err);
+				return err;
 			}
-		});
+		}
 	});
+	return oldLayers;
 };
 
 const removeLayer = (array, arrayN, oldLayers) => {

@@ -136,8 +136,8 @@ class MapContainer extends React.Component {
 		this.setState({ layers: result });
 	};
 
-	addLayerFromNode = async (array) => {
-		let result = await addLayerFromNode(array, this.state.layers);
+	addLayerFromNode = (array) => {
+		let result = addLayerFromNode(array, this.state.layers);
 		this.setState({ layers: result });
 	};
 
