@@ -176,7 +176,7 @@ class SiderComponent extends Component {
 
 	handleChangeModule = (string) => {
 		if (string === 1 || string === 2) {
-			this.setState({ view: string });
+			this.setState({ view: string, submenu: 'rb_layers' });
 		} else {
 			this.setState({ view: 0 });
 			this.props.selectModule(string);
