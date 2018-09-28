@@ -1,8 +1,6 @@
 import React from 'react';
 import { Timeline, message, Icon, Col, Row, List } from 'antd';
-import axios from 'axios';
-
-const API = 'http://192.168.0.10:3001';
+import { fetchInfrastructure } from './../../services';
 
 export class EntitiesInv extends React.Component {
 	state = {
@@ -23,8 +21,7 @@ export class EntitiesInv extends React.Component {
 
 	fetchData = (gid) => {
 		const _this = this;
-		axios
-			.get(`${API}/api/infrastructure/${gid}`)
+		fetchInfrastructure(gid)
 			.then(function(response) {
 				let items = [];
 				response.data.inversions.map((item) => {

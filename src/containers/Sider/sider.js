@@ -29,6 +29,7 @@ import {
 } from './../../components/Icons';
 
 import Logo from './../../components/Logo/';
+import TareaVida from './../../components/TareaVida';
 import './index.css';
 
 const TreeNode = Tree.TreeNode;
@@ -274,10 +275,36 @@ class SiderComponent extends Component {
 		});
 	};
 
+	renderRadioView = () => {
+		const modules = Modules;
+		const { sider: { item } } = this.props;
+		const { submenu } = this.state;
+
+		if (submenu === 'rb_layers') {
+			return (
+				<Tree
+					style={{ fontSize: 11 }}
+					checkable
+					onCheck={this.onCheck}
+					checkedKeys={this.state.checkedKeys}
+					selectedKeys={this.state.selectedKeys}
+				>
+					{this.renderTreeNodes(modules)}
+				</Tree>
+			);
+		}
+
+		if (submenu === 'rb_chart') {
+			if (item === 'lifeTask') {
+				return <TareaVida />;
+			}
+		}
+	};
+
 	render() {
 		const modules = Modules;
 		const { sider: { item, layers }, collapsed, onCollapse, showModal, nodes } = this.props;
-		const { selectNode } = this.state;
+		const { selectNode, submenu } = this.state;
 
 		return (
 			<SiderWrapper
@@ -291,7 +318,7 @@ class SiderComponent extends Component {
 				<Logo />
 				<Divider dashed style={{ margin: '5px 0 0 0' }} />
 				<Animate visible={this.state.view === 1}>
-					<MenuWrapper onClick={this.handleClick}>
+					<MenuWrapper>
 						<Menu.Item key="1" onClick={this.handleChangeModule.bind(this, 'investments')}>
 							<Badge
 								style={{ right: -30 }}
@@ -358,27 +385,24 @@ class SiderComponent extends Component {
 					{this.renderBreadcrumb(item)}
 					{item && modules[item].length ? (
 						<Col>
-							<Radio.Group value={this.state.submenu} onChange={this.handleChangeSubMenu}>
-								<Radio.Button size="small" value="rb_layers">
-									<ImgSecondChoice src={LayersImg} alt="" />
-								</Radio.Button>
-								<Radio.Button value="rb_chart" disabled>
-									<ImgSecondChoice src={PresentationImg} alt="" />
-								</Radio.Button>
-								<Radio.Button value="rb_info" disabled>
-									<ImgSecondChoice src={QuestionImg} alt="" />
-								</Radio.Button>
+							<Radio.Group value={submenu} onChange={this.handleChangeSubMenu}>
+								<TooltipWrapper placement="top" title={'Capas'}>
+									<Radio.Button size="small" value="rb_layers">
+										<ImgSecondChoice src={LayersImg} alt="" />
+									</Radio.Button>
+								</TooltipWrapper>
+								<TooltipWrapper placement="top" title={'Estadísticas'}>
+									<Radio.Button value="rb_chart" disabled={item !== 'lifeTask'}>
+										<ImgSecondChoice src={PresentationImg} alt="" />
+									</Radio.Button>
+								</TooltipWrapper>
+								<TooltipWrapper placement="top" title={'Información'}>
+									<Radio.Button value="rb_info" disabled>
+										<ImgSecondChoice src={QuestionImg} alt="" />
+									</Radio.Button>
+								</TooltipWrapper>
 							</Radio.Group>
-
-							<Tree
-								style={{ fontSize: 11 }}
-								checkable
-								onCheck={this.onCheck}
-								checkedKeys={this.state.checkedKeys}
-								selectedKeys={this.state.selectedKeys}
-							>
-								{this.renderTreeNodes(modules)}
-							</Tree>
+							{this.renderRadioView()}
 						</Col>
 					) : item ? (
 						<Alert message="No hay capas disponibles" type="info" showIcon />
