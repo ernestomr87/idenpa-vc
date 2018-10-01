@@ -277,7 +277,7 @@ class SiderComponent extends Component {
 
 	renderRadioView = () => {
 		const modules = Modules;
-		const { sider: { item } } = this.props;
+		const { sider: { item }, add, del } = this.props;
 		const { submenu } = this.state;
 
 		if (submenu === 'rb_layers') {
@@ -296,7 +296,7 @@ class SiderComponent extends Component {
 
 		if (submenu === 'rb_chart') {
 			if (item === 'lifeTask') {
-				return <TareaVida />;
+				return <TareaVida add={add} del={del} />;
 			}
 		}
 	};
@@ -391,7 +391,10 @@ class SiderComponent extends Component {
 										<ImgSecondChoice src={LayersImg} alt="" />
 									</Radio.Button>
 								</TooltipWrapper>
-								<TooltipWrapper placement="top" title={'Estadísticas'}>
+								<TooltipWrapper
+									placement="top"
+									title={item === 'lifeTask' ? 'Afectaciones' : 'Estadísticas'}
+								>
 									<Radio.Button value="rb_chart" disabled={item !== 'lifeTask'}>
 										<ImgSecondChoice src={PresentationImg} alt="" />
 									</Radio.Button>

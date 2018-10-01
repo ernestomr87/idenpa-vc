@@ -21,7 +21,10 @@ const Div = styled.div``;
 export default class Agroproductividad extends Component {
 	state = {
 		collection: null,
-		total: null
+		total: null,
+		selectedTotalRowKeys: [],
+		selectedMunicipioRowKeys: [],
+		selectedTab: 1
 	};
 
 	componentWillMount = () => {
@@ -61,12 +64,32 @@ export default class Agroproductividad extends Component {
 	};
 
 	renderTotal = () => {
-		const { total } = this.state;
+		const { total, selectedTotalRowKeys } = this.state;
+		const rowSelection = {
+			selectedTotalRowKeys,
+			onChange: this.onSelectTotalChange
+		};
 		const dataSource = [];
-
 		if (total) {
 			Object.keys(total).forEach(function(key) {
-				dataSource.push({ key: key, value: total[key] });
+				let text = null;
+				switch (key) {
+					case '1':
+						text = 'I';
+						break;
+					case '2':
+						text = 'II';
+						break;
+					case '3':
+						text = 'III';
+						break;
+					case '4':
+						text = 'IV';
+						break;
+					default:
+						break;
+				}
+				dataSource.push({ key: text, value: total[key] });
 			});
 
 			const columns = [
@@ -90,7 +113,14 @@ export default class Agroproductividad extends Component {
 			};
 			return (
 				<div>
-					<Table pagination={false} bordered={true} size="small" dataSource={dataSource} columns={columns} />
+					<Table
+						pagination={false}
+						rowSelection={rowSelection}
+						bordered={true}
+						size="small"
+						dataSource={dataSource}
+						columns={columns}
+					/>
 					<Div>
 						<Chart height={290} data={dataSource} scale={scale} forceFit>
 							<Axis title name="categorías" />
@@ -105,10 +135,32 @@ export default class Agroproductividad extends Component {
 	};
 
 	renderMunicipio = (municipio) => {
-		const { collection } = this.state;
+		const { collection, selectedMunicipioRowKeys } = this.state;
+		const rowSelection = {
+			selectedMunicipioRowKeys,
+			onChange: this.onSelectMunicipioChange
+		};
 
 		if (collection) {
 			const dataSource = collection[municipio];
+			dataSource.map((item) => {
+				switch (item.cat_agrop) {
+					case '1':
+						item.cat_agrop = 'I';
+						break;
+					case '2':
+						item.cat_agrop = 'II';
+						break;
+					case '3':
+						item.cat_agrop = 'III';
+						break;
+					case '4':
+						item.cat_agrop = 'IV';
+						break;
+					default:
+						break;
+				}
+			});
 			const columns = [
 				{
 					title: 'Categoría',
@@ -130,7 +182,14 @@ export default class Agroproductividad extends Component {
 			};
 			return (
 				<div>
-					<Table pagination={false} bordered={true} size="small" dataSource={dataSource} columns={columns} />
+					<Table
+						pagination={false}
+						rowSelection={rowSelection}
+						bordered={true}
+						size="small"
+						dataSource={dataSource}
+						columns={columns}
+					/>
 					<Div>
 						<Chart height={290} data={dataSource} scale={scale} forceFit>
 							<Axis title name="categorías" />
@@ -144,35 +203,48 @@ export default class Agroproductividad extends Component {
 		}
 	};
 
+	onSelectMunicipioChange = (selectedMunicipioRowKeys) => {
+		console.log('selectedRowKeys changed: ', selectedMunicipioRowKeys);
+		this.setState({ selectedMunicipioRowKeys });
+	};
+
+	onSelectTotalChange = (selectedTotalRowKeys) => {
+		this.changeLayer('total', selectedTotalRowKeys);
+		this.setState({ selectedTotalRowKeys });
+	};
+
+	changeTab = (key) => {
+		console.log(key);
+	};
+
+	changeLayer = (type, rows) => {
+		if (type === 'total') {
+			rows.map((item) => {
+				console.log(this.state.total[item]);
+			});
+		}
+	};
+
 	render() {
 		return (
 			<div>
 				<P>Agroproductividad en los suelos</P>
 
-				<Tabs defaultActiveKey="1">
-					<TabPane tab="Total" key="1">
+				<Tabs defaultActiveKey={this.state.selectedTab} onChange={this.changeTab}>
+					<TabPane tab="Total" key={1}>
 						{this.renderTotal()}
 					</TabPane>
-					<TabPane tab="Caibarién" key="2">
-						{this.renderMunicipio('Caibarién')}
+					<TabPane tab="Sagua la Grande" key={2}>
+						{this.renderMunicipio('Sagua la Grande')}
 					</TabPane>
-					<TabPane tab="Camajuaní" key="3">
-						{this.renderMunicipio('Camajuaní')}
-					</TabPane>
-					<TabPane tab="Encrucijada" key="4">
+					<TabPane tab="Encrucijada" key={3}>
 						{this.renderMunicipio('Encrucijada')}
 					</TabPane>
-					<TabPane tab="Quemado de Güines" key="5">
-						{this.renderMunicipio('Quemado de Güines')}
+					<TabPane tab="Caibarién" key={4}>
+						{this.renderMunicipio('Caibarién')}
 					</TabPane>
-					<TabPane tab="Quemado de Güines" key="6">
-						{this.renderMunicipio('Quemado de Güines')}
-					</TabPane>
-					<TabPane tab="Remedios" key="7">
-						{this.renderMunicipio('Remedios')}
-					</TabPane>
-					<TabPane tab="Sagua la Grande" key="8">
-						{this.renderMunicipio('Sagua la Grande')}
+					<TabPane tab="Camajuaní" key={5}>
+						{this.renderMunicipio('Camajuaní')}
 					</TabPane>
 				</Tabs>
 			</div>

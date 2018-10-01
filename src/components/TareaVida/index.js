@@ -78,7 +78,7 @@ export default class TareaVida extends Component {
 					onClose={this.onClose}
 					visible={this.state.visible}
 				>
-					{this.state.view === 0 ? <Agroproductividad /> : null}
+					{this.state.view === 0 ? <Agroproductividad add={this.props.add} /> : null}
 				</Drawer>
 			</div>
 		);
