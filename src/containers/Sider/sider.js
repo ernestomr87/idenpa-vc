@@ -325,7 +325,7 @@ class SiderComponent extends Component {
 								count={typeof layers['investments'] !== 'undefined' ? layers['investments'].length : 0}
 							>
 								<ImgInversion src={MoneyBagImg} alt="" />
-								<span>Inverciones</span>
+								<span>Inversiones</span>
 							</Badge>
 						</Menu.Item>
 						<Menu.Item key="2" onClick={this.handleChangeModule.bind(this, 'irrigation')}>
