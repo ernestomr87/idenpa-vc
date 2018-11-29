@@ -277,29 +277,38 @@ class SiderComponent extends Component {
 
 	renderRadioView = () => {
 		const modules = Modules;
-		const { sider: { item }, add, del } = this.props;
 		const { submenu } = this.state;
 
 		if (submenu === 'rb_layers') {
 			return (
-				<Tree
-					style={{ fontSize: 11 }}
-					checkable
-					onCheck={this.onCheck}
-					checkedKeys={this.state.checkedKeys}
-					selectedKeys={this.state.selectedKeys}
-				>
-					{this.renderTreeNodes(modules)}
-				</Tree>
+				<div>
+					<Tree
+						style={{ fontSize: 11 }}
+						checkable
+						onCheck={this.onCheck}
+						checkedKeys={this.state.checkedKeys}
+						selectedKeys={this.state.selectedKeys}
+					>
+						{this.renderTreeNodes(modules)}
+					</Tree>
+				</div>
 			);
 		}
+	};
 
-		if (submenu === 'rb_chart') {
+	renderRadioView2 = () => {
+		const { sider: { item }, add, del } = this.props;
+		const { submenu } = this.state;
+		if (submenu === 'rb_layers') {
 			if (item === 'lifeTask') {
-				return <TareaVida add={add} del={del} />;
+				return (
+					<div>
+						<TareaVida add={add} del={del} />
+					</div>
+				)
 			}
 		}
-	};
+	}
 
 	render() {
 		const modules = Modules;

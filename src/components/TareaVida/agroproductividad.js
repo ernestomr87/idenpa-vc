@@ -1,253 +1,235 @@
-import React, { Component } from 'react';
-import { Table, Tabs, message } from 'antd';
-import { fetchAgroproductividad } from './../../services';
-import styled from 'styled-components';
-import { Chart, Axis, Legend, Tooltip, Geom } from 'bizcharts';
+import React, { Component } from "react";
+import { Table, Tabs, message } from "antd";
+import {
+  fetchAgroproductividad,
+  fetchAgroproductividadByMun
+} from "./../../services";
+import styled from "styled-components";
+import { Chart, Axis, Legend, Tooltip, Geom } from "bizcharts";
 
 const TabPane = Tabs.TabPane;
 
 const P = styled.p`
-	const: 500;
-	font-size: 16px;
-	color: rgba(0, 0, 0, 0.85);
-	display: block;
-	font-family: "Monospaced Number", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
-	margin-bottom: 15px;
+  const: 500;
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.85);
+  display: block;
+  font-family: "Monospaced Number", "Chinese Quote", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-bottom: 15px;
 `;
 
 const Div = styled.div``;
 
 export default class Agroproductividad extends Component {
-	state = {
-		collection: null,
-		total: null,
-		selectedTotalRowKeys: [],
-		selectedMunicipioRowKeys: [],
-		selectedTab: 1
-	};
+  state = {
+    total: null,
+    municipios: {},
+    selectedTotalRowKeys: [],
+    selectedMunicipioRowKeys: [],
+    selectedTab: 1
+  };
 
-	componentWillMount = () => {
-		this.fetchData();
-	};
+  componentWillMount = () => {
+    this.fetchTotalData();
+    this.fetchMunData("Sagua la Grande");
+    this.fetchMunData("Encrucijada");
+    this.fetchMunData("Caibarién");
+    this.fetchMunData("Camajuaní");
+  };
 
-	fetchData = () => {
-		const _this = this;
-		fetchAgroproductividad()
-			.then(function(response) {
-				let collection = {};
-				let total = {
-					1: 0,
-					2: 0,
-					3: 0,
-					4: 0
-				};
-				response.data.forEach((element) => {
-					if (element.municipio !== '0') {
-						if (!collection[element.municipio]) {
-							collection[element.municipio] = [];
-						}
-						collection[element.municipio].push(element);
-						total[parseInt(element.cat_agrop)] = total[element.cat_agrop] + element.sum;
-					}
-				});
-				console.log(collection);
-				_this.setState({
-					collection,
-					total
-				});
-			})
-			.catch(function(error) {
-				// handle error
-				message.error(error.message);
-			});
-	};
+  fetchTotalData = () => {
+    const _this = this;
+    fetchAgroproductividad()
+      .then(function(response) {
+        _this.setState({
+          total: response.data
+        });
+      })
+      .catch(function(error) {
+        // handle error
+        message.error(error.message);
+      });
+  };
 
-	renderTotal = () => {
-		const { total, selectedTotalRowKeys } = this.state;
-		const rowSelection = {
-			selectedTotalRowKeys,
-			onChange: this.onSelectTotalChange
-		};
-		const dataSource = [];
-		if (total) {
-			Object.keys(total).forEach(function(key) {
-				let text = null;
-				switch (key) {
-					case '1':
-						text = 'I';
-						break;
-					case '2':
-						text = 'II';
-						break;
-					case '3':
-						text = 'III';
-						break;
-					case '4':
-						text = 'IV';
-						break;
-					default:
-						break;
-				}
-				dataSource.push({ key: text, value: total[key] });
-			});
+  fetchMunData = mun => {
+    const _this = this;
+    let municipios = this.state.municipios;
+    fetchAgroproductividadByMun(mun)
+      .then(function(response) {
+        municipios[mun] = response.data;
+        _this.setState({
+          municipios: municipios
+        });
+      })
+      .catch(function(error) {
+        // handle error
+        message.error(error.message);
+      });
+  };
 
-			const columns = [
-				{
-					title: 'Categoría',
-					dataIndex: 'key',
-					key: 'key',
-					align: 'center'
-				},
-				{
-					title: 'Área (ha)',
-					dataIndex: 'value',
-					key: 'value',
-					align: 'center'
-				}
-			];
+  renderTotal = () => {
+    const { total, selectedTotalRowKeys } = this.state;
+    const rowSelection = {
+      selectedTotalRowKeys,
+      onChange: this.onSelectTotalChange
+    };
+    const dataSource = [];
+    if (total) {
+      Object.keys(total).forEach(function(key) {
+        let cat = total[key].cat;
+        let area = total[key].area;
+        dataSource.push({ key: cat, value: area });
+      });
 
-			const scale = {
-				key: { alias: 'Categorías' },
-				value: { alias: 'Valores' }
-			};
-			return (
-				<div>
-					<Table
-						pagination={false}
-						rowSelection={rowSelection}
-						bordered={true}
-						size="small"
-						dataSource={dataSource}
-						columns={columns}
-					/>
-					<Div>
-						<Chart height={290} data={dataSource} scale={scale} forceFit>
-							<Axis title name="categorías" />
-							<Axis title name="valores" />
-							<Tooltip crosshairs={{ type: 'rect' }} />
-							<Geom type="interval" position="key*value" color="value" />
-						</Chart>
-					</Div>
-				</div>
-			);
-		}
-	};
+      const columns = [
+        {
+          title: "Categoría",
+          dataIndex: "key",
+          key: "key",
+          align: "center"
+        },
+        {
+          title: "Área (ha)",
+          dataIndex: "value",
+          key: "value",
+          align: "center"
+        }
+      ];
 
-	renderMunicipio = (municipio) => {
-		const { collection, selectedMunicipioRowKeys } = this.state;
-		const rowSelection = {
-			selectedMunicipioRowKeys,
-			onChange: this.onSelectMunicipioChange
-		};
+      const scale = {
+        key: { alias: "Categorías" },
+        value: { alias: "Valores" }
+      };
+      return (
+        <div>
+          <Table
+            pagination={false}
+            rowSelection={rowSelection}
+            bordered={true}
+            size="small"
+            dataSource={dataSource}
+            columns={columns}
+          />
+          <Div>
+            <Chart height={290} data={dataSource} scale={scale} forceFit>
+              <Axis title name="categorías" />
+              <Axis title name="valores" />
+              <Tooltip crosshairs={{ type: "rect" }} />
+              <Geom type="interval" position="key*value" color="value" />
+            </Chart>
+          </Div>
+        </div>
+      );
+    }
+  };
 
-		if (collection) {
-			const dataSource = collection[municipio];
-			dataSource.map((item) => {
-				switch (item.cat_agrop) {
-					case '1':
-						item.cat_agrop = 'I';
-						break;
-					case '2':
-						item.cat_agrop = 'II';
-						break;
-					case '3':
-						item.cat_agrop = 'III';
-						break;
-					case '4':
-						item.cat_agrop = 'IV';
-						break;
-					default:
-						break;
-				}
-			});
-			const columns = [
-				{
-					title: 'Categoría',
-					dataIndex: 'cat_agrop',
-					key: 'cat_agrop',
-					align: 'center'
-				},
-				{
-					title: 'Área (ha)',
-					dataIndex: 'sum',
-					key: 'sum',
-					align: 'center'
-				}
-			];
+  renderMunicipio = municipio => {
+    const { municipios, selectedMunicipioRowKeys } = this.state;
+    const rowSelection = {
+      selectedMunicipioRowKeys,
+      onChange: this.onSelectMunicipioChange
+    };
 
-			const scale = {
-				cat_agrop: { alias: 'Categorías' },
-				sum: { alias: 'Valores' }
-			};
-			return (
-				<div>
-					<Table
-						pagination={false}
-						rowSelection={rowSelection}
-						bordered={true}
-						size="small"
-						dataSource={dataSource}
-						columns={columns}
-					/>
-					<Div>
-						<Chart height={290} data={dataSource} scale={scale} forceFit>
-							<Axis title name="categorías" />
-							<Axis title name="valores" />
-							<Tooltip crosshairs={{ type: 'rect' }} />
-							<Geom type="interval" position="cat_agrop*sum" color="sum" />
-						</Chart>
-					</Div>
-				</div>
-			);
-		}
-	};
+    const dataSource = [];
+    if (municipios[municipio]) {
+      Object.keys(municipios[municipio]).forEach(function(key) {
+        let cat = municipios[municipio][key].cat;
+        let area = municipios[municipio][key].area;
+        dataSource.push({ key: cat, value: area });
+      });
 
-	onSelectMunicipioChange = (selectedMunicipioRowKeys) => {
-		console.log('selectedRowKeys changed: ', selectedMunicipioRowKeys);
-		this.setState({ selectedMunicipioRowKeys });
-	};
+          const columns = [
+        {
+          title: "Categoría",
+          dataIndex: "key",
+          key: "key",
+          align: "center"
+        },
+        {
+          title: "Área (ha)",
+          dataIndex: "value",
+          key: "value",
+          align: "center"
+        }
+      ];
 
-	onSelectTotalChange = (selectedTotalRowKeys) => {
-		this.changeLayer('total', selectedTotalRowKeys);
-		this.setState({ selectedTotalRowKeys });
-	};
+      const scale = {
+        key: { alias: "Categorías" },
+        value: { alias: "Valores" }
+      };
+      return (
+        <div>
+          <Table
+            pagination={false}
+            rowSelection={rowSelection}
+            bordered={true}
+            size="small"
+            dataSource={dataSource}
+            columns={columns}
+          />
+          <Div>
+            <Chart height={290} data={dataSource} scale={scale} forceFit>
+              <Axis title name="categorías" />
+              <Axis title name="valores" />
+              <Tooltip crosshairs={{ type: "rect" }} />
+              <Geom type="interval" position="key*value" color="value" />
+            </Chart>
+          </Div>
+        </div>
+      );
+    }
+  };
 
-	changeTab = (key) => {
-		console.log(key);
-	};
+  onSelectMunicipioChange = selectedMunicipioRowKeys => {
+    console.log("selectedRowKeys changed: ", selectedMunicipioRowKeys);
+    this.setState({ selectedMunicipioRowKeys });
+  };
 
-	changeLayer = (type, rows) => {
-		if (type === 'total') {
-			rows.map((item) => {
-				console.log(this.state.total[item]);
-			});
-		}
-	};
+  onSelectTotalChange = selectedTotalRowKeys => {
+    this.changeLayer("total", selectedTotalRowKeys);
+    this.setState({ selectedTotalRowKeys });
+  };
 
-	render() {
-		return (
-			<div>
-				<P>Agroproductividad en los suelos</P>
+  changeTab = key => {
+    console.log(key);
+  };
 
-				<Tabs defaultActiveKey={this.state.selectedTab} onChange={this.changeTab}>
-					<TabPane tab="Total" key={1}>
-						{this.renderTotal()}
-					</TabPane>
-					<TabPane tab="Sagua la Grande" key={2}>
-						{this.renderMunicipio('Sagua la Grande')}
-					</TabPane>
-					<TabPane tab="Encrucijada" key={3}>
-						{this.renderMunicipio('Encrucijada')}
-					</TabPane>
-					<TabPane tab="Caibarién" key={4}>
-						{this.renderMunicipio('Caibarién')}
-					</TabPane>
-					<TabPane tab="Camajuaní" key={5}>
-						{this.renderMunicipio('Camajuaní')}
-					</TabPane>
-				</Tabs>
-			</div>
-		);
-	}
+  changeLayer = (type, rows) => {
+    if (type === "total") {
+      rows.map(item => {
+        console.log(this.state.total[item]);
+      });
+    }
+  };
+
+  render() {
+    return (
+      <div>
+        <P>Agroproductividad en los suelos</P>
+
+        <Tabs
+          defaultActiveKey={this.state.selectedTab}
+          onChange={this.changeTab}
+        >
+          <TabPane tab="Total" key={1}>
+            {this.renderTotal()}
+          </TabPane>
+          <TabPane tab="Sagua la Grande" key={2}>
+            {this.renderMunicipio("Sagua la Grande")}
+          </TabPane>
+          <TabPane tab="Encrucijada" key={3}>
+            {this.renderMunicipio("Encrucijada")}
+          </TabPane>
+          <TabPane tab="Caibarién" key={4}>
+            {this.renderMunicipio("Caibarién")}
+          </TabPane>
+          <TabPane tab="Camajuaní" key={5}>
+            {this.renderMunicipio("Camajuaní")}
+          </TabPane>
+        </Tabs>
+      </div>
+    );
+  }
 }
