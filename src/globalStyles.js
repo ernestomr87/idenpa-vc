@@ -1,4 +1,4 @@
-import { injectGlobal } from 'styled-components';
+import { injectGlobal } from "styled-components";
 
 /* eslint no-unused-expressions: 0 */
 injectGlobal`
@@ -29,5 +29,8 @@ injectGlobal`
   }
   .ol-overlaycontainer-stopevent{
     display:hidden;
+  }
+  .ant-tabs-tab{
+    margin: 0 !important;
   }
 `;

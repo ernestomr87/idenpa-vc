@@ -5,7 +5,7 @@ import {
   fetchAgroproductividadByMun
 } from "./../../services";
 import styled from "styled-components";
-import { Chart, Axis, Legend, Tooltip, Geom } from "bizcharts";
+import { Chart, Axis, Tooltip, Geom } from "bizcharts";
 
 const TabPane = Tabs.TabPane;
 
@@ -21,6 +21,11 @@ const P = styled.p`
 `;
 
 const Div = styled.div``;
+const TabsWrapper = styled(Tabs)`
+  &.ant-tabs-tab {
+    margin: 0 !important;
+  }
+`;
 
 export default class Agroproductividad extends Component {
   state = {
@@ -70,10 +75,11 @@ export default class Agroproductividad extends Component {
   };
 
   renderTotal = () => {
-    const { total, selectedTotalRowKeys } = this.state;
+    const { total } = this.state;
     const rowSelection = {
-      selectedTotalRowKeys,
-      onChange: this.onSelectTotalChange
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.props.selectedRows(selectedRowKeys, selectedRows);
+      }
     };
     const dataSource = [];
     if (total) {
@@ -107,7 +113,6 @@ export default class Agroproductividad extends Component {
           <Table
             pagination={false}
             rowSelection={rowSelection}
-            bordered={true}
             size="small"
             dataSource={dataSource}
             columns={columns}
@@ -140,7 +145,7 @@ export default class Agroproductividad extends Component {
         dataSource.push({ key: cat, value: area });
       });
 
-          const columns = [
+      const columns = [
         {
           title: "Categoría",
           dataIndex: "key",
@@ -164,7 +169,6 @@ export default class Agroproductividad extends Component {
           <Table
             pagination={false}
             rowSelection={rowSelection}
-            bordered={true}
             size="small"
             dataSource={dataSource}
             columns={columns}
@@ -209,7 +213,8 @@ export default class Agroproductividad extends Component {
       <div>
         <P>Agroproductividad en los suelos</P>
 
-        <Tabs
+        <TabsWrapper
+          size="small"
           defaultActiveKey={this.state.selectedTab}
           onChange={this.changeTab}
         >
@@ -228,7 +233,7 @@ export default class Agroproductividad extends Component {
           <TabPane tab="Camajuaní" key={5}>
             {this.renderMunicipio("Camajuaní")}
           </TabPane>
-        </Tabs>
+        </TabsWrapper>
       </div>
     );
   }
