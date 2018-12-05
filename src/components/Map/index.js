@@ -169,7 +169,9 @@ class MapContainer extends React.Component {
   addLayer = async array => {
     let result = await addLayer(array, this.state.layers);
     let importants = this.state.importants;
-    importants.push(result.important);
+    if (result.important) {
+      importants.push(result.important);
+    }
     this.setState({ layers: result.oldLayers, importants: importants });
   };
 
@@ -223,7 +225,7 @@ class MapContainer extends React.Component {
       });
     } else {
       Object.keys(properties).forEach(function(key, index) {
-        if (properties[key] &&  !(properties[key] instanceof Object)) {
+        if (properties[key] && !(properties[key] instanceof Object)) {
           dataSource.push({ key: key, value: properties[key] });
         }
       });

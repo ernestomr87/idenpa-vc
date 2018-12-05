@@ -95,7 +95,7 @@ const categoryToRoman = cat => {
 
 const addLayer = (newLayers, oldLayers) => {
   let diff;
-  let important;
+  let important = null;
   for (let j = 0; j < newLayers.length; j++) {
     let exist = false;
     for (let i = 0; i < oldLayers.length; i++) {

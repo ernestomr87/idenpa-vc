@@ -141,6 +141,8 @@ class TareaVida extends Component {
 
         <Drawer
           width={410}
+          mask={false}
+          maskClosable={false}
           placement="right"
           closable={true}
           onClose={this.onClose}
