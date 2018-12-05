@@ -33,7 +33,8 @@ export default class Agroproductividad extends Component {
     municipios: {},
     selectedTotalRowKeys: [],
     selectedMunicipioRowKeys: [],
-    selectedTab: 1
+    selectedTab: 1,
+    selectedRowKeys: []
   };
 
   componentWillMount = () => {
@@ -75,9 +76,11 @@ export default class Agroproductividad extends Component {
   };
 
   renderTotal = () => {
-    const { total } = this.state;
+    const { total, selectedRowKeys } = this.state;
     const rowSelection = {
+      selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ selectedRowKeys });
         this.props.selectedRows(null, selectedRows);
       }
     };
@@ -131,9 +134,11 @@ export default class Agroproductividad extends Component {
   };
 
   renderMunicipio = municipio => {
-    const { municipios, selectedMunicipioRowKeys } = this.state;
+    const { municipios, selectedRowKeys } = this.state;
     const rowSelection = {
+      selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
+        this.setState({ selectedRowKeys });
         this.props.selectedRows(municipio, selectedRows);
       }
     };
@@ -198,7 +203,8 @@ export default class Agroproductividad extends Component {
   };
 
   changeTab = key => {
-    console.log(key);
+    this.setState({ selectedRowKeys: [] });
+    this.props.selectedRows(null, []);
   };
 
   changeLayer = (type, rows) => {
