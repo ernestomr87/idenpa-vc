@@ -78,7 +78,7 @@ export default class Agroproductividad extends Component {
     const { total } = this.state;
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        this.props.selectedRows(selectedRowKeys, selectedRows);
+        this.props.selectedRows(null, selectedRows);
       }
     };
     const dataSource = [];
@@ -133,8 +133,9 @@ export default class Agroproductividad extends Component {
   renderMunicipio = municipio => {
     const { municipios, selectedMunicipioRowKeys } = this.state;
     const rowSelection = {
-      selectedMunicipioRowKeys,
-      onChange: this.onSelectMunicipioChange
+      onChange: (selectedRowKeys, selectedRows) => {
+        this.props.selectedRows(municipio, selectedRows);
+      }
     };
 
     const dataSource = [];

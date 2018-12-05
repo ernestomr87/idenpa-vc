@@ -17,7 +17,8 @@ import map, {
   addLayerFromNode,
   listLayerByNode,
   changeMap,
-  removeLayer
+  removeLayer,
+  showLayerByCategory
 } from "./utils";
 
 import "ol/ol.css";
@@ -75,15 +76,12 @@ const pStyle = {
 	"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif`
 };
 
-
-
-
-
 /* eslint-disable react/prefer-stateless-function */
 class MapContainer extends React.Component {
   state = {
     test: "",
     layers: [],
+    importants: [],
     model: {},
     module: null,
     visible: false,
@@ -93,7 +91,7 @@ class MapContainer extends React.Component {
   };
 
   componentWillReceiveProps = nextProps => {
-    const { layers, nodes } = nextProps;
+    const { layers, nodes, interaction } = nextProps;
 
     if (layers !== this.props.layers) {
       let array = [];
@@ -129,6 +127,23 @@ class MapContainer extends React.Component {
         this.removeLayer(array, arrayN);
       }
     }
+
+    if (interaction.data) {
+      this.doAction(interaction);
+    }
+  };
+
+  doAction = interaction => {
+    if (interaction.name === "Polígonos de suelo afectado") {
+      const important = this.state.importants.filter(
+        item => item.name === interaction.name
+      );
+      let ol_uid = null;
+      if (important.length && important[0].ol_uid) {
+        ol_uid = important[0].ol_uid;
+      }
+      showLayerByCategory(ol_uid, interaction);
+    }
   };
 
   changeState = (feature, model, select) => {
@@ -150,9 +165,12 @@ class MapContainer extends React.Component {
     this.setState({ typeMap: changeMap() });
   };
 
+  //oldLayers, importants
   addLayer = async array => {
     let result = await addLayer(array, this.state.layers);
-    this.setState({ layers: result });
+    let importants = this.state.importants;
+    importants.push(result.important);
+    this.setState({ layers: result.oldLayers, importants: importants });
   };
 
   addLayerFromNode = array => {
@@ -196,11 +214,21 @@ class MapContainer extends React.Component {
         key: "value"
       }
     ];
-    Object.keys(model).forEach(function(key, index) {
-      if (properties[key]) {
-        dataSource.push({ key: model[key], value: properties[key] });
-      }
-    });
+
+    if (model) {
+      Object.keys(model).forEach(function(key, index) {
+        if (properties[key]) {
+          dataSource.push({ key: model[key], value: properties[key] });
+        }
+      });
+    } else {
+      Object.keys(properties).forEach(function(key, index) {
+        if (properties[key] &&  !(properties[key] instanceof Object)) {
+          dataSource.push({ key: key, value: properties[key] });
+        }
+      });
+    }
+
     if (dataSource.length > 1) {
       return (
         <div>

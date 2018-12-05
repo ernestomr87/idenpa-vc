@@ -91,10 +91,11 @@ class TareaVida extends Component {
     });
   };
 
-  selectedRows = (selectedRowKeys, selectedRows) => {
+  selectedRows = (municipio, selectedRows) => {
     this.props.show({
       name: "Polígonos de suelo afectado",
-      data: selectedRows
+      data: selectedRows,
+      municipio
     });
   };
 

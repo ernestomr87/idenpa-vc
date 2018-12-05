@@ -40,7 +40,7 @@ var style = new OlStyle({
 export default [
   {
     name: "Polígonos de suelo afectado",
-    nomenclature: "nomenclatureMicropresas",
+    nomenclature: null,
     style: function(feature) {
       var color =
         colorSueloAfectado[categoryToRoman(feature.get("cat_gral10_cult"))];

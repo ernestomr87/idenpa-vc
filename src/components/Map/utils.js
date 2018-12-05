@@ -14,6 +14,8 @@ import OlFormatGeoJSON from "ol/format/geojson";
 
 import colors from "./../../utils/colors";
 
+let compareid = null;
+
 var osm = new OlLayerTile({
   name: "tms",
   projection: "EPSG:4326",
@@ -83,8 +85,17 @@ const listLayerByNode = node => {
   return array;
 };
 
+const categoryToRoman = cat => {
+  var categoryToNumber = parseFloat(cat);
+  if (categoryToNumber < 2) return "Categoria I";
+  else if (categoryToNumber < 3) return "Categoria II";
+  else if (categoryToNumber < 3.7) return "Categoria III";
+  return "Categoria IV";
+};
+
 const addLayer = (newLayers, oldLayers) => {
   let diff;
+  let important;
   for (let j = 0; j < newLayers.length; j++) {
     let exist = false;
     for (let i = 0; i < oldLayers.length; i++) {
@@ -130,6 +141,7 @@ const addLayer = (newLayers, oldLayers) => {
   if (diff.style) {
     style = diff.style;
   }
+
   aux = new OlLayerVector({
     source: new OlSourceVector({
       format: new OlFormatGeoJSON(),
@@ -138,7 +150,10 @@ const addLayer = (newLayers, oldLayers) => {
     style: style
   });
 
-
+  if (diff.name === "Polígonos de suelo afectado") {
+    compareid = aux.ol_uid;
+    important = { name: diff.name, ol_uid: aux.ol_uid };
+  }
 
   return new Promise((resolve, reject) => {
     if (
@@ -150,9 +165,11 @@ const addLayer = (newLayers, oldLayers) => {
       oldLayers.push({ item: diff, layer: aux, node: false });
       try {
         map.addLayer(aux);
-        aux.getSource().on("change", function() {
-          message.success(`Capa "${diff.name}" cargada.`, 1);
-          resolve(oldLayers);
+        aux.getSource().on("change", function(data) {
+          // if (data.target.ol_uid !== compareid) {
+          //   message.success(`Capa "${diff.name}" cargada.`, 1);
+          // }
+          resolve({ oldLayers, important });
         });
       } catch (err) {
         console.log(err);
@@ -291,5 +308,47 @@ const removeLayer = (array, arrayN, oldLayers) => {
   return nlayers2;
 };
 
+const showLayerByCategory = (ol_uid, interaction) => {
+  map.getLayers().forEach(item => {
+    if (item.ol_uid === ol_uid) {
+      item
+        .getSource()
+        .getFeatures()
+        .map(feature => {
+          feature.set("hoverStyle", false);
+        });
+      item
+        .getSource()
+        .getFeatures()
+        .map(feature => {
+          var cat = feature.get("cat_gral10_cult");
+          if (interaction.municipio) {
+            interaction.data.map(category => {
+              if (
+                categoryToRoman(cat) === category.key &&
+                feature.get("municipio") === interaction.municipio
+              ) {
+                feature.set("hoverStyle", true);
+              }
+            });
+          } else {
+            interaction.data.map(category => {
+              if (categoryToRoman(cat) === category.key) {
+                feature.set("hoverStyle", true);
+              }
+            });
+          }
+        });
+    }
+  });
+};
+
 export default map;
-export { listLayerByNode, addLayer, addLayerFromNode, removeLayer, changeMap };
+export {
+  listLayerByNode,
+  addLayer,
+  addLayerFromNode,
+  removeLayer,
+  changeMap,
+  showLayerByCategory
+};
