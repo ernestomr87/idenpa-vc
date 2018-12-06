@@ -166,9 +166,8 @@ const addLayer = (newLayers, oldLayers) => {
       try {
         map.addLayer(aux);
         aux.getSource().on("change", function(data) {
-          // if (data.target.ol_uid !== compareid) {
-          //   message.success(`Capa "${diff.name}" cargada.`, 1);
-          // }
+          message.success(`Capa "${diff.name}" cargada.`, 1);
+          aux.getSource().removeEventListener("change");
           resolve({ oldLayers, important });
         });
       } catch (err) {
