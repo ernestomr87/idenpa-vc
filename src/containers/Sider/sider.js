@@ -438,7 +438,6 @@ class SiderComponent extends Component {
                 <span>Tarea Vida</span>
               </Badge>
             </Menu.Item>
-            <Divider dashed style={{ margin: "10px 0" }} />
 
             {nodes.map((item, index) => {
               return (
