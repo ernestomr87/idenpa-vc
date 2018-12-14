@@ -1,12 +1,13 @@
 import React, { Component } from "react";
-import { Table, Tabs, message, Modal, Row, Col, Button } from "antd";
+import { Table, Tabs, message, Button, Row, Col, Modal } from "antd";
+import _ from "lodash";
 import {
-  fetchAgroproductividad,
-  fetchAgroproductividadByMun
+  fetchParcelasAfectadas,
+  fetchParcelasAfectadasByMun
 } from "./../../services";
 import styled from "styled-components";
-import { Chart, Axis, Tooltip, Geom } from "bizcharts";
-import _ from "lodash";
+import { G2, Chart, Tooltip, Geom, Axis } from "bizcharts";
+
 const TabPane = Tabs.TabPane;
 
 const P = styled.p`
@@ -19,17 +20,12 @@ const P = styled.p`
   margin-bottom: 15px;
 `;
 
-const TableWrapper = styled(Table)`
-  .ant-table {
-    border: none;
-  }
-`;
+const Div = styled.div``;
 const TabsWrapper = styled(Tabs)`
   &.ant-tabs-tab {
     margin: 0 !important;
   }
 `;
-
 const numberToLetter = number => {
   const letters = {
     10: "a",
@@ -68,27 +64,34 @@ const getRandomColor = () => {
   return color;
 };
 
-export default class Agroproductividad extends Component {
+const TableWrapper = styled(Table)`
+  .ant-table {
+    border: none;
+  }
+`;
+
+export default class ParcelasAfectadas extends Component {
   state = {
     total: null,
     municipios: {},
     selectedTotalRowKeys: [],
     selectedMunicipioRowKeys: [],
     selectedTab: 1,
-    selectedRowKeys: []
+    selectedRowKeys: [],
+    modalTotal: false
   };
 
   componentWillMount = () => {
     this.fetchTotalData();
-    this.fetchMunData("Sagua la Grande");
+    this.fetchMunData("SAGUA LA GRANDE");
     this.fetchMunData("Encrucijada");
-    this.fetchMunData("Caibarién");
-    this.fetchMunData("Camajuaní");
+    this.fetchMunData("CAIBARIEN");
+    this.fetchMunData("CAMAJUANÍ");
   };
 
   fetchTotalData = () => {
     const _this = this;
-    fetchAgroproductividad()
+    fetchParcelasAfectadas()
       .then(function(response) {
         _this.setState({
           total: response.data
@@ -103,7 +106,7 @@ export default class Agroproductividad extends Component {
   fetchMunData = mun => {
     const _this = this;
     let municipios = this.state.municipios;
-    fetchAgroproductividadByMun(mun)
+    fetchParcelasAfectadasByMun(mun)
       .then(function(response) {
         municipios[mun] = response.data;
         _this.setState({
@@ -125,39 +128,70 @@ export default class Agroproductividad extends Component {
         this.props.selectedRows(null, selectedRows);
       }
     };
-    const dataSource = [];
-    if (total) {
-      Object.keys(total).forEach(function(key) {
-        let cat = total[key].cat;
-        let area = total[key].area;
-        dataSource.push({ key: cat, value: area });
+
+    let dataSource = total;
+
+    if (dataSource) {
+      dataSource = dataSource.map(item => {
+        let color = getRandomColor();
+        item.area = _.floor(item.area, 2);
+        item["color"] = color;
+        return item;
       });
 
+      // Propiedades de las columnas de la Tabla
       const columns = [
         {
-          title: "Categoría",
-          dataIndex: "key",
-          key: "key",
-          align: "center"
+          title: "Nombre",
+          dataIndex: "nombre",
+          key: "nombre",
+          align: "left"
         },
         {
           title: "Área (ha)",
-          dataIndex: "value",
-          key: "value",
-          align: "center"
+          dataIndex: "area",
+          key: "area",
+          align: "rigth",
+          width: "75px"
         }
       ];
 
-      const scale = {
-        key: { alias: "Categorías" },
-        value: { alias: "Valores" }
-      };
+      let max = 0;
+      dataSource.forEach(function(obj) {
+        if (obj.area > max) {
+          max = obj.area;
+        }
+      });
+
+      G2.Shape.registerShape("interval", "sliceShape", {
+        draw(cfg, container) {
+          const points = cfg.points;
+          const origin = cfg.origin._origin;
+          const percent = origin.area / max;
+          const xWidth = points[2].x - points[1].x;
+          const width = xWidth * percent;
+          let path = [];
+          path.push(["M", points[0].x, points[0].y]);
+          path.push(["L", points[1].x, points[1].y]);
+          path.push(["L", points[0].x + width, points[2].y]);
+          path.push(["L", points[0].x + width, points[3].y]);
+          path.push("Z");
+          path = this.parsePath(path);
+          return container.addShape("path", {
+            attrs: {
+              fill: cfg.color,
+              path: path
+            }
+          });
+        }
+      });
+
       return (
         <div>
           <Row type="flex" justify="end">
             <Col span={6}>
               <Button
-                onClick={() => this.setModalTotal()}
+                onClick={() => this.setModalTotal(true)}
                 style={{ marginBottom: 10 }}
                 type="primary"
                 icon="pie-chart"
@@ -167,6 +201,7 @@ export default class Agroproductividad extends Component {
             </Col>
           </Row>
           <TableWrapper
+            style={{ border: "none" }}
             pagination={false}
             rowSelection={rowSelection}
             size="small"
@@ -187,30 +222,32 @@ export default class Agroproductividad extends Component {
         this.props.selectedRows(municipio, selectedRows);
       }
     };
+    console.log(this.state.municipios);
+    let dataSource = municipios[municipio];
+    console.log(dataSource);
 
-    const dataSource = [];
-    if (municipios[municipio]) {
-      Object.keys(municipios[municipio]).forEach(function(key) {
-        let cat = municipios[municipio][key].cat;
-        let area = municipios[municipio][key].area;
-        dataSource.push({ key: cat, value: area });
+    if (dataSource) {
+      dataSource = dataSource.map(item => {
+        let color = getRandomColor();
+        item.area = _.floor(item.area, 2);
+        item["color"] = color;
+        return item;
       });
-
       const columns = [
         {
-          title: "Categoría",
-          dataIndex: "key",
-          key: "key",
-          align: "center"
+          title: "Nombre",
+          dataIndex: "nombre",
+          key: "nombre",
+          align: "left"
         },
         {
           title: "Área (ha)",
-          dataIndex: "value",
-          key: "value",
-          align: "center"
+          dataIndex: "area",
+          key: "area",
+          align: "rigth",
+          width: "75px"
         }
       ];
-
       return (
         <div>
           <Row type="flex" justify="end">
@@ -226,6 +263,7 @@ export default class Agroproductividad extends Component {
             </Col>
           </Row>
           <TableWrapper
+            style={{ border: "none" }}
             pagination={false}
             rowSelection={rowSelection}
             size="small"
@@ -261,30 +299,37 @@ export default class Agroproductividad extends Component {
   };
 
   setModalTotal = () => {
-    // key*value
     let dataSource = this.state.total;
     dataSource = dataSource.map(item => {
       let color = getRandomColor();
       item.area = _.floor(item.area, 2);
       item["color"] = color;
+      item["name"] = item.nombre;
       return item;
     });
 
+    let max = 0;
+    dataSource.forEach(function(obj) {
+      if (obj.area > max) {
+        max = obj.area;
+      }
+    });
+
     const scale = {
-      cat: { alias: "Nombre" },
+      nombre: { alias: "Nombre" },
       area: { alias: "Área (ha)" }
     };
 
     Modal.info({
       width: "50%",
-      title: "Agroproductividad en los suelos ",
+      title: "Gráfico Parcelas afectadas por tipo de uso ",
       content: (
         <div>
           <Chart data={dataSource} scale={scale} forceFit>
-            <Axis title name="key" visible={false} />
+            <Axis title name="nombre" visible={false} />
 
             <Tooltip crosshairs={{ type: "rect" }} />
-            <Geom type="interval" position="cat*area" color="color" />
+            <Geom type="interval" position="nombre*area" color="color" />
           </Chart>
         </div>
       ),
@@ -293,30 +338,38 @@ export default class Agroproductividad extends Component {
   };
 
   setModalMunicipio = municipio => {
+    console.log(this.state.municipios[municipio]);
     let dataSource = this.state.municipios;
     dataSource = dataSource[municipio];
     dataSource = dataSource.map(item => {
       let color = getRandomColor();
       item.area = _.floor(item.area, 2);
       item["color"] = color;
+      item["name"] = item.nombre;
       return item;
     });
 
+    let max = 0;
+    dataSource.forEach(function(obj) {
+      if (obj.area > max) {
+        max = obj.area;
+      }
+    });
     const scale = {
-      cat: { alias: "Nombre" },
+      nombre: { alias: "Nombre" },
       area: { alias: "Área (ha)" }
     };
 
     Modal.info({
       width: "50%",
-      title: "Agroproductividad en los suelos ( " + municipio +" )",
+      title: "Gráfico Parcelas afectadas por tipo de uso ",
       content: (
         <div>
           <Chart data={dataSource} scale={scale} forceFit>
             <Axis title name="nombre" visible={false} />
 
             <Tooltip crosshairs={{ type: "rect" }} />
-            <Geom type="interval" position="cat*area" color="color" />
+            <Geom type="interval" position="nombre*area" color="color" />
           </Chart>
         </div>
       ),
@@ -327,7 +380,7 @@ export default class Agroproductividad extends Component {
   render() {
     return (
       <div>
-        <P>Agroproductividad en los suelos</P>
+        <P>Parcelas afectadas por tipo de uso</P>
 
         <TabsWrapper
           size="small"
@@ -338,16 +391,16 @@ export default class Agroproductividad extends Component {
             {this.renderTotal()}
           </TabPane>
           <TabPane tab="Sagua la Grande" key={2}>
-            {this.renderMunicipio("Sagua la Grande")}
+            {this.renderMunicipio("SAGUA LA GRANDE")}
           </TabPane>
           <TabPane tab="Encrucijada" key={3}>
             {this.renderMunicipio("Encrucijada")}
           </TabPane>
           <TabPane tab="Caibarién" key={4}>
-            {this.renderMunicipio("Caibarién")}
+            {this.renderMunicipio("CAIBARIEN")}
           </TabPane>
           <TabPane tab="Camajuaní" key={5}>
-            {this.renderMunicipio("Camajuaní")}
+            {this.renderMunicipio("CAMAJUANÍ")}
           </TabPane>
         </TabsWrapper>
       </div>

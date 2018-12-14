@@ -33,4 +33,8 @@ injectGlobal`
   .ant-tabs-tab{
     margin: 0 !important;
   }
+
+  .ant-confirm-content{
+    margin: 25px 0px -20px 0px !important;
+  }
 `;

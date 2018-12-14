@@ -5,6 +5,7 @@ import { createStructuredSelector } from "reselect";
 import { Drawer, List, Button, Divider } from "antd";
 import _ from "lodash";
 import Agroproductividad from "./agroproductividad";
+import ParcelasAfectadas from "./parcelasAfectadas";
 import styled from "styled-components";
 
 import { showActionData } from "./../../containers/Visor/actions";
@@ -47,7 +48,11 @@ function addItem(item, array) {
   return array;
 }
 class TareaVida extends Component {
-  state = { visible: false, view: null, arrayAfectaciones: [] };
+  state = { 
+    visible: false, 
+    view: null, 
+    arrayAfectaciones: [] 
+  };
 
   componentWillReceiveProps = nextProps => {
     const { layers } = this.props;
@@ -70,6 +75,7 @@ class TareaVida extends Component {
           case "Ascenso del nivel medio del mar":
             arrayAfectaciones = addItem(data[4], arrayAfectaciones);
             break;
+
           default:
             break;
         }
@@ -122,7 +128,7 @@ class TareaVida extends Component {
                       {item.text}
                     </span>
                     <Button
-                      disabled={item.id !== 0}
+                      //disabled={item.id !== 0}
                       onClick={this.showDrawer.bind(this, item.id)}
                       size="small"
                       style={{
@@ -140,7 +146,7 @@ class TareaVida extends Component {
         ) : null}
 
         <Drawer
-          width={410}
+          width={450}
           mask={false}
           maskClosable={false}
           placement="right"
@@ -154,6 +160,14 @@ class TareaVida extends Component {
               add={this.props.add}
             />
           ) : null}
+
+          {this.state.view === 1 ? (
+            <ParcelasAfectadas
+              selectedRows={this.selectedRows}
+              add={this.props.add}
+            />
+          ) : null}
+
         </Drawer>
       </div>
     );

@@ -302,15 +302,17 @@ class MapContainer extends React.Component {
           onClick={this.changeMap}
           style={{ boxShadow: "0 2px 8px #f0f1f2" }}
         />
-        <Drawer
-          width={350}
-          placement="right"
-          closable={true}
-          onClose={this.onClose}
-          visible={this.state.visible}
-        >
-          {this.renderDataView()}
-        </Drawer>
+        {this.state.model ? (
+          <Drawer
+            width={350}
+            placement="right"
+            closable={true}
+            onClose={this.onClose}
+            visible={this.state.visible}
+          >
+            {this.renderDataView()}
+          </Drawer>
+        ) : null}
       </Div>
     );
   }
