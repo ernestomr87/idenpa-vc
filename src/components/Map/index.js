@@ -302,7 +302,7 @@ class MapContainer extends React.Component {
           onClick={this.changeMap}
           style={{ boxShadow: "0 2px 8px #f0f1f2" }}
         />
-        {this.state.model ? (
+        {this.state.model || this.state.properties ? (
           <Drawer
             width={350}
             placement="right"

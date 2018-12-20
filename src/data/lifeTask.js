@@ -61,19 +61,19 @@ export default [
   },
   {
     name: "Parcelas agrícolas afectadas",
-    nomenclature: "nomenclatureMicropresas",
+    nomenclature: null,
     json:
       "http://geoservicios.enpa.vcl.minag.cu/geoserver/dbtarea_vida/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=dbtarea_vida:parcela_agricola_afectada_inap&outputFormat=application%2Fjson"
   },
   {
     name: "Ascenso del nivel medio del mar",
-    nomenclature: "nomenclatureMicropresas",
+    nomenclature: null,
     json:
       "http://geoservicios.enpa.vcl.minag.cu/geoserver/dbtarea_vida/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=dbtarea_vida:ascenso_nmm_inap&outputFormat=application%2Fjson"
   },
   {
     name: "Área de intrusión marina",
-    nomenclature: "nomenclatureMicropresas",
+    nomenclature: null,
     json:
       "http://geoservicios.enpa.vcl.minag.cu/geoserver/dbtarea_vida/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=dbtarea_vida:area_intrusion_marina_inap&maxFeatures=50&outputFormat=application%2Fjson"
   }
