@@ -188,6 +188,10 @@ export default class Agroproductividad extends Component {
       }
     };
 
+    console.log(municipio);
+    console.log(municipios);
+    console.log(municipios[municipio]);
+
     const dataSource = [];
     if (municipios[municipio]) {
       Object.keys(municipios[municipio]).forEach(function(key) {
@@ -294,7 +298,9 @@ export default class Agroproductividad extends Component {
 
   setModalMunicipio = municipio => {
     let dataSource = this.state.municipios;
+    console.log(dataSource + " " + "dataSource = this.state.municipios;");
     dataSource = dataSource[municipio];
+    console.log(dataSource + " " + "dataSource = dataSource[municipio];");
     dataSource = dataSource.map(item => {
       let color = getRandomColor();
       item.area = _.floor(item.area, 2);

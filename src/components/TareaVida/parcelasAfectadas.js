@@ -214,6 +214,7 @@ export default class ParcelasAfectadas extends Component {
   };
 
   renderMunicipio = municipio => {
+    console.log(municipio);
     const { municipios, selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,
@@ -222,17 +223,27 @@ export default class ParcelasAfectadas extends Component {
         this.props.selectedRows(municipio, selectedRows);
       }
     };
-    console.log(this.state.municipios);
-    let dataSource = municipios[municipio];
-    console.log(dataSource);
 
-    if (dataSource) {
-      dataSource = dataSource.map(item => {
-        let color = getRandomColor();
-        item.area = _.floor(item.area, 2);
-        item["color"] = color;
-        return item;
+    console.log(municipios);
+    console.log(municipios[municipio]);
+
+    // let dataSource = municipios[municipio];
+    // if (dataSource) {
+    //   dataSource = dataSource.map(item => {
+    //     let color = getRandomColor();
+    //     item.area = _.floor(item.area, 2);
+    //     item["color"] = color;
+    //     return item;
+    //   });
+
+    const dataSource = [];
+    if (municipios[municipio]) {
+      Object.keys(municipios[municipio]).forEach(function(key) {
+        let cat = municipios[municipio][key].cat;
+        let area = municipios[municipio][key].area;
+        dataSource.push({ key: cat, value: area });
       });
+
       const columns = [
         {
           title: "Nombre",
@@ -337,10 +348,11 @@ export default class ParcelasAfectadas extends Component {
     });
   };
 
-  setModalMunicipio = municipio => {
-    console.log(this.state.municipios[municipio]);
+  setModalMunicipio = municipio => {    
     let dataSource = this.state.municipios;
+    console.log(dataSource + " " + "dataSource = this.state.municipios;");
     dataSource = dataSource[municipio];
+    console.log(dataSource + " " + "dataSource = dataSource[municipio]");
     dataSource = dataSource.map(item => {
       let color = getRandomColor();
       item.area = _.floor(item.area, 2);

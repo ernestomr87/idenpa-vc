@@ -37,4 +37,8 @@ injectGlobal`
   .ant-confirm-content{
     margin: 25px 0px -20px 0px !important;
   }
+
+  .ant-popover{
+    z-index: 3000 !important;
+  } 
 `;

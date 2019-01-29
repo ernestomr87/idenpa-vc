@@ -2,13 +2,28 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { createStructuredSelector } from "reselect";
-import { Drawer, List, Button, Divider } from "antd";
+import { Drawer, List, Button, Divider, Popover } from "antd";
 import _ from "lodash";
 import Agroproductividad from "./agroproductividad";
 import ParcelasAfectadas from "./parcelasAfectadas";
 import styled from "styled-components";
 
 import { showActionData } from "./../../containers/Visor/actions";
+
+import logoI from '../Icons/icons/informacionAfectacion.svg';
+
+const Button1 = styled(Button)`
+&.ant-btn {
+  color: ${(props) => props.color};
+  background-color: white;
+  border-color: ${(props) => props.color};
+}
+  &.ant-btn:hover, &.ant-btn:focus {
+    color: white;
+    background-color: ${(props) => props.color};
+    border-color: ${(props) => props.color};
+}
+`;
 
 const DividerWrapper = styled(Divider)`
   &.ant-divider {
@@ -20,23 +35,28 @@ const DividerWrapper = styled(Divider)`
 const data = [
   {
     id: 0,
-    text: "Agroproductividad en los suelos"
+    text: "Agroproductividad en los suelos",
+    color: 'red'
   },
   {
     id: 1,
-    text: "Parcelas afectadas por tipo de uso"
+    text: "Parcelas afectadas por tipo de uso",
+    color: 'blue'
   },
   {
     id: 2,
-    text: "Usufructuarios afectados"
+    text: "Usufructuarios afectados",
+    color: 'blue'
   },
   {
     id: 3,
-    text: "Afectaciones por forma productiva"
+    text: "Afectaciones por forma productiva",
+    color: 'blue'
   },
   {
     id: 4,
-    text: "Área de ascenso del nivel medio del mar"
+    text: "Área de ascenso del nivel medio del mar",
+    color: 'green'
   }
 ];
 
@@ -105,6 +125,36 @@ class TareaVida extends Component {
     });
   };
 
+  infoAfectacion = (parametro) => {
+		return (
+			<div>
+				<p>{this.infoAfectacionAux(parametro)}</p>
+			</div>
+		);
+	};
+
+	infoAfectacionAux = (parametroAux) => {
+		switch (parametroAux) {
+			case 'Agroproductividad en los suelos':
+				return 'Esta es la Afectación correspondiente a Agroproductividad en los suelos';
+
+			case 'Parcelas afectadas por tipo de uso':
+				return 'Esta es la Afectación correspondiente a Parcelas afectadas por tipo de uso';
+
+			case 'Afectaciones por forma productiva':
+				return 'Esta es la Afectación correspondiente a Afectaciones por forma productiva';
+
+			case 'Usufructuarios afectados':
+				return 'Esta es la Afectación correspondiente a Usufructuarios afectados';
+
+			case 'Ascenso del nivel medio del mar':
+				return 'Esta es la Afectación correspondiente a Ascenso del nivel medio del mar';
+
+			default:
+				break;
+		}
+	};
+
   render() {
     return (
       <div>
@@ -127,7 +177,7 @@ class TareaVida extends Component {
                     >
                       {item.text}
                     </span>
-                    <Button
+                    <Button1
                       //disabled={item.id !== 0}
                       onClick={this.showDrawer.bind(this, item.id)}
                       size="small"
@@ -137,7 +187,24 @@ class TareaVida extends Component {
                       type="primary"
                       shape="circle"
                       icon="area-chart"
+                      color={item.color}
                     />
+                    <Popover
+											title={item.text}
+											content={this.infoAfectacion(item.text)}
+											trigger="click"
+										>
+											<img
+												style={{
+													float: 'right',
+													cursor: 'pointer',
+													height: '1.6vmin',
+													marginTop: '0.4em',
+													marginRight: '0.5em'
+												}}
+												src={logoI}
+											/>
+										</Popover>
                   </div>
                 </List.Item>
               )}

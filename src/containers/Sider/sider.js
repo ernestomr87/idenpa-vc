@@ -53,6 +53,13 @@ const TreeNodeWrapper = styled(TreeNode)`
   .ant-tree-switcher {
     display: none !important;
   }
+  .ant-tree-checkbox-checked .ant-tree-checkbox-inner, .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner {
+    background-color:${(props) => props.color};
+    border-color: ${(props) => props.color};
+  }
+  .ant-tree-checkbox-wrapper:hover .ant-tree-checkbox-inner, .ant-tree-checkbox:hover .ant-tree-checkbox-inner, .ant-tree-checkbox-input:focus + .ant-tree-checkbox-inner {
+    border-color: ${(props) => props.color};
+}
 `;
 
 const Div = styled.div`
@@ -170,8 +177,23 @@ class SiderComponent extends Component {
     const { sider: { item } } = this.props;
     if (!item) return;
     return data[item].map((item, index) => {
+      let color = '';
+			switch (item.name) {
+				case 'Polígonos de suelo afectado':
+					color = 'red';
+					break;
+				case 'Parcelas agrícolas afectadas':
+					color = 'blue';
+					break;
+				case 'Ascenso del nivel medio del mar':
+					color = 'green';
+					break;
+				case 'Área de intrusión marina':
+					color = 'orange';
+					break;
+			}
       return (
-        <TreeNodeWrapper title={item.name} key={item.name} dataRef={item} />
+        <TreeNodeWrapper color={color} title={item.name} key={item.name} dataRef={item} />
       );
     });
   };
