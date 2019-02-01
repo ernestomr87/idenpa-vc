@@ -81,3 +81,5 @@ export const nomenclatureObrasEjec = {
 	constructor: 'Constructor',
 	valor_total_inver_mp: 'Valor total inversión (mp)'
 };
+
+

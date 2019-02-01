@@ -8,8 +8,9 @@ import {
   MoneyBagImg,
   TractorImg,
   CoastImg,
-  CareImg
+  CareImg,
 } from "./../Icons";
+
 import { MapComponent } from "@terrestris/react-geo";
 
 import map, {
@@ -25,6 +26,7 @@ import "ol/ol.css";
 import Tools from "./../Tools/";
 import Legend from "./../Legend";
 import EntitiesInv from "./../EntitiesInv";
+import CSSInfo from "./../Productive/CSSInfo";
 
 import Modules, { getModelByJson } from "./../../data";
 import SateliteImg from "./../Images/satelite.png";
@@ -252,21 +254,27 @@ class MapContainer extends React.Component {
               <ImgInversion src={CareImg} alt="" />
             ) : null}
 
-            {dataLayer.layer}
+            {dataLayer.module !== "estructuraAgricola" ? dataLayer.layer : null}
           </p>
-          <TableWrapper
-            pagination={false}
-            showHeader={false}
-            dataSource={dataSource}
-            columns={columns}
-          />
-          {dataLayer && dataLayer.layer === "Entidades Inversionistas" ? (
-            <EntitiesInv
-              model={model}
-              properties={properties}
-              dataLayer={dataLayer}
-            />
-          ) : null}
+          {dataLayer.module !== "estructuraAgricola" ?
+          (
+            <div>
+              <TableWrapper
+                pagination={false}
+                showHeader={false}
+                dataSource={dataSource}
+                columns={columns}
+              />
+              {dataLayer && dataLayer.layer === "Entidades Inversionistas" ? (
+                <EntitiesInv
+                  model={model}
+                  properties={properties}
+                  dataLayer={dataLayer}
+                />
+              ) : null}
+            </div>
+          ) : <CSSInfo dataSource={dataSource}/>}
+
         </div>
       );
     }

@@ -264,7 +264,7 @@ class SiderComponent extends Component {
           </A>
         );
         break;
-      case "northCoast":
+      case "estructuraAgricola":
         aux = (
           <A style={{ fontSize: 15 }}>
             <ImgInversionV src={FormProdImg} alt="" />Estructura Agrícola
@@ -425,13 +425,13 @@ class SiderComponent extends Component {
             </Menu.Item>
             <Menu.Item
               key="4"
-              onClick={this.handleChangeModule.bind(this, "northCoast")}
+              onClick={this.handleChangeModule.bind(this, "estructuraAgricola")}
             >
               <Badge
                 style={{ right: -30 }}
                 count={
-                  typeof layers["northCoast"] !== "undefined"
-                    ? layers["northCoast"].length
+                  typeof layers["estructuraAgricola"] !== "undefined"
+                    ? layers["estructuraAgricola"].length
                     : 0
                 }
               >
@@ -504,7 +504,7 @@ class SiderComponent extends Component {
               </Radio.Group>
               {this.renderRadioView()}
             </Col>
-          ) : item ? item==="northCoast"? <Productive/> : (<Alert message="No hay capas disponibles" type="info" showIcon />) : null}
+          ) : item ? item==="estructuraAgricola"? <Productive/> : (<Alert message="No hay capas disponibles" type="info" showIcon />) : null}
         </Animate>
         <Animate style={{ padding: 10 }} visible={this.state.view === 2}>
           {this.renderBreadcrumb(2)}

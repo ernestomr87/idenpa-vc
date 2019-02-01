@@ -27,6 +27,7 @@ import SpeedometerImg from './icons/speedometer.svg';
 import MapImg from './icons/map.svg';
 import LinkImg from './icons/link.svg';
 import FormProdImg from './icons/form-prod.svg';
+import AgricultureImg from './icons/agriculture.svg';
 
 export default Logo;
 export {
@@ -57,5 +58,6 @@ export {
 	SpeedometerImg,
 	MapImg,
 	LinkImg,
-	FormProdImg
+	FormProdImg,
+	AgricultureImg
 };
