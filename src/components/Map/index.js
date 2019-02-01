@@ -273,7 +273,7 @@ class MapContainer extends React.Component {
                 />
               ) : null}
             </div>
-          ) : <CSSInfo dataSource={dataSource}/>}
+          ) : <CSSInfo dataSource={dataSource} oldLayers={this.state.layers}/>}
 
         </div>
       );
@@ -317,6 +317,7 @@ class MapContainer extends React.Component {
             closable={true}
             onClose={this.onClose}
             visible={this.state.visible}
+            mask={false}
           >
             {this.renderDataView()}
           </Drawer>

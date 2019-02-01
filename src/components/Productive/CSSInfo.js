@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
 import styled from "styled-components";
-import {Divider,Table} from 'antd'
+import { Divider,Table, Icon, Button } from 'antd'
 import {
     AgricultureImg
     } from "./../Icons";
+
+import map, {
+  addLayer,
+  removeLayer,
+} from './../Map/utils'  
 
 const pStyle = {
     fontWeight: 500,
@@ -21,7 +26,35 @@ const ImgInversion = styled.img`
   margin-right: 10px;
 `;
 
+const Span= styled.span`
+  color: #096dd9;
+  font-weight: 500; 
+  font-size: 15;
+`
+
+const TableWrapper= styled(Table)`
+  margin-bottom: 15px;
+`
+
+
 export default class CSSInfo extends Component {
+  state={
+    layers:[]
+  }
+
+  addLayer = async (data) => {
+    const { oldLayers }=this.props;
+    let array=[{
+        color: "#f5222d",
+        json: `http://geoservicios.enpa.vcl.minag.cu/geoserver/ws_ide_vcl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ws_ide_vcl:termo_leche&CQL_FILTER=id_fp=${data.gid}&outputFormat=application%2Fjson`,
+        name: data.nombre,
+        nomenclature: null,
+    }]
+    await addLayer(array, oldLayers);
+    let layers = Object.assign(this.state.layers, array)
+    this.setState({ layers });
+  };
+
   render() {
     const {dataSource}=this.props;
     let data={};
@@ -81,6 +114,15 @@ export default class CSSInfo extends Component {
         value: data.cant_ptocompra||0,
       },
     ];
+    const termos = [{
+        name: '500L',
+        value: data.tl_500||0,
+      },
+      {
+        name: '1000L',
+        value: `${data.tl_1000 || 0}`,
+      },
+    ];
     
     const columns = [{
       dataIndex: 'name',
@@ -96,17 +138,20 @@ export default class CSSInfo extends Component {
          <p style={{ ...pStyle, marginBottom: 24 }}> <ImgInversion src={AgricultureImg} alt="" /> {data.nombre}</p>
          <Divider/>
          
-         <span style={{color: '#000000',fontWeight: 500, fontSize: 15}}>Fondo de Tierra (ha)</span>
-         <Table size="small" showHeader={false} pagination={false} dataSource={fTierra} columns={columns} />
+         <Span>Fondo de Tierra (ha)</Span>
+         <TableWrapper size="small" showHeader={false} pagination={false} dataSource={fTierra} columns={columns} />
 
-         <span style={{color: '#000000',fontWeight: 500, fontSize: 15}}>Plan de Producción (t/ha)</span>
-         <Table size="small" showHeader={false} pagination={false} dataSource={pProduction} columns={columns} />
+         <Span>Plan de Producción (t/ha)</Span>
+         <TableWrapper size="small" showHeader={false} pagination={false} dataSource={pProduction} columns={columns} />
 
-         <span style={{color: '#000000',fontWeight: 500, fontSize: 15}}>Productores</span>
-         <Table size="small" showHeader={false} pagination={false} dataSource={productores} columns={columns} />
+         <Span>Productores</Span>
+         <TableWrapper size="small" showHeader={false} pagination={false} dataSource={productores} columns={columns} />
 
-         <span style={{color: '#000000',fontWeight: 500, fontSize: 15}}>Comercialización</span>
-         <Table size="small" showHeader={false} pagination={false} dataSource={comercializacion} columns={columns} />
+         <Span>Comercialización</Span>
+         <TableWrapper size="small" showHeader={false} pagination={false} dataSource={comercializacion} columns={columns} />
+
+         <Span>Termos de Leche <Button onClick={()=>{this.addLayer(data)}} style={{ margin: '0 10px 5px 0px', float:"right"}} type="primary" size="small" shape="circle" icon="environment-o" /> </Span>
+         <TableWrapper size="small" showHeader={false} pagination={false} dataSource={termos} columns={columns} />
 
       </div>
     )

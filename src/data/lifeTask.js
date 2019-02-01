@@ -75,7 +75,7 @@ export default [
     name: "Área de intrusión marina",
     nomenclature: null,
     json:
-      "http://geoservicios.enpa.vcl.minag.cu/geoserver/dbtarea_vida/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=dbtarea_vida:area_intrusion_marina_inap&maxFeatures=50&outputFormat=application%2Fjson"
+      "http://geoservicios.enpa.vcl.minag.cu/geoserver/dbtarea_vida/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=dbtarea_vida:area_intrusion_marina_inap&outputFormat=application%2Fjson"
   }
 ];
 
