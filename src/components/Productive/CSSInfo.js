@@ -88,6 +88,7 @@ export default class CSSInfo extends Component {
     }, {
       dataIndex: 'value',
       key: 'value',
+      align:'right'
     }];
 
     return (
