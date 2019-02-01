@@ -31,7 +31,7 @@ import Modules from "./../../data/index";
 
 import {
   CareImg,
-  CoastImg,
+  FormProdImg,
   IrrigationImg,
   LayersImg,
   MoneyBagImg,
@@ -44,6 +44,7 @@ import {
 
 import Logo from "./../../components/Logo/";
 import TareaVida from "./../../components/TareaVida";
+import Productive from "./../../components/Productive";
 import "./index.css";
 
 const TreeNode = Tree.TreeNode;
@@ -266,7 +267,7 @@ class SiderComponent extends Component {
       case "northCoast":
         aux = (
           <A style={{ fontSize: 15 }}>
-            <ImgInversionV src={CoastImg} alt="" />Costa Norte
+            <ImgInversionV src={FormProdImg} alt="" />Estructura Agrícola
           </A>
         );
         break;
@@ -348,12 +349,6 @@ class SiderComponent extends Component {
         </div>
       );
     }
-
-    // if (submenu === "rb_chart") {
-    //   if (item === "lifeTask") {
-    //     return <TareaVida add={add} del={del} />;
-    //   }
-    // }
   };
 
   render() {
@@ -440,8 +435,8 @@ class SiderComponent extends Component {
                     : 0
                 }
               >
-                <ImgInversion src={CoastImg} alt="" />
-                <span>Costa Norte</span>
+                <ImgInversion src={FormProdImg} alt="" />
+                <span>Estructura Agrícola</span>
               </Badge>
             </Menu.Item>
             <Menu.Item
@@ -509,9 +504,7 @@ class SiderComponent extends Component {
               </Radio.Group>
               {this.renderRadioView()}
             </Col>
-          ) : item ? (
-            <Alert message="No hay capas disponibles" type="info" showIcon />
-          ) : null}
+          ) : item ? item==="northCoast"? <Productive/> : (<Alert message="No hay capas disponibles" type="info" showIcon />) : null}
         </Animate>
         <Animate style={{ padding: 10 }} visible={this.state.view === 2}>
           {this.renderBreadcrumb(2)}

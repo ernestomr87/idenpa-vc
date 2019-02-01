@@ -76,7 +76,7 @@ export class Dashboard extends Component {
 						</Menu.Item>
 						<Menu.Item key="4">
 							<ImgIcon src={CoastImg} alt="" />
-							<span>Costa Norte</span>
+							<span>Estructura Agrícola</span>
 						</Menu.Item>
 						<Menu.Item key="5">
 							<ImgIcon src={CareImg} alt="" />
