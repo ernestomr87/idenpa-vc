@@ -186,6 +186,43 @@ class MapContainer extends React.Component {
     this.setState({ layers: removeLayer(array, arrayN, this.state.layers) });
   };
 
+  removeLayerTermo=()=>{
+    const { layers, nodes, interaction } = this.props;
+
+    let array = [];
+    let arrayN = [];
+    Object.keys(layers).forEach(function(key) {
+      if (Modules[key]) {
+        layers[key].map(item => {
+          const aux = Modules[key].filter(mitem => {
+            if (mitem.name === item) return mitem;
+          });
+          array.push(aux[0]);
+        });
+      } else {
+        layers[key].map(item => {
+          nodes.map(node => {
+            let nodelayers = listLayerByNode(node);
+            const aux = nodelayers.filter(mitem => {
+              if (!mitem.children && mitem.key === item) {
+                return mitem.layer;
+              }
+            });
+            if (aux[0]) arrayN.push(aux[0]);
+          });
+        });
+      }
+    });
+
+    if (array.length + arrayN.length > this.state.layers.length) {
+      if (array.length) this.addLayer(array);
+      if (arrayN.length) this.addLayerFromNode(arrayN);
+    }
+    if (array.length + arrayN.length < this.state.layers.length) {
+      this.removeLayer(array, arrayN);
+    }
+  }
+
   showDrawer = () => {
     this.setState({
       visible: true
@@ -195,6 +232,7 @@ class MapContainer extends React.Component {
   onClose = () => {
     const { interaction } = this.state;
     interaction.clear();
+    this.removeLayerTermo();
     this.setState({
       visible: false,
       interaction: null
@@ -273,7 +311,7 @@ class MapContainer extends React.Component {
                 />
               ) : null}
             </div>
-          ) : <CSSInfo dataSource={dataSource} oldLayers={this.state.layers}/>}
+          ) : <CSSInfo dataSource={dataSource} oldLayers={this.state.layers} removeLayerTermo={this.removeLayerTermo}/>}
 
         </div>
       );

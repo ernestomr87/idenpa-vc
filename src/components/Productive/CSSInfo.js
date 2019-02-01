@@ -50,8 +50,8 @@ export default class CSSInfo extends Component {
         name: data.nombre,
         nomenclature: null,
     }]
-    await addLayer(array, oldLayers);
-    let layers = Object.assign(this.state.layers, array)
+    let result = await addLayer(array, oldLayers);
+    let layers = Object.assign(this.state.layers, result[result.length-1]);
     this.setState({ layers });
   };
 
