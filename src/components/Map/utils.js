@@ -1,4 +1,6 @@
-import { message } from "antd";
+import {
+  message
+} from "antd";
 
 import OlSourceXYS from "ol/source/xyz";
 import OlLayerTile from "ol/layer/tile";
@@ -9,6 +11,9 @@ import OlLayerVector from "ol/layer/vector";
 import OlStroke from "ol/style/stroke";
 import OlFill from "ol/style/fill";
 import OlStyle from "ol/style/style";
+import OlStyleText from "ol/style/text";
+import OlStyleFill from "ol/style/fill";
+import OlStyleStroke from "ol/style/stroke";
 import OlCircle from "ol/style/circle";
 import OlFormatGeoJSON from "ol/format/geojson";
 
@@ -20,8 +25,7 @@ var osm = new OlLayerTile({
   name: "tms",
   projection: "EPSG:4326",
   source: new OlSourceXYS({
-    url:
-      "http://ide.enpa.minag.cu/geoserver/www/tms/2017/osmmapmapnik/{z}/{x}/{-y}.png"
+    url: "http://ide.enpa.minag.cu/geoserver/www/tms/2017/osmmapmapnik/{z}/{x}/{-y}.png"
   }),
   type: "base"
 });
@@ -39,7 +43,7 @@ const map = new OlMap({
   view: new OlView({
     projection: "EPSG:4326",
     center: [-80.009, 22.6083],
-    zoom: 7
+    zoom: 10
   }),
   controls: [],
   layers: [satelite]
@@ -67,9 +71,7 @@ const listLayerByNode = node => {
         for (let j = 0; j < node.children[i].children.length; j++) {
           if (node.children[i].children[j].children) {
             for (
-              let x = 0;
-              x < node.children[i].children[j].children.length;
-              x++
+              let x = 0; x < node.children[i].children[j].children.length; x++
             ) {
               array.push(node.children[i].children[j].children[x]);
             }
@@ -93,7 +95,7 @@ const categoryToRoman = cat => {
   return "Categoria IV";
 };
 
-const addLayer = (newLayers, oldLayers) => {
+const addLayer = (newLayers, oldLayers, name = "") => {
   let diff;
   let important = null;
   for (let j = 0; j < newLayers.length; j++) {
@@ -118,6 +120,16 @@ const addLayer = (newLayers, oldLayers) => {
 
   diff["color"] = color;
   const styleF = new OlStyle({
+    text: new OlStyleText({
+      font: '12px sans-serif',
+      text: "",
+      fill: new OlStyleFill({
+        color: '#000'
+      }),
+      offsetX: 0,
+      offsetY: -10,
+      stroke: new OlStyleStroke({color: '#fff'}),
+    }),
     fill: new OlFill({
       color: color
     }),
@@ -137,39 +149,94 @@ const addLayer = (newLayers, oldLayers) => {
     })
   });
 
-  let style = styleF;
+  var style = new OlStyle({
+    stroke: new OlStroke({
+      color: '#f00',
+      width: 1
+    }),
+    fill: new OlFill({
+      color: 'rgba(255,0,0,0.1)'
+    }),
+    text: new OlStyleText({
+      font: '12px Calibri,sans-serif',
+      fill: new OlFill({
+        color: '#000'
+      }),
+      stroke: new OlStroke({
+        color: '#fff',
+        width: 3
+      }),
+      offsetX: 0,
+      offsetY: -10,
+    }),
+    image: new OlCircle({
+      radius: 5,
+      fill: new OlStyleFill({color}),
+      stroke: new OlStyleStroke({color: '#ffffff', width: 1})
+    })
+    // image: new OlCircle({
+    //   radius: 5,
+    //   fill: new OlFill({
+    //     color: color
+    //   }),
+    //   stroke: new OlStroke({
+    //     color: color
+    //   }),
+    //   width: 4
+    // })
+  });
+
+  // let style = styleF;
   if (diff.style) {
     style = diff.style;
   }
-
+  
   aux = new OlLayerVector({
     source: new OlSourceVector({
       format: new OlFormatGeoJSON(),
       url: diff.json
     }),
-    style: style
+    style: function(feature) {
+      style.getText().setText(feature.get('nombre'));
+      return style;
+    }
   });
+
+  
+
+
 
   if (diff.name === "Polígonos de suelo afectado") {
     compareid = aux.ol_uid;
-    important = { name: diff.name, ol_uid: aux.ol_uid };
+    important = {
+      name: diff.name,
+      ol_uid: aux.ol_uid
+    };
   }
 
   return new Promise((resolve, reject) => {
     if (
       !map
-        .getLayers()
-        .getArray()
-        .includes(aux)
+      .getLayers()
+      .getArray()
+      .includes(aux)
     ) {
-      oldLayers.push({ item: diff, layer: aux, node: false });
+      oldLayers.push({
+        item: diff,
+        layer: aux,
+        node: false
+      });
       try {
         map.addLayer(aux);
-        aux.getSource().on("change", function(data) {
+        aux.getSource().on("change", function (data) {
           message.success(`Capa "${diff.name}" cargada.`, 1);
-          aux.getSource().removeEventListener("change");
-          resolve({ oldLayers, important });
+          aux.getSource().removeEventListener("change");          
+          resolve({
+            oldLayers,
+            important
+          });
         });
+
       } catch (err) {
         console.log(err);
         reject(err);
@@ -184,9 +251,9 @@ const addLayerFromNode = (newLayers, oldLayers) => {
 
     if (
       !map
-        .getLayers()
-        .getArray()
-        .includes(aux)
+      .getLayers()
+      .getArray()
+      .includes(aux)
     ) {
       oldLayers.push({
         item: item.key,
@@ -196,7 +263,7 @@ const addLayerFromNode = (newLayers, oldLayers) => {
       });
       try {
         map.addLayer(aux);
-        aux.getSource().on("change", function() {
+        aux.getSource().on("change", function () {
           message.success(`Capa "${item.title}" cargada.`, 1);
         });
       } catch (err) {
@@ -229,9 +296,9 @@ const removeLayer = (array, arrayN, oldLayers) => {
     diff.map(item => {
       if (
         map
-          .getLayers()
-          .getArray()
-          .includes(item.layer)
+        .getLayers()
+        .getArray()
+        .includes(item.layer)
       ) {
         map.removeLayer(item.layer);
         colors.push(item.color);
@@ -248,9 +315,9 @@ const removeLayer = (array, arrayN, oldLayers) => {
     diff.map(item => {
       if (
         map
-          .getLayers()
-          .getArray()
-          .includes(item.layer)
+        .getLayers()
+        .getArray()
+        .includes(item.layer)
       ) {
         map.removeLayer(item.layer);
         colors.push(item.color);
@@ -275,9 +342,9 @@ const removeLayer = (array, arrayN, oldLayers) => {
     diff.map(item => {
       if (
         map
-          .getLayers()
-          .getArray()
-          .includes(item.layer)
+        .getLayers()
+        .getArray()
+        .includes(item.layer)
       ) {
         map.removeLayer(item.layer);
         colors.push(item.color);
@@ -294,9 +361,9 @@ const removeLayer = (array, arrayN, oldLayers) => {
     diff.map(item => {
       if (
         map
-          .getLayers()
-          .getArray()
-          .includes(item.layer)
+        .getLayers()
+        .getArray()
+        .includes(item.layer)
       ) {
         map.removeLayer(item.layer);
         colors.push(item.color);

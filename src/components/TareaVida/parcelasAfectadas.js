@@ -227,14 +227,6 @@ export default class ParcelasAfectadas extends Component {
     console.log(municipios);
     console.log(municipios[municipio]);
 
-    // let dataSource = municipios[municipio];
-    // if (dataSource) {
-    //   dataSource = dataSource.map(item => {
-    //     let color = getRandomColor();
-    //     item.area = _.floor(item.area, 2);
-    //     item["color"] = color;
-    //     return item;
-    //   });
 
     const dataSource = [];
     if (municipios[municipio]) {
@@ -350,9 +342,7 @@ export default class ParcelasAfectadas extends Component {
 
   setModalMunicipio = municipio => {    
     let dataSource = this.state.municipios;
-    console.log(dataSource + " " + "dataSource = this.state.municipios;");
     dataSource = dataSource[municipio];
-    console.log(dataSource + " " + "dataSource = dataSource[municipio]");
     dataSource = dataSource.map(item => {
       let color = getRandomColor();
       item.area = _.floor(item.area, 2);

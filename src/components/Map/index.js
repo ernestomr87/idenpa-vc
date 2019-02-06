@@ -1,6 +1,10 @@
 import React from "react";
 import { Drawer, Table, Card } from "antd";
 import styled from "styled-components";
+import OlStyle from "ol/style/style";
+import OlStyleText from "ol/style/text";
+import OlStyleFill from "ol/style/fill";
+import OlStyleStroke from "ol/style/stroke";
 
 import OlInteractionSelect from "ol/interaction/select";
 import {
@@ -323,6 +327,7 @@ class MapContainer extends React.Component {
     const select = new OlInteractionSelect();
     map.addInteraction(select);
     const selectedfeatures = select.getFeatures();
+
 
     selectedfeatures.on(["add", "remove"], evt => {
       selectedfeatures.getArray().map(feature => {

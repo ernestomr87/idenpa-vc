@@ -15,6 +15,7 @@
 		"immutable": "^3.8.2",
 		"lodash": "^4.17.11",
 		"ol": "4",
+		"ol-ext": "^3.1.0",
 		"ol-popup": "^3.0.0",
 		"random-color-js": "^1.1.1",
 		"react": "^16.4.1",
@@ -35,6 +36,7 @@
 		"redux-saga": "^0.16.0",
 		"reselect": "^3.0.1",
 		"sanitize.css": "^6.0.0",
+		"socket.io-client": "^2.2.0",
 		"styled-components": "^3.3.3"
 	},
 	"scripts": {
