@@ -26,14 +26,14 @@ import config from "./../../config";
 
 let compareid = null;
 
-var osm = new OlLayerTile({
-  name: "tms",
-  projection: "EPSG:4326",
-  source: new OlSourceXYS({
-    url: "http://ide.enpa.minag.cu/geoserver/www/tms/2017/osmmapmapnik/{z}/{x}/{-y}.png"
-  }),
-  type: "base"
-});
+// var osm = new OlLayerTile({
+//   name: "tms",
+//   projection: "EPSG:4326",
+//   source: new OlSourceXYS({
+//     url: "http://ide.enpa.minag.cu/geoserver/www/tms/2017/osmmapmapnik/{z}/{x}/{-y}.png"
+//   }),
+//   type: "base"
+// });
 
 var satelite = new OlLayerTile({
   name: "tms",
@@ -44,15 +44,15 @@ var satelite = new OlLayerTile({
   type: "base"
 });
 
-var bings = new OlLayerTile({
-  name: "tms",
-  projection: "EPSG:4326",
-  source: new BingMaps({
-    key: 'AifwTHqYsEbvQy6u9dXXiG22H45XSZaCe22JdZmpuwDvWLxtqTjmcN5Br5DueBBA',
-    imagerySet: "RoadOnDemand"
-  }),
-  type: "base"
-});
+// var bings = new OlLayerTile({
+//   name: "tms",
+//   projection: "EPSG:4326",
+//   source: new BingMaps({
+//     key: 'AifwTHqYsEbvQy6u9dXXiG22H45XSZaCe22JdZmpuwDvWLxtqTjmcN5Br5DueBBA',
+//     imagerySet: "RoadOnDemand"
+//   }),
+//   type: "base"
+// });
 
 var osm = new OlLayerTile({
   name: "tms",
@@ -140,6 +140,7 @@ const addLayer = (newLayers, oldLayers, name = "") => {
       break;
     }
   }
+  if(!diff) return;
   let aux;
   let color = colors.shift();
 
@@ -165,7 +166,7 @@ const addLayer = (newLayers, oldLayers, name = "") => {
       offsetY: -13,
     }),
     image: new OlCircle({
-      radius: 5,
+      radius: 6,
       fill: new OlStyleFill({
         color
       }),

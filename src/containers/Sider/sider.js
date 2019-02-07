@@ -192,7 +192,9 @@ class SiderComponent extends Component {
 					break;
 				case 'Área de intrusión marina':
 					color = 'orange';
-					break;
+          break;
+        default:
+        color = null;  
 			}
       return (
         <TreeNodeWrapper color={color} title={item.name} key={item.name} dataRef={item} />

@@ -20,7 +20,6 @@ const P = styled.p`
   margin-bottom: 15px;
 `;
 
-const Div = styled.div``;
 const TabsWrapper = styled(Tabs)`
   &.ant-tabs-tab {
     margin: 0 !important;
@@ -37,7 +36,7 @@ const numberToLetter = number => {
   };
 
   for (var j = 0; j < 6; j++) {
-    if (number == Object.keys(letters)[j]) {
+    if (number === Object.keys(letters)[j]) {
       number = Object.values(letters)[j];
       break;
     }
@@ -284,7 +283,6 @@ export default class ParcelasAfectadas extends Component {
   };
 
   onSelectTotalChange = selectedTotalRowKeys => {
-    this.changeLayer("total", selectedTotalRowKeys);
     this.setState({ selectedTotalRowKeys });
   };
 
@@ -293,13 +291,7 @@ export default class ParcelasAfectadas extends Component {
     this.props.selectedRows(null, []);
   };
 
-  changeLayer = (type, rows) => {
-    if (type === "total") {
-      rows.map(item => {
-        console.log(this.state.total[item]);
-      });
-    }
-  };
+
 
   setModalTotal = () => {
     let dataSource = this.state.total;

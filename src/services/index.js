@@ -15,7 +15,6 @@ const fetchInfrastructure = (gid) => {
 	return axios.get(`${API}/api/infrastructure/${gid}`);
 };
 
-//////////////////////////////////////////////////////////// Las consultas que stoy haciendo yo
 
 const fetchParcelasAfectadas = () => {
 	return axios.get(`${API}/api/afectaciones/parcelasAfectadas`);
@@ -25,7 +24,10 @@ const fetchParcelasAfectadasByMun = (mun) => {
 	return axios.get(`${API}/api/afectaciones/parcelasAfectadas/${mun}`);
 };
 
-//////////////////////////////////////////////////////////// Las consultas que stoy haciendo yo
+const fetchFormasProductivasById = (id) => {
+	return axios.get(`${API}/api/sitema_agricola/forma_prodictiva/${id}`);
+};
+
 
 export default API;
 export {
@@ -33,5 +35,6 @@ export {
 	fetchInfrastructure,
 	fetchAgroproductividadByMun,
 	fetchParcelasAfectadas,
-	fetchParcelasAfectadasByMun
+	fetchParcelasAfectadasByMun,
+	fetchFormasProductivasById
 };
