@@ -39,7 +39,8 @@ import {
   QuestionImg,
   TractorImg,
   MapImg,
-  LinkImg
+  LinkImg,
+  BaseMapImg
 } from "./../../components/Icons";
 
 import Logo from "./../../components/Logo/";
@@ -271,6 +272,13 @@ class SiderComponent extends Component {
           </A>
         );
         break;
+      case "bases":
+        aux = (
+          <A style={{ fontSize: 15 }}>
+            <ImgInversionV src={FormProdImg} alt="" />Bases Cartográficas
+          </A>
+        );
+        break;
       case 2:
         aux = (
           <A href="#" style={{ fontSize: 13 }}>
@@ -453,6 +461,22 @@ class SiderComponent extends Component {
               >
                 <ImgInversion src={CareImg} alt="" />
                 <span>Tarea Vida</span>
+              </Badge>
+            </Menu.Item>
+            <Menu.Item
+              key="6"
+              onClick={this.handleChangeModule.bind(this, "bases")}
+            >
+              <Badge
+                style={{ right: -30 }}
+                count={
+                  typeof layers["bases"] !== "undefined"
+                    ? layers["bases"].length
+                    : 0
+                }
+              >
+                <ImgInversion src={BaseMapImg} alt="" />
+                <span>Bases Cartográficas</span>
               </Badge>
             </Menu.Item>
 

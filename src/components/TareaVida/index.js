@@ -189,7 +189,7 @@ class TareaVida extends Component {
                       icon="area-chart"
                       color={item.color}
                     />
-                    <Popover
+                    {/* <Popover
 											title={item.text}
 											content={this.infoAfectacion(item.text)}
 											trigger="click"
@@ -204,7 +204,7 @@ class TareaVida extends Component {
 												}}
 												src={logoI}
 											/>
-										</Popover>
+										</Popover> */}
                   </div>
                 </List.Item>
               )}

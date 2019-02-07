@@ -120,51 +120,62 @@ const addLayer = (newLayers, oldLayers, name = "") => {
 
   diff["color"] = color;
 
+
   var style = new OlStyle({
     stroke: new OlStroke({
       color: '#f00',
-      width: 1
     }),
     fill: new OlFill({
       color: 'rgba(255,0,0,0.1)'
+      
     }),
     text: new OlStyleText({
-      font: '12px Calibri,sans-serif',
+      font: "12px Calibri,sans-serif",
       fill: new OlFill({
-        color: '#000'
+        color
       }),
       stroke: new OlStroke({
-        color: '#fff',
-        width: 3
+        color: "#ffffff",
+        width: 4
       }),
       offsetX: 0,
-      offsetY: -12,
+      offsetY: -13,
     }),
     image: new OlCircle({
       radius: 5,
-      fill: new OlStyleFill({color}),
-      stroke: new OlStyleStroke({color: '#ffffff', width: 1})
+      fill: new OlStyleFill({
+        color
+      }),
+      stroke: new OlStyleStroke({
+        color: '#ffffff',
+        width: 1
+      })
     })
   });
 
-  // let style = styleF;
   if (diff.style) {
-    style = diff.style;
+    aux = new OlLayerVector({
+      source: new OlSourceVector({
+        format: new OlFormatGeoJSON(),
+        url: diff.json
+      }),
+      style: diff.style
+    });
+  } else {
+    aux = new OlLayerVector({
+      source: new OlSourceVector({
+        format: new OlFormatGeoJSON(),
+        url: diff.json
+      }),
+      style: function (feature) {
+        const name = feature.get('nombre');
+        if (name) {
+          style.getText().setText(name);
+        }
+        return style;
+      }
+    });
   }
-  
-  aux = new OlLayerVector({
-    source: new OlSourceVector({
-      format: new OlFormatGeoJSON(),
-      url: diff.json
-    }),
-    style: function(feature) {
-      style.getText().setText(feature.get('nombre'));
-      return style;
-    }
-  });
-
-  
-
 
 
   if (diff.name === "Polígonos de suelo afectado") {
@@ -191,7 +202,7 @@ const addLayer = (newLayers, oldLayers, name = "") => {
         map.addLayer(aux);
         aux.getSource().on("change", function (data) {
           message.success(`Capa "${diff.name}" cargada.`, 1);
-          aux.getSource().removeEventListener("change");          
+          aux.getSource().removeEventListener("change");
           resolve({
             oldLayers,
             important
