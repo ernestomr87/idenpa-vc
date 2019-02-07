@@ -1,7 +1,7 @@
+import config from './../config.js'
+const API = config.api;
 const axios = require('axios');
 
-const API = 'http://geoweb.enpa.vcl.minag.cu';
-// const API = 'http://localhost:3001';
 
 const fetchAgroproductividad = () => {
 	return axios.get(`${API}/api/afectaciones/agroproductividad`);
@@ -28,4 +28,10 @@ const fetchParcelasAfectadasByMun = (mun) => {
 //////////////////////////////////////////////////////////// Las consultas que stoy haciendo yo
 
 export default API;
-export { fetchAgroproductividad, fetchInfrastructure, fetchAgroproductividadByMun, fetchParcelasAfectadas, fetchParcelasAfectadasByMun };
+export {
+	fetchAgroproductividad,
+	fetchInfrastructure,
+	fetchAgroproductividadByMun,
+	fetchParcelasAfectadas,
+	fetchParcelasAfectadasByMun
+};

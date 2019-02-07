@@ -3,6 +3,7 @@ import {
 } from "antd";
 
 import OlSourceXYS from "ol/source/xyz";
+import OlSourceTileWMS from "ol/source/tilewms";
 import OlLayerTile from "ol/layer/tile";
 import OlView from "ol/view";
 import OlMap from "ol/map";
@@ -16,8 +17,12 @@ import OlStyleFill from "ol/style/fill";
 import OlStyleStroke from "ol/style/stroke";
 import OlCircle from "ol/style/circle";
 import OlFormatGeoJSON from "ol/format/geojson";
+import BingMaps from 'ol/source/bingmaps';
+import OLSourceOSM from 'ol/source/osm';
 
 import colors from "./../../utils/colors";
+
+import config from "./../../config";
 
 let compareid = null;
 
@@ -39,6 +44,26 @@ var satelite = new OlLayerTile({
   type: "base"
 });
 
+var bings = new OlLayerTile({
+  name: "tms",
+  projection: "EPSG:4326",
+  source: new BingMaps({
+    key: 'AifwTHqYsEbvQy6u9dXXiG22H45XSZaCe22JdZmpuwDvWLxtqTjmcN5Br5DueBBA',
+    imagerySet: "RoadOnDemand"
+  }),
+  type: "base"
+});
+
+var osm = new OlLayerTile({
+  name: "tms",
+  projection: "EPSG:4326",
+  source: new OLSourceOSM(),
+  type: "base"
+});
+
+
+
+
 const map = new OlMap({
   view: new OlView({
     projection: "EPSG:4326",
@@ -46,7 +71,7 @@ const map = new OlMap({
     zoom: 9
   }),
   controls: [],
-  layers: [satelite]
+  layers: [osm]
 });
 
 const changeMap = () => {
@@ -119,15 +144,13 @@ const addLayer = (newLayers, oldLayers, name = "") => {
   let color = colors.shift();
 
   diff["color"] = color;
-
-
   var style = new OlStyle({
     stroke: new OlStroke({
       color: '#f00',
     }),
     fill: new OlFill({
       color: 'rgba(255,0,0,0.1)'
-      
+
     }),
     text: new OlStyleText({
       font: "12px Calibri,sans-serif",
@@ -153,21 +176,36 @@ const addLayer = (newLayers, oldLayers, name = "") => {
     })
   });
 
-  if (diff.style) {
-    aux = new OlLayerVector({
-      source: new OlSourceVector({
-        format: new OlFormatGeoJSON(),
-        url: diff.json
-      }),
-      style: diff.style
+  let source;
+  if (diff.wms) {
+    let paramLayers = {
+      'LAYERS': '',
+      'TILED': true
+    };
+    paramLayers.LAYERS = diff.wms
+
+    source = new OlSourceTileWMS({
+      url: config.geoServerWms,
+      params: paramLayers,
+    });
+    aux = new OlLayerTile({
+      source,
+      style: diff.style || function (feature) {
+        const name = feature.get('nombre');
+        if (name) {
+          style.getText().setText(name);
+        }
+        return style;
+      }
     });
   } else {
+    source = new OlSourceVector({
+      format: new OlFormatGeoJSON(),
+      url: diff.json
+    })
     aux = new OlLayerVector({
-      source: new OlSourceVector({
-        format: new OlFormatGeoJSON(),
-        url: diff.json
-      }),
-      style: function (feature) {
+      source,
+      style: diff.style || function (feature) {
         const name = feature.get('nombre');
         if (name) {
           style.getText().setText(name);
@@ -176,6 +214,9 @@ const addLayer = (newLayers, oldLayers, name = "") => {
       }
     });
   }
+
+
+
 
 
   if (diff.name === "Polígonos de suelo afectado") {
