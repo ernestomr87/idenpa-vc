@@ -1,10 +1,6 @@
 import React from "react";
-import { Drawer, Table, Card } from "antd";
+import { Drawer, Table, Card,Popover } from "antd";
 import styled from "styled-components";
-import OlStyle from "ol/style/style";
-import OlStyleText from "ol/style/text";
-import OlStyleFill from "ol/style/fill";
-import OlStyleStroke from "ol/style/stroke";
 
 import OlInteractionSelect from "ol/interaction/select";
 import {

@@ -42,8 +42,8 @@ var satelite = new OlLayerTile({
 const map = new OlMap({
   view: new OlView({
     projection: "EPSG:4326",
-    center: [-80.009, 22.6083],
-    zoom: 10
+    center: [-80.009, 22.5083],
+    zoom: 9
   }),
   controls: [],
   layers: [satelite]
@@ -119,35 +119,6 @@ const addLayer = (newLayers, oldLayers, name = "") => {
   let color = colors.shift();
 
   diff["color"] = color;
-  const styleF = new OlStyle({
-    text: new OlStyleText({
-      font: '12px sans-serif',
-      text: "",
-      fill: new OlStyleFill({
-        color: '#000'
-      }),
-      offsetX: 0,
-      offsetY: -10,
-      stroke: new OlStyleStroke({color: '#fff'}),
-    }),
-    fill: new OlFill({
-      color: color
-    }),
-    stroke: new OlStroke({
-      color: color
-    }),
-    width: 4,
-    image: new OlCircle({
-      radius: 5,
-      fill: new OlFill({
-        color: color
-      }),
-      stroke: new OlStroke({
-        color: color
-      }),
-      width: 4
-    })
-  });
 
   var style = new OlStyle({
     stroke: new OlStroke({
@@ -167,23 +138,13 @@ const addLayer = (newLayers, oldLayers, name = "") => {
         width: 3
       }),
       offsetX: 0,
-      offsetY: -10,
+      offsetY: -12,
     }),
     image: new OlCircle({
       radius: 5,
       fill: new OlStyleFill({color}),
       stroke: new OlStyleStroke({color: '#ffffff', width: 1})
     })
-    // image: new OlCircle({
-    //   radius: 5,
-    //   fill: new OlFill({
-    //     color: color
-    //   }),
-    //   stroke: new OlStroke({
-    //     color: color
-    //   }),
-    //   width: 4
-    // })
   });
 
   // let style = styleF;

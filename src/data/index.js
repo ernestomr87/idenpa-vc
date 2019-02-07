@@ -4,11 +4,12 @@ import machinery from "./machinery";
 import northCoast from "./northCoast";
 import lifeTask from "./lifeTask";
 import estructuraAgricola from "./estructuraAgricola";
+import bases from "./bases";
 
 import * as nomenclature from "./nomenclature";
 import nodes, { node_services, getLayersFromWmsCapabilties } from "./nodes";
 
-const Modules = { irrigation, investments, machinery, northCoast, lifeTask, estructuraAgricola };
+const Modules = { irrigation, investments, machinery, northCoast, lifeTask, estructuraAgricola,bases };
 
 const getModelByJson = json => {
   let model = null;

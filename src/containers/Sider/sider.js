@@ -246,7 +246,7 @@ class SiderComponent extends Component {
       case "investments":
         aux = (
           <A style={{ fontSize: 15 }}>
-            <ImgInversionV src={MoneyBagImg} alt="" />Inverciones
+            <ImgInversionV src={MoneyBagImg} alt="" />Inversiones
           </A>
         );
         break;
@@ -267,7 +267,7 @@ class SiderComponent extends Component {
       case "estructuraAgricola":
         aux = (
           <A style={{ fontSize: 15 }}>
-            <ImgInversionV src={FormProdImg} alt="" />Estructura Agrícola
+            <ImgInversionV src={FormProdImg} alt="" />Sistema de la Agricultura
           </A>
         );
         break;
@@ -436,7 +436,7 @@ class SiderComponent extends Component {
                 }
               >
                 <ImgInversion src={FormProdImg} alt="" />
-                <span>Estructura Agrícola</span>
+                <span>Sistema de la Agricultura</span>
               </Badge>
             </Menu.Item>
             <Menu.Item
@@ -522,7 +522,7 @@ class SiderComponent extends Component {
           </Div>
         </Animate>
         {!collapsed ? (
-          <DivBotton>
+            <DivBotton>
             <TooltipWrapper
               placement="topLeft"
               title={"Añadir Nodo Predeterminado"}

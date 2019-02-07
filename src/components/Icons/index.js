@@ -28,6 +28,7 @@ import MapImg from './icons/map.svg';
 import LinkImg from './icons/link.svg';
 import FormProdImg from './icons/form-prod.svg';
 import AgricultureImg from './icons/agriculture.svg';
+import BaseMapImg from './icons/map-location.svg';
 
 export default Logo;
 export {
@@ -59,5 +60,6 @@ export {
 	MapImg,
 	LinkImg,
 	FormProdImg,
-	AgricultureImg
+	AgricultureImg,
+	BaseMapImg
 };
