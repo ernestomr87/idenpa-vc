@@ -212,7 +212,8 @@ const addLayer = (newLayers, oldLayers, name = "") => {
           style.getText().setText(name);
         }
         return style;
-      }
+      },
+      opacity:0.5
     });
   }
 
