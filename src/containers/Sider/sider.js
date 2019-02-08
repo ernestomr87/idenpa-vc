@@ -68,6 +68,12 @@ const Div = styled.div`
   max-height: 78vh;
   overflow-y: auto;
 `;
+const DivText = styled.div`
+  margin: 10px 0 0 27px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1890ff;
+`;
 
 const MenuWrapper = styled(Menu)`
   &.ant-menu-inline .ant-menu-item:not(:last-child) {
@@ -195,7 +201,8 @@ class SiderComponent extends Component {
           break;
         default:
         color = null;  
-			}
+      }
+      
       return (
         <TreeNodeWrapper color={color} title={item.name} key={item.name} dataRef={item} />
       );
@@ -341,6 +348,8 @@ class SiderComponent extends Component {
     if (submenu === "rb_layers") {
       return (
         <div>
+            {item === 'estructuraAgricola'? (<DivText>Quemado de Güines</DivText>) :null } 
+
           <Tree
             style={{ fontSize: 11 }}
             checkable

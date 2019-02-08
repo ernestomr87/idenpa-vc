@@ -6,7 +6,8 @@ import { Chart, Tooltip, Geom, Axis } from "bizcharts";
 import _ from "lodash";
 import { addLayer } from "./../Map/utils";
 
-import { fetchFormasProductivasById } from "./../../services";
+import { fetchFormasProductivasById,fetchTermosByFormasProductiva } from "./../../services";
+import './index.css';
 
 const TabPane = Tabs.TabPane;
 
@@ -87,7 +88,10 @@ export default class CSSInfo extends Component {
     layers: [],
     data: null,
     formasProductivas:null,
-    loading: false
+    termos:null,
+    termoName:null,
+    loading: false,
+    loadingT: false
   };
 
   componentWillMount = () => {
@@ -103,15 +107,21 @@ export default class CSSInfo extends Component {
     }
   };
 
-
-  changeData = data => {
-    const self = this;
-
+  init=()=>{
     this.setState({
       layers: [],
       data: null,
       formasProductivas:null,
+      termos:null,
+      termoName:null,
+      loading: false,
+      loadingT: false
     })
+  }
+  changeData = data => {
+    const self = this;
+
+    this.init();
     if(data.tipo ==="UBPC" || data.tipo ==="CCS"){
       self.setState({
         loading: true
@@ -151,6 +161,45 @@ export default class CSSInfo extends Component {
     
   };
 
+  fetchTermos=(gid)=>{
+
+    const self = this;
+
+    self.setState({
+      loadingT: true
+    })
+    fetchTermosByFormasProductiva(gid)
+      .then(response => {
+        let termos={};
+        let flag=false;
+        let termoName=null;
+        response.data.forEach((element)=>{
+          if(!termoName) termoName = element.nombre_termo;
+           if(!termos[element.forma_prod_tributa]){
+            termos[element.forma_prod_tributa]={}
+            termos[element.forma_prod_tributa].total = 0;
+          }
+          termos[element.forma_prod_tributa][element.mes]=element.cant;
+          termos[element.forma_prod_tributa].um = element.um;
+          termos[element.forma_prod_tributa].cant_productores = element.cant_productores;
+          termos[element.forma_prod_tributa].total += element.cant;
+          flag = true;
+        });
+        self.setState({
+          loadingT: false,
+          termoName,
+          termos:flag ? termos:null
+        });
+        this.showTermoModal();
+      })
+      .catch(error => {
+        console.log(error);
+        self.setState({
+          loadingT: false,
+        });
+      });
+  }
+
   addLayer = async data => {
     const { oldLayers } = this.props;
     let array = [
@@ -171,26 +220,55 @@ export default class CSSInfo extends Component {
   renderData = data => {
     const fTierra = [
       {
-        name: "Cultivos Varios",
-        value: data.ft_cv || 0
+        name: "Superficie Agrícola",
+        value: data.ft_sup_agricola || 0
+      },
+      {
+        name: "Superficie vacía",
+        value: data.ft_sup_vacia || 0
+      },
+      {
+        name: "Superficie Ociosa",
+        value: data.ft_sup_ociosa || 0
+      },
+      {
+        name: "Cultivos temporales",
+        value: data.ft_cult_temp || 0
+      },
+      {
+        name: "Tubérculos y raíces",
+        value: data.ft_tub_raices || 0
+      },
+      {
+        name: "Granos",
+        value: data.ft_grano || 0
+      },
+      {
+        name: "Tabaco",
+        value: data.ft_tabaco || 0
+      },
+      {
+        name: "Hortalizas",
+        value: data.ft_hortaliza || 0
       },
       {
         name: "Caña",
         value: data.ft_cana || 0
       },
       {
-        name: "Cultivos Varios y Ganadería",
-        value: data.ft_cv_gan || 0
+        name: "Plátano",
+        value: data.ft_platano || 0
       },
       {
-        name: "Ganado Menor",
-        value: data.ft_gmenor || 0
+        name: "Frutales",
+        value: data.ft_frutales || 0
       },
       {
-        name: "Ganadeía",
-        value: data.ft_gan || 0
+        name: "Ganadería",
+        value: data.ft_ganaderia || 0
       }
     ];
+
     const productores = [
       {
         name: "Propietarios",
@@ -280,6 +358,16 @@ export default class CSSInfo extends Component {
 
         <Span>
           Termos de Leche{" "}
+          <Button
+                        loading={this.state.loadingT} 
+                        onClick={()=>{this.fetchTermos(data.gid)}}
+                        style={{ margin: "0 10px 5px 0px", float: "right" }}
+                        type="primary"
+                        size="small"
+                        shape="circle"
+                        icon="bar-chart" >
+                 
+              </Button>
           <Button
             onClick={() => {
               this.addLayer(data);
@@ -371,7 +459,7 @@ export default class CSSInfo extends Component {
       key:"total",
       width: 100,
       fixed: 'right',
-      render: text => <strong style={{float:"right"}}>{text}</strong>,
+      render: text => <strong>{text}</strong>,
     });  
       return data;
     } 
@@ -383,7 +471,7 @@ export default class CSSInfo extends Component {
     };
 
     Modal.info({
-      width: "50%",
+      width: "60%",
       title: "Plan de Producción ",
       content: (
         <div>
@@ -392,6 +480,123 @@ export default class CSSInfo extends Component {
               <Table scroll={{ x: 2100, y: 0 }} pagination={false} columns={columns()} dataSource={dataTable()} />
             </TabPane>
             {Object.keys(formasProductivas).map((item,index)=>{
+              return (<TabPane tab={item} key={index+2}>
+              <Chart data={dataSource(item)} scale={scale}  forceFit>
+                <Axis title name="mes" />
+                <Axis title name="cant" />
+                <Tooltip crosshairs={{ type: 'rect' }} />
+                <Geom type="interval" position="mes*cant" color="mes" />
+              </Chart>
+              </TabPane>)
+            })}
+          </Tabs>
+
+        </div>
+      ),
+      onOk() {}
+    });
+  };
+
+  showTermoModal = () => {
+    let termos = this.state.termos;
+    let termoName = this.state.termoName;
+    const dataTable =()=>{
+      let data=[];
+      Object.keys(termos).map((element)=>{
+        let aux = {
+          "forma_prod_tributa":`${element}`,
+          "enero":_.floor(termos[element]["Enero"], 2),
+          "febrero":_.floor(termos[element]["Febrero"], 2),
+          "marzo":_.floor(termos[element]["Marzo"], 2) ,
+          "abril":_.floor(termos[element]["Abril"], 2) ,
+          "mayo":_.floor(termos[element]["Mayo"], 2) ,
+          "junio":_.floor(termos[element]["Junio"], 2) ,
+          "julio":_.floor(termos[element]["Julio"], 2) ,
+          "agosto":_.floor(termos[element]["Agosto"], 2) ,
+          "septiembre":_.floor(termos[element]["Septiembre"], 2) ,
+          "octubre":_.floor(termos[element]["Octubre"], 2) ,
+          "noviembre":_.floor(termos[element]["Noviembre"], 2) ,
+          "diciembre":_.floor(termos[element]["Diciembre"], 2) ,
+          "productores":_.floor(termos[element]["cant_productores"], 2),
+          "total":_.floor(termos[element]["total"], 2),
+        };
+        delete aux.um;
+        data.push(aux)
+      })
+      return data;
+    }
+
+    const dataSource=(item) =>{
+      let data = [];
+      Object.keys(termos[item]).map((element)=>{
+        if(element!=="total" && element!=="um"){
+          let aux={
+            cant: _.floor(termos[item][element], 2),
+            mes: element
+          }
+          data.push(aux);
+        }
+
+      })
+      return data;
+    } 
+
+    const columns=() =>{
+      let data = [
+      {  title: "Forma Productiva (L)",
+        dataIndex: "forma_prod_tributa",
+        key:"forma_prod_tributa",
+        width: 150,
+        fixed: 'left',
+        render: text => <strong >{text}</strong>,
+      }];    
+
+      let key = Object.keys(termos)[0];
+       Object.keys(termos[key]).map((element,index)=>{
+         if(element!=="total" && element!=="um" && element!=="cant_productores"){
+          let aux={
+            title: element,
+            dataIndex: element.toLowerCase(),
+            key:element.toLowerCase(),
+            width: 150
+          }
+          data.push(aux);
+         }
+      })
+      data.push({  title: "Productores",
+      dataIndex: "productores",
+      key:"productores",
+      width: 100,
+      fixed: 'right',
+      render: text => <strong>{text}</strong>,
+    }); 
+      data.push({  title: "Total",
+      dataIndex: "total",
+      key:"total",
+      width: 100,
+      fixed: 'right',
+      render: text => <strong>{text}</strong>,
+    });  
+      return data;
+    } 
+
+
+    const scale = {
+      mes: { alias: "Mes" },
+      cant: { alias: "Cantidad" }
+    };
+
+
+    Modal.info({
+      width: "60%",
+      title: termoName,
+      content: (
+        <div>
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Total" key="1">
+              <Table scroll={{ x: 2100, y: 500 }} pagination={false} columns={columns()} dataSource={dataTable()} />
+            </TabPane>
+            {Object.keys(termos).map((item,index)=>{
               return (<TabPane tab={item} key={index+2}>
               <Chart data={dataSource(item)} scale={scale}  forceFit>
                 <Axis title name="mes" />
