@@ -360,7 +360,8 @@ export default class CSSInfo extends Component {
 
         <Span>
           Termos de Leche{" "}
-          {((data.tl_500 && data.tl_500 > 0) || (data.tl_1000 && data.tl_1000 > 0)) ? <Button
+          {((data.tl_500 && data.tl_500 > 0) || (data.tl_1000 && data.tl_1000 > 0)) ? 
+          <Button
                         loading={this.state.loadingT} 
                         onClick={()=>{this.fetchTermos(data.gid)}}
                         style={{ margin: "0 10px 5px 0px", float: "right" }}
@@ -370,17 +371,21 @@ export default class CSSInfo extends Component {
                         icon="bar-chart" >
                  
               </Button>:null}
-          <Button
-            onClick={() => {
-              this.addLayer(data);
-            }}
-            style={{ margin: "0 10px 5px 0px", float: "right" }}
-            type="primary"
-            size="small"
-            shape="circle"
-            icon="environment-o"
-          />{" "}
+          {((data.tl_500 && data.tl_500 > 0) || (data.tl_1000 && data.tl_1000 > 0)) ? 
+                        <Button
+                        onClick={() => {
+                          this.addLayer(data);
+                        }}
+                        style={{ margin: "0 10px 5px 0px", float: "right" }}
+                        type="primary"
+                        size="small"
+                        shape="circle"
+                        icon="environment-o"
+                      />
+          :null}
+
         </Span>
+  
         <TableWrapper
           size="small"
           showHeader={false}

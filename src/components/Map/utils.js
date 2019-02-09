@@ -203,17 +203,32 @@ const addLayer = (newLayers, oldLayers, name = "") => {
       format: new OlFormatGeoJSON(),
       url: diff.json
     })
-    aux = new OlLayerVector({
-      source,
-      style: diff.style || function (feature) {
-        const name = feature.get('nombre');
-        if (name) {
-          style.getText().setText(name);
-        }
-        return style;
-      },
-      opacity:0.5
-    });
+    if(diff.opacity){
+      aux = new OlLayerVector({
+        source,
+        style: diff.style || function (feature) {
+          const name = feature.get('nombre');
+          if (name) {
+            style.getText().setText(name);
+          }
+          return style;
+        },
+        opacity:diff.opacity
+      });
+    }else{
+      aux = new OlLayerVector({
+        source,
+        style: diff.style || function (feature) {
+          const name = feature.get('nombre');
+          if (name) {
+            style.getText().setText(name);
+          }
+          return style;
+        },
+      });
+    }
+
+
   }
 
   if (diff.name === "Polígonos de suelo afectado") {
