@@ -4,9 +4,9 @@ import { Divider, Table, Spin, Col, Row, Button,Modal,Tabs, Alert  } from "antd"
 import { AgricultureImg } from "./../Icons";
 import { Chart, Tooltip, Geom, Axis } from "bizcharts";
 import _ from "lodash";
-import { addLayer } from "./../Map/utils";
+import { addLayer, addLayerByGeom } from "./../Map/utils";
 
-import { fetchFormasProductivasById,fetchTermosByFormasProductiva } from "./../../services";
+import { fetchFormasProductivasById,fetchTermosByFormasProductiva,fetchUsoTenenciaByFormaProductiva } from "./../../services";
 import './index.css';
 
 const TabPane = Tabs.TabPane;
@@ -117,16 +117,18 @@ export default class CSSInfo extends Component {
       loading: false,
       loadingT: false
     })
+    this.props.removeLayerTermo();
   }
+
   changeData = data => {
     const self = this;
-
     this.init();
     if(data.tipo ==="UBPC" || data.tipo ==="CCS"){
       self.setState({
         loading: true
       })
-      fetchFormasProductivasById(data.gid)
+
+    fetchFormasProductivasById(data.gid)
       .then(response => {
         let formasProductivas={};
         let flag=false;
@@ -358,7 +360,7 @@ export default class CSSInfo extends Component {
 
         <Span>
           Termos de Leche{" "}
-          <Button
+          {((data.tl_500 && data.tl_500 > 0) || (data.tl_1000 && data.tl_1000 > 0)) ? <Button
                         loading={this.state.loadingT} 
                         onClick={()=>{this.fetchTermos(data.gid)}}
                         style={{ margin: "0 10px 5px 0px", float: "right" }}
@@ -367,7 +369,7 @@ export default class CSSInfo extends Component {
                         shape="circle"
                         icon="bar-chart" >
                  
-              </Button>
+              </Button>:null}
           <Button
             onClick={() => {
               this.addLayer(data);

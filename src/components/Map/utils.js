@@ -17,6 +17,7 @@ import OlStyleFill from "ol/style/fill";
 import OlStyleStroke from "ol/style/stroke";
 import OlCircle from "ol/style/circle";
 import OlFormatGeoJSON from "ol/format/geojson";
+
 import BingMaps from 'ol/source/bingmaps';
 import OLSourceOSM from 'ol/source/osm';
 
@@ -60,8 +61,6 @@ var osm = new OlLayerTile({
   source: new OLSourceOSM(),
   type: "base"
 });
-
-
 
 
 const map = new OlMap({
@@ -216,10 +215,6 @@ const addLayer = (newLayers, oldLayers, name = "") => {
       opacity:0.5
     });
   }
-
-
-
-
 
   if (diff.name === "Polígonos de suelo afectado") {
     compareid = aux.ol_uid;
@@ -424,6 +419,32 @@ const showLayerByCategory = (ol_uid, interaction) => {
   });
 };
 
+const addLayerByGeom=(geom)=>{
+  // var vectorSource = new OlSourceVector({
+  //   features: (new OlFormatGeoJSON()).readFeatures(geom)
+  // });
+
+  
+
+  let source = new OlSourceVector({
+    format: new OlFormatGeoJSON(),
+    url: 'http://localhost:3001/api/sitema_agricola/forma_prodictiva/725637272/usoTenencia',
+  })
+  let aux = new OlLayerVector({
+    source,
+  });
+
+  map.addLayer(aux);
+  // aux.getSource().on("change", function (data) {
+  //   message.success(`Capa "${diff.name}" cargada.`, 1);
+  //   aux.getSource().removeEventListener("change");
+  //   resolve({
+  //     oldLayers,
+  //     important
+  //   });
+  // });
+}
+
 export default map;
 export {
   listLayerByNode,
@@ -431,5 +452,6 @@ export {
   addLayerFromNode,
   removeLayer,
   changeMap,
-  showLayerByCategory
+  showLayerByCategory,
+  addLayerByGeom
 };

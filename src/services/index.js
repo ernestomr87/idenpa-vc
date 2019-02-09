@@ -32,6 +32,10 @@ const fetchTermosByFormasProductiva = (id) => {
 	return axios.get(`${API}/api/sitema_agricola/forma_prodictiva/${id}/termos`);
 };
 
+const fetchUsoTenenciaByFormaProductiva = (id) => {
+	return axios.get(`${API}/api/sitema_agricola/forma_prodictiva/${id}/usoTenencia/`);
+};
+
 export default API;
 export {
 	fetchAgroproductividad,
@@ -40,5 +44,6 @@ export {
 	fetchParcelasAfectadas,
 	fetchParcelasAfectadasByMun,
 	fetchFormasProductivasById,
-	fetchTermosByFormasProductiva
+	fetchTermosByFormasProductiva,
+	fetchUsoTenenciaByFormaProductiva
 };
