@@ -68,10 +68,10 @@ function addItem(item, array) {
   return array;
 }
 class TareaVida extends Component {
-  state = { 
-    visible: false, 
-    view: null, 
-    arrayAfectaciones: [] 
+  state = {
+    visible: false,
+    view: null,
+    arrayAfectaciones: []
   };
 
   componentWillReceiveProps = nextProps => {
@@ -99,6 +99,7 @@ class TareaVida extends Component {
           default:
             break;
         }
+        return null;
       });
       this.setState({ arrayAfectaciones });
     }
@@ -126,34 +127,34 @@ class TareaVida extends Component {
   };
 
   infoAfectacion = (parametro) => {
-		return (
-			<div>
-				<p>{this.infoAfectacionAux(parametro)}</p>
-			</div>
-		);
-	};
+    return (
+      <div>
+        <p>{this.infoAfectacionAux(parametro)}</p>
+      </div>
+    );
+  };
 
-	infoAfectacionAux = (parametroAux) => {
-		switch (parametroAux) {
-			case 'Agroproductividad en los suelos':
-				return 'Esta es la Afectación correspondiente a Agroproductividad en los suelos';
+  infoAfectacionAux = (parametroAux) => {
+    switch (parametroAux) {
+      case 'Agroproductividad en los suelos':
+        return 'Esta es la Afectación correspondiente a Agroproductividad en los suelos';
 
-			case 'Parcelas afectadas por tipo de uso':
-				return 'Esta es la Afectación correspondiente a Parcelas afectadas por tipo de uso';
+      case 'Parcelas afectadas por tipo de uso':
+        return 'Esta es la Afectación correspondiente a Parcelas afectadas por tipo de uso';
 
-			case 'Afectaciones por forma productiva':
-				return 'Esta es la Afectación correspondiente a Afectaciones por forma productiva';
+      case 'Afectaciones por forma productiva':
+        return 'Esta es la Afectación correspondiente a Afectaciones por forma productiva';
 
-			case 'Usufructuarios afectados':
-				return 'Esta es la Afectación correspondiente a Usufructuarios afectados';
+      case 'Usufructuarios afectados':
+        return 'Esta es la Afectación correspondiente a Usufructuarios afectados';
 
-			case 'Ascenso del nivel medio del mar':
-				return 'Esta es la Afectación correspondiente a Ascenso del nivel medio del mar';
+      case 'Ascenso del nivel medio del mar':
+        return 'Esta es la Afectación correspondiente a Ascenso del nivel medio del mar';
 
-			default:
-				break;
-		}
-	};
+      default:
+        break;
+    }
+  };
 
   render() {
     return (
@@ -189,22 +190,23 @@ class TareaVida extends Component {
                       icon="area-chart"
                       color={item.color}
                     />
-                    {/* <Popover
-											title={item.text}
-											content={this.infoAfectacion(item.text)}
-											trigger="click"
-										>
-											<img
-												style={{
-													float: 'right',
-													cursor: 'pointer',
-													height: '1.6vmin',
-													marginTop: '0.4em',
-													marginRight: '0.5em'
-												}}
-												src={logoI}
-											/>
-										</Popover> */}
+                    <Popover
+                      title={item.text}
+                      content={this.infoAfectacion(item.text)}
+                      trigger="click"
+                    >
+                      <img
+                        style={{
+                          float: 'right',
+                          cursor: 'pointer',
+                          height: '1.6vmin',
+                          marginTop: '0.4em',
+                          marginRight: '0.5em'
+                        }}
+                        alt="El alt es pedido"
+                        src={logoI}
+                      />
+                    </Popover>
                   </div>
                 </List.Item>
               )}

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import styled from "styled-components";
-import { Divider, Table, Spin, Col, Row, Button,Modal,Tabs, Alert  } from "antd";
+import { Divider, Table, Spin, Col, Row, Button, Modal, Tabs, Alert } from "antd";
 import { AgricultureImg } from "./../Icons";
 import { Chart, Tooltip, Geom, Axis } from "bizcharts";
 import _ from "lodash";
-import { addLayer, addLayerByGeom } from "./../Map/utils";
+import { addLayer } from "./../Map/utils";
 
-import { fetchFormasProductivasById,fetchTermosByFormasProductiva,fetchUsoTenenciaByFormaProductiva } from "./../../services";
+import { fetchFormasProductivasById, fetchTermosByFormasProductiva } from "./../../services";
 import './index.css';
 
 const TabPane = Tabs.TabPane;
@@ -45,51 +45,51 @@ const transform = dataSource => {
   return data;
 };
 
-const numberToLetter = number => {
-  const letters = {
-    10: "a",
-    11: "b",
-    12: "c",
-    13: "d",
-    14: "e",
-    15: "f"
-  };
+// const numberToLetter = number => {
+//   const letters = {
+//     10: "a",
+//     11: "b",
+//     12: "c",
+//     13: "d",
+//     14: "e",
+//     15: "f"
+//   };
 
-  for (var j = 0; j < 6; j++) {
-    if (number === Object.keys(letters)[j]) {
-      number = Object.values(letters)[j];
-      break;
-    }
-  }
+//   for (var j = 0; j < 6; j++) {
+//     if (number === Object.keys(letters)[j]) {
+//       number = Object.values(letters)[j];
+//       break;
+//     }
+//   }
 
-  return number;
-};
+//   return number;
+// };
 
-const getRandomColor = () => {
-  let number;
-  let color = "#";
+// const getRandomColor = () => {
+//   let number;
+//   let color = "#";
 
-  for (let i = 0; i < 6; i++) {
-    number = Math.round(Math.random() * 15);
+//   for (let i = 0; i < 6; i++) {
+//     number = Math.round(Math.random() * 15);
 
-    // Change the number to the letter
-    if (number > 9) {
-      number = numberToLetter(number);
-    }
+//     // Change the number to the letter
+//     if (number > 9) {
+//       number = numberToLetter(number);
+//     }
 
-    color += number;
-  }
+//     color += number;
+//   }
 
-  return color;
-};
+//   return color;
+// };
 
 export default class CSSInfo extends Component {
   state = {
     layers: [],
     data: null,
-    formasProductivas:null,
-    termos:null,
-    termoName:null,
+    formasProductivas: null,
+    termos: null,
+    termoName: null,
     loading: false,
     loadingT: false
   };
@@ -102,18 +102,18 @@ export default class CSSInfo extends Component {
 
   componentWillReceiveProps = nextProps => {
     const nData = transform(nextProps.dataSource);
-    if (transform(this.props.dataSource).gid != nData.gid) {
+    if (transform(this.props.dataSource).gid !== nData.gid) {
       this.changeData(nData);
     }
   };
 
-  init=()=>{
+  init = () => {
     this.setState({
       layers: [],
       data: null,
-      formasProductivas:null,
-      termos:null,
-      termoName:null,
+      formasProductivas: null,
+      termos: null,
+      termoName: null,
       loading: false,
       loadingT: false
     })
@@ -123,47 +123,47 @@ export default class CSSInfo extends Component {
   changeData = data => {
     const self = this;
     this.init();
-    if(data.tipo ==="UBPC" || data.tipo ==="CCS"){
+    if (data.tipo === "UBPC" || data.tipo === "CCS") {
       self.setState({
         loading: true
       })
 
-    fetchFormasProductivasById(data.gid)
-      .then(response => {
-        let formasProductivas={};
-        let flag=false;
-        response.data.forEach((element)=>{
-           if(!formasProductivas[element.indicador]){
-            formasProductivas[element.indicador]={}
-            formasProductivas[element.indicador].total = 0;
-          }
-          formasProductivas[element.indicador][element.mes]=element.cant;
-          formasProductivas[element.indicador].um = element.um;
-          formasProductivas[element.indicador].total += element.cant;
-          flag = true;
-        });
-              
-        self.setState({
-          data,
-          loading: false,
-          formasProductivas:flag?formasProductivas:null
-        });
-      })
-      .catch(error => {
-        console.log(error);
-        self.setState({
-          loading: false
+      fetchFormasProductivasById(data.gid)
+        .then(response => {
+          let formasProductivas = {};
+          let flag = false;
+          response.data.forEach((element) => {
+            if (!formasProductivas[element.indicador]) {
+              formasProductivas[element.indicador] = {}
+              formasProductivas[element.indicador].total = 0;
+            }
+            formasProductivas[element.indicador][element.mes] = element.cant;
+            formasProductivas[element.indicador].um = element.um;
+            formasProductivas[element.indicador].total += element.cant;
+            flag = true;
+          });
+
+          self.setState({
+            data,
+            loading: false,
+            formasProductivas: flag ? formasProductivas : null
+          });
         })
-      });
-    }else{
+        .catch(error => {
+          console.log(error);
+          self.setState({
+            loading: false
+          })
+        });
+    } else {
       self.setState({
         data
       });
     }
-    
+
   };
 
-  fetchTermos=(gid)=>{
+  fetchTermos = (gid) => {
 
     const self = this;
 
@@ -172,16 +172,16 @@ export default class CSSInfo extends Component {
     })
     fetchTermosByFormasProductiva(gid)
       .then(response => {
-        let termos={};
-        let flag=false;
-        let termoName=null;
-        response.data.forEach((element)=>{
-          if(!termoName) termoName = element.nombre_termo;
-           if(!termos[element.forma_prod_tributa]){
-            termos[element.forma_prod_tributa]={}
+        let termos = {};
+        let flag = false;
+        let termoName = null;
+        response.data.forEach((element) => {
+          if (!termoName) termoName = element.nombre_termo;
+          if (!termos[element.forma_prod_tributa]) {
+            termos[element.forma_prod_tributa] = {}
             termos[element.forma_prod_tributa].total = 0;
           }
-          termos[element.forma_prod_tributa][element.mes]=element.cant;
+          termos[element.forma_prod_tributa][element.mes] = element.cant;
           termos[element.forma_prod_tributa].um = element.um;
           termos[element.forma_prod_tributa].cant_productores = element.cant_productores;
           termos[element.forma_prod_tributa].total += element.cant;
@@ -190,7 +190,7 @@ export default class CSSInfo extends Component {
         self.setState({
           loadingT: false,
           termoName,
-          termos:flag ? termos:null
+          termos: flag ? termos : null
         });
         this.showTermoModal();
       })
@@ -209,7 +209,7 @@ export default class CSSInfo extends Component {
         color: "#f5222d",
         json: `http://geoservicios.enpa.vcl.minag.cu/geoserver/ws_ide_vcl/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ws_ide_vcl:termo_leche&CQL_FILTER=id_fp=${
           data.gid
-        }&outputFormat=application%2Fjson`,
+          }&outputFormat=application%2Fjson`,
         name: data.nombre,
         nomenclature: null
       }
@@ -317,17 +317,17 @@ export default class CSSInfo extends Component {
     return (
       <div>
         <Row>
-          <Col style={{ marginBottom:20}}>
+          <Col style={{ marginBottom: 20 }}>
             <Span>Plan de Producción</Span>
             <Button
-                        onClick={this.showModal}
-                        style={{ margin: "0 10px 5px 0px", float: "right" }}
-                        type="primary"
-                        size="small"
-                        shape="circle"
-                        icon="bar-chart" >
-                 
-              </Button>
+              onClick={this.showModal}
+              style={{ margin: "0 10px 5px 0px", float: "right" }}
+              type="primary"
+              size="small"
+              shape="circle"
+              icon="bar-chart" >
+
+            </Button>
           </Col>
           <Col>
             <Span>Fondo de Tierra (ha)</Span>
@@ -360,32 +360,32 @@ export default class CSSInfo extends Component {
 
         <Span>
           Termos de Leche{" "}
-          {((data.tl_500 && data.tl_500 > 0) || (data.tl_1000 && data.tl_1000 > 0)) ? 
-          <Button
-                        loading={this.state.loadingT} 
-                        onClick={()=>{this.fetchTermos(data.gid)}}
-                        style={{ margin: "0 10px 5px 0px", float: "right" }}
-                        type="primary"
-                        size="small"
-                        shape="circle"
-                        icon="bar-chart" >
-                 
-              </Button>:null}
-          {((data.tl_500 && data.tl_500 > 0) || (data.tl_1000 && data.tl_1000 > 0)) ? 
-                        <Button
-                        onClick={() => {
-                          this.addLayer(data);
-                        }}
-                        style={{ margin: "0 10px 5px 0px", float: "right" }}
-                        type="primary"
-                        size="small"
-                        shape="circle"
-                        icon="environment-o"
-                      />
-          :null}
+          {((data.tl_500 && data.tl_500 > 0) || (data.tl_1000 && data.tl_1000 > 0)) ?
+            <Button
+              loading={this.state.loadingT}
+              onClick={() => { this.fetchTermos(data.gid) }}
+              style={{ margin: "0 10px 5px 0px", float: "right" }}
+              type="primary"
+              size="small"
+              shape="circle"
+              icon="bar-chart" >
+
+            </Button> : null}
+          {((data.tl_500 && data.tl_500 > 0) || (data.tl_1000 && data.tl_1000 > 0)) ?
+            <Button
+              onClick={() => {
+                this.addLayer(data);
+              }}
+              style={{ margin: "0 10px 5px 0px", float: "right" }}
+              type="primary"
+              size="small"
+              shape="circle"
+              icon="environment-o"
+            />
+            : null}
 
         </Span>
-  
+
         <TableWrapper
           size="small"
           showHeader={false}
@@ -399,77 +399,81 @@ export default class CSSInfo extends Component {
 
   showModal = () => {
     let formasProductivas = this.state.formasProductivas;
-    const dataTable =()=>{
-      let data=[];
-      Object.keys(formasProductivas).map((element)=>{
+    const dataTable = () => {
+      let data = [];
+      Object.keys(formasProductivas).map((element) => {
         let aux = {
-          "indicador":`${element} (${formasProductivas[element].um})`,
-          "enero":_.floor(formasProductivas[element]["Enero"], 2),
-          "febrero":_.floor(formasProductivas[element]["Febrero"], 2),
-          "marzo":_.floor(formasProductivas[element]["Marzo"], 2) ,
-          "abril":_.floor(formasProductivas[element]["Abril"], 2) ,
-          "mayo":_.floor(formasProductivas[element]["Mayo"], 2) ,
-          "junio":_.floor(formasProductivas[element]["Junio"], 2) ,
-          "julio":_.floor(formasProductivas[element]["Julio"], 2) ,
-          "agosto":_.floor(formasProductivas[element]["Agosto"], 2) ,
-          "septiembre":_.floor(formasProductivas[element]["Septiembre"], 2) ,
-          "octubre":_.floor(formasProductivas[element]["Octubre"], 2) ,
-          "noviembre":_.floor(formasProductivas[element]["Noviembre"], 2) ,
-          "diciembre":_.floor(formasProductivas[element]["Diciembre"], 2) ,
-          "total":_.floor(formasProductivas[element]["total"], 2),
+          "indicador": `${element} (${formasProductivas[element].um})`,
+          "enero": _.floor(formasProductivas[element]["Enero"], 2),
+          "febrero": _.floor(formasProductivas[element]["Febrero"], 2),
+          "marzo": _.floor(formasProductivas[element]["Marzo"], 2),
+          "abril": _.floor(formasProductivas[element]["Abril"], 2),
+          "mayo": _.floor(formasProductivas[element]["Mayo"], 2),
+          "junio": _.floor(formasProductivas[element]["Junio"], 2),
+          "julio": _.floor(formasProductivas[element]["Julio"], 2),
+          "agosto": _.floor(formasProductivas[element]["Agosto"], 2),
+          "septiembre": _.floor(formasProductivas[element]["Septiembre"], 2),
+          "octubre": _.floor(formasProductivas[element]["Octubre"], 2),
+          "noviembre": _.floor(formasProductivas[element]["Noviembre"], 2),
+          "diciembre": _.floor(formasProductivas[element]["Diciembre"], 2),
+          "total": _.floor(formasProductivas[element]["total"], 2),
         };
         delete aux.um;
         data.push(aux)
+        return null;
       })
       return data;
     }
 
-    const dataSource=(item) =>{
+    const dataSource = (item) => {
       let data = [];
-      Object.keys(formasProductivas[item]).map((element)=>{
-        if(element!=="total" && element!=="um"){
-          let aux={
+      Object.keys(formasProductivas[item]).map((element) => {
+        if (element !== "total" && element !== "um") {
+          let aux = {
             cant: _.floor(formasProductivas[item][element], 2),
             mes: element
           }
           data.push(aux);
         }
-
+        return null;
       })
       return data;
-    } 
+    }
 
-    const columns=() =>{
+    const columns = () => {
       let data = [
-      {  title: "Indicador",
-        dataIndex: "indicador",
-        key:"indicador",
-        width: 150,
-        fixed: 'left',
-        render: text => <strong >{text}</strong>,
-      }];    
+        {
+          title: "Indicador",
+          dataIndex: "indicador",
+          key: "indicador",
+          width: 150,
+          fixed: 'left',
+          render: text => <strong >{text}</strong>,
+        }];
 
       let key = Object.keys(formasProductivas)[0];
-       Object.keys(formasProductivas[key]).map((element,index)=>{
-         if(element!=="total" && element!=="um"){
-          let aux={
+      Object.keys(formasProductivas[key]).map((element, index) => {
+        if (element !== "total" && element !== "um") {
+          let aux = {
             title: element,
             dataIndex: element.toLowerCase(),
-            key:element.toLowerCase(),
+            key: element.toLowerCase(),
             width: 150
           }
           data.push(aux);
-         }
+        }
+        return null;
       })
-      data.push({  title: "Total",
-      dataIndex: "total",
-      key:"total",
-      width: 100,
-      fixed: 'right',
-      render: text => <strong>{text}</strong>,
-    });  
+      data.push({
+        title: "Total",
+        dataIndex: "total",
+        key: "total",
+        width: 100,
+        fixed: 'right',
+        render: text => <strong>{text}</strong>,
+      });
       return data;
-    } 
+    }
 
 
     const scale = {
@@ -486,106 +490,111 @@ export default class CSSInfo extends Component {
             <TabPane tab="Total" key="1">
               <Table scroll={{ x: 2100, y: 0 }} pagination={false} columns={columns()} dataSource={dataTable()} />
             </TabPane>
-            {Object.keys(formasProductivas).map((item,index)=>{
-              return (<TabPane tab={item} key={index+2}>
-              <Chart data={dataSource(item)} scale={scale}  forceFit>
-                <Axis title name="mes" />
-                <Axis title name="cant" />
-                <Tooltip crosshairs={{ type: 'rect' }} />
-                <Geom type="interval" position="mes*cant" color="mes" />
-              </Chart>
+            {Object.keys(formasProductivas).map((item, index) => {
+              return (<TabPane tab={item} key={index + 2}>
+                <Chart data={dataSource(item)} scale={scale} forceFit>
+                  <Axis title name="mes" />
+                  <Axis title name="cant" />
+                  <Tooltip crosshairs={{ type: 'rect' }} />
+                  <Geom type="interval" position="mes*cant" color="mes" />
+                </Chart>
               </TabPane>)
             })}
           </Tabs>
 
         </div>
       ),
-      onOk() {}
+      onOk() { }
     });
   };
 
   showTermoModal = () => {
     let termos = this.state.termos;
     let termoName = this.state.termoName;
-    const dataTable =()=>{
-      let data=[];
-      Object.keys(termos).map((element)=>{
+    const dataTable = () => {
+      let data = [];
+      Object.keys(termos).map((element) => {
         let aux = {
-          "forma_prod_tributa":`${element}`,
-          "enero":_.floor(termos[element]["Enero"], 2),
-          "febrero":_.floor(termos[element]["Febrero"], 2),
-          "marzo":_.floor(termos[element]["Marzo"], 2) ,
-          "abril":_.floor(termos[element]["Abril"], 2) ,
-          "mayo":_.floor(termos[element]["Mayo"], 2) ,
-          "junio":_.floor(termos[element]["Junio"], 2) ,
-          "julio":_.floor(termos[element]["Julio"], 2) ,
-          "agosto":_.floor(termos[element]["Agosto"], 2) ,
-          "septiembre":_.floor(termos[element]["Septiembre"], 2) ,
-          "octubre":_.floor(termos[element]["Octubre"], 2) ,
-          "noviembre":_.floor(termos[element]["Noviembre"], 2) ,
-          "diciembre":_.floor(termos[element]["Diciembre"], 2) ,
-          "productores":_.floor(termos[element]["cant_productores"], 2),
-          "total":_.floor(termos[element]["total"], 2),
+          "forma_prod_tributa": `${element}`,
+          "enero": _.floor(termos[element]["Enero"], 2),
+          "febrero": _.floor(termos[element]["Febrero"], 2),
+          "marzo": _.floor(termos[element]["Marzo"], 2),
+          "abril": _.floor(termos[element]["Abril"], 2),
+          "mayo": _.floor(termos[element]["Mayo"], 2),
+          "junio": _.floor(termos[element]["Junio"], 2),
+          "julio": _.floor(termos[element]["Julio"], 2),
+          "agosto": _.floor(termos[element]["Agosto"], 2),
+          "septiembre": _.floor(termos[element]["Septiembre"], 2),
+          "octubre": _.floor(termos[element]["Octubre"], 2),
+          "noviembre": _.floor(termos[element]["Noviembre"], 2),
+          "diciembre": _.floor(termos[element]["Diciembre"], 2),
+          "productores": _.floor(termos[element]["cant_productores"], 2),
+          "total": _.floor(termos[element]["total"], 2),
         };
         delete aux.um;
         data.push(aux)
+        return null;
       })
       return data;
     }
 
-    const dataSource=(item) =>{
+    const dataSource = (item) => {
       let data = [];
-      Object.keys(termos[item]).map((element)=>{
-        if(element!=="total" && element!=="um"){
-          let aux={
+      Object.keys(termos[item]).map((element) => {
+        if (element !== "total" && element !== "um") {
+          let aux = {
             cant: _.floor(termos[item][element], 2),
             mes: element
           }
           data.push(aux);
         }
-
+        return null;
       })
       return data;
-    } 
+    }
 
-    const columns=() =>{
+    const columns = () => {
       let data = [
-      {  title: "Forma Productiva (L)",
-        dataIndex: "forma_prod_tributa",
-        key:"forma_prod_tributa",
-        width: 150,
-        fixed: 'left',
-        render: text => <strong >{text}</strong>,
-      }];    
+        {
+          title: "Forma Productiva (L)",
+          dataIndex: "forma_prod_tributa",
+          key: "forma_prod_tributa",
+          width: 150,
+          fixed: 'left',
+          render: text => <strong >{text}</strong>,
+        }];
 
       let key = Object.keys(termos)[0];
-       Object.keys(termos[key]).map((element,index)=>{
-         if(element!=="total" && element!=="um" && element!=="cant_productores"){
-          let aux={
+      Object.keys(termos[key]).map((element, index) => {
+        if (element !== "total" && element !== "um" && element !== "cant_productores") {
+          let aux = {
             title: element,
             dataIndex: element.toLowerCase(),
-            key:element.toLowerCase(),
+            key: element.toLowerCase(),
             width: 150
           }
           data.push(aux);
-         }
+        }
+        return null;
       })
-      data.push({  title: "Productores",
-      dataIndex: "productores",
-      key:"productores",
-      width: 100,
-      fixed: 'right',
-      render: text => <strong>{text}</strong>,
-    }); 
-      data.push({  title: "Total",
-      dataIndex: "total",
-      key:"total",
-      width: 100,
-      fixed: 'right',
-      render: text => <strong>{text}</strong>,
-    });  
+      data.push({
+        title: "Productores",
+        dataIndex: "productores",
+        key: "productores",
+        width: 100,
+        fixed: 'right',
+        render: text => <strong>{text}</strong>,
+      });
+      data.push({
+        title: "Total",
+        dataIndex: "total",
+        key: "total",
+        width: 100,
+        fixed: 'right',
+        render: text => <strong>{text}</strong>,
+      });
       return data;
-    } 
+    }
 
 
     const scale = {
@@ -603,38 +612,38 @@ export default class CSSInfo extends Component {
             <TabPane tab="Total" key="1">
               <Table scroll={{ x: 2100, y: 500 }} pagination={false} columns={columns()} dataSource={dataTable()} />
             </TabPane>
-            {Object.keys(termos).map((item,index)=>{
-              return (<TabPane tab={item} key={index+2}>
-              <Chart data={dataSource(item)} scale={scale}  forceFit>
-                <Axis title name="mes" />
-                <Axis title name="cant" />
-                <Tooltip crosshairs={{ type: 'rect' }} />
-                <Geom type="interval" position="mes*cant" color="mes" />
-              </Chart>
+            {Object.keys(termos).map((item, index) => {
+              return (<TabPane tab={item} key={index + 2}>
+                <Chart data={dataSource(item)} scale={scale} forceFit>
+                  <Axis title name="mes" />
+                  <Axis title name="cant" />
+                  <Tooltip crosshairs={{ type: 'rect' }} />
+                  <Geom type="interval" position="mes*cant" color="mes" />
+                </Chart>
               </TabPane>)
             })}
           </Tabs>
 
         </div>
       ),
-      onOk() {}
+      onOk() { }
     });
   };
 
   render() {
     const { data, formasProductivas } = this.state;
     return (<div>
-              <p style={{ ...pStyle, marginBottom: 24 }}>
-                {" "}
-                <ImgInversion src={AgricultureImg} alt="" /> {data ? data.nombre: null}
-              </p>
-              <Divider />
-              <Spin spinning={this.state.loading} tip="Cargando...">{data && formasProductivas ? this.renderData(data) : <Alert message="No hay datos para mostrar" type="info" showIcon />}</Spin>
-          </div>
-          
-          )
+      <p style={{ ...pStyle, marginBottom: 24 }}>
+        {" "}
+        <ImgInversion src={AgricultureImg} alt="" /> {data ? data.nombre : null}
+      </p>
+      <Divider />
+      <Spin spinning={this.state.loading} tip="Cargando...">{data && formasProductivas ? this.renderData(data) : <Alert message="No hay datos para mostrar" type="info" showIcon />}</Spin>
+    </div>
+
+    )
 
 
-   
+
   }
 }

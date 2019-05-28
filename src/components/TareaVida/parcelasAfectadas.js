@@ -6,7 +6,7 @@ import {
   fetchParcelasAfectadasByMun
 } from "./../../services";
 import styled from "styled-components";
-import { G2, Chart, Tooltip, Geom, Axis } from "bizcharts";
+import { Chart, Tooltip, Geom, Axis } from "bizcharts";
 
 const TabPane = Tabs.TabPane;
 
@@ -91,12 +91,12 @@ export default class ParcelasAfectadas extends Component {
   fetchTotalData = () => {
     const _this = this;
     fetchParcelasAfectadas()
-      .then(function(response) {
+      .then(function (response) {
         _this.setState({
           total: response.data
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // handle error
         message.error(error.message);
       });
@@ -106,13 +106,13 @@ export default class ParcelasAfectadas extends Component {
     const _this = this;
     let municipios = this.state.municipios;
     fetchParcelasAfectadasByMun(mun)
-      .then(function(response) {
+      .then(function (response) {
         municipios[mun] = response.data;
         _this.setState({
           municipios: municipios
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // handle error
         message.error(error.message);
       });
@@ -128,27 +128,25 @@ export default class ParcelasAfectadas extends Component {
       }
     };
 
-    let dataSource = total;
-
-    if (dataSource) {
-      dataSource = dataSource.map(item => {
-        let color = getRandomColor();
-        item.area = _.floor(item.area, 2);
-        item["color"] = color;
-        return item;
+    const dataSource = [];
+    if (total) {
+      Object.keys(total).forEach(function (key) {
+        let cat = total[key].nombre;
+        let area = total[key].area;
+        area = _.round(area, 2);
+        dataSource.push({ key: cat, value: area });
       });
 
-      // Propiedades de las columnas de la Tabla
       const columns = [
         {
           title: "Nombre",
-          dataIndex: "nombre",
+          dataIndex: "key",
           key: "nombre",
           align: "left"
         },
         {
           title: "Área (ha)",
-          dataIndex: "area",
+          dataIndex: "value",
           key: "area",
           align: "rigth",
           width: "75px"
@@ -156,32 +154,9 @@ export default class ParcelasAfectadas extends Component {
       ];
 
       let max = 0;
-      dataSource.forEach(function(obj) {
+      dataSource.forEach(function (obj) {
         if (obj.area > max) {
           max = obj.area;
-        }
-      });
-
-      G2.Shape.registerShape("interval", "sliceShape", {
-        draw(cfg, container) {
-          const points = cfg.points;
-          const origin = cfg.origin._origin;
-          const percent = origin.area / max;
-          const xWidth = points[2].x - points[1].x;
-          const width = xWidth * percent;
-          let path = [];
-          path.push(["M", points[0].x, points[0].y]);
-          path.push(["L", points[1].x, points[1].y]);
-          path.push(["L", points[0].x + width, points[2].y]);
-          path.push(["L", points[0].x + width, points[3].y]);
-          path.push("Z");
-          path = this.parsePath(path);
-          return container.addShape("path", {
-            attrs: {
-              fill: cfg.color,
-              path: path
-            }
-          });
         }
       });
 
@@ -213,7 +188,6 @@ export default class ParcelasAfectadas extends Component {
   };
 
   renderMunicipio = municipio => {
-    console.log(municipio);
     const { municipios, selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,
@@ -223,28 +197,25 @@ export default class ParcelasAfectadas extends Component {
       }
     };
 
-    console.log(municipios);
-    console.log(municipios[municipio]);
-
-
     const dataSource = [];
     if (municipios[municipio]) {
-      Object.keys(municipios[municipio]).forEach(function(key) {
-        let cat = municipios[municipio][key].cat;
+      Object.keys(municipios[municipio]).forEach(function (key) {
+        let cat = municipios[municipio][key].nombre;
         let area = municipios[municipio][key].area;
+        area = _.round(area, 2)
         dataSource.push({ key: cat, value: area });
       });
 
       const columns = [
         {
           title: "Nombre",
-          dataIndex: "nombre",
+          dataIndex: "key",
           key: "nombre",
           align: "left"
         },
         {
           title: "Área (ha)",
-          dataIndex: "area",
+          dataIndex: "value",
           key: "area",
           align: "rigth",
           width: "75px"
@@ -278,7 +249,6 @@ export default class ParcelasAfectadas extends Component {
   };
 
   onSelectMunicipioChange = selectedMunicipioRowKeys => {
-    console.log("selectedRowKeys changed: ", selectedMunicipioRowKeys);
     this.setState({ selectedMunicipioRowKeys });
   };
 
@@ -304,7 +274,7 @@ export default class ParcelasAfectadas extends Component {
     });
 
     let max = 0;
-    dataSource.forEach(function(obj) {
+    dataSource.forEach(function (obj) {
       if (obj.area > max) {
         max = obj.area;
       }
@@ -320,7 +290,7 @@ export default class ParcelasAfectadas extends Component {
       title: "Gráfico Parcelas afectadas por tipo de uso ",
       content: (
         <div>
-          <Chart data={dataSource} scale={scale} forceFit>
+          <Chart data={dataSource} scale={scale} forceFit height={500}>
             <Axis title name="nombre" visible={false} />
 
             <Tooltip crosshairs={{ type: "rect" }} />
@@ -328,11 +298,11 @@ export default class ParcelasAfectadas extends Component {
           </Chart>
         </div>
       ),
-      onOk() {}
+      onOk() { }
     });
   };
 
-  setModalMunicipio = municipio => {    
+  setModalMunicipio = municipio => {
     let dataSource = this.state.municipios;
     dataSource = dataSource[municipio];
     dataSource = dataSource.map(item => {
@@ -344,7 +314,7 @@ export default class ParcelasAfectadas extends Component {
     });
 
     let max = 0;
-    dataSource.forEach(function(obj) {
+    dataSource.forEach(function (obj) {
       if (obj.area > max) {
         max = obj.area;
       }
@@ -359,7 +329,7 @@ export default class ParcelasAfectadas extends Component {
       title: "Gráfico Parcelas afectadas por tipo de uso ",
       content: (
         <div>
-          <Chart data={dataSource} scale={scale} forceFit>
+          <Chart data={dataSource} scale={scale} forceFit height={500}>
             <Axis title name="nombre" visible={false} />
 
             <Tooltip crosshairs={{ type: "rect" }} />
@@ -367,7 +337,7 @@ export default class ParcelasAfectadas extends Component {
           </Chart>
         </div>
       ),
-      onOk() {}
+      onOk() { }
     });
   };
 
@@ -378,22 +348,23 @@ export default class ParcelasAfectadas extends Component {
 
         <TabsWrapper
           size="small"
-          defaultActiveKey={this.state.selectedTab}
+          defaultActiveKey={this.state.selectedTab.toString()}
+          //defaultActiveKey="1"
           onChange={this.changeTab}
         >
-          <TabPane tab="Total" key={1}>
+          <TabPane tab="Total" key="1">
             {this.renderTotal()}
           </TabPane>
-          <TabPane tab="Sagua la Grande" key={2}>
+          <TabPane tab="Sagua la Grande" key="2">
             {this.renderMunicipio("SAGUA LA GRANDE")}
           </TabPane>
-          <TabPane tab="Encrucijada" key={3}>
+          <TabPane tab="Encrucijada" key="3">
             {this.renderMunicipio("Encrucijada")}
           </TabPane>
-          <TabPane tab="Caibarién" key={4}>
+          <TabPane tab="Caibarién" key="4">
             {this.renderMunicipio("CAIBARIEN")}
           </TabPane>
-          <TabPane tab="Camajuaní" key={5}>
+          <TabPane tab="Camajuaní" key="5">
             {this.renderMunicipio("CAMAJUANÍ")}
           </TabPane>
         </TabsWrapper>

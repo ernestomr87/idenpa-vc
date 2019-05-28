@@ -18,14 +18,11 @@ import OlStyleStroke from "ol/style/stroke";
 import OlCircle from "ol/style/circle";
 import OlFormatGeoJSON from "ol/format/geojson";
 
-import BingMaps from 'ol/source/bingmaps';
 import OLSourceOSM from 'ol/source/osm';
 
 import colors from "./../../utils/colors";
 
 import config from "./../../config";
-
-let compareid = null;
 
 // var osm = new OlLayerTile({
 //   name: "tms",
@@ -139,7 +136,7 @@ const addLayer = (newLayers, oldLayers, name = "") => {
       break;
     }
   }
-  if(!diff) return;
+  if (!diff) return;
   let aux;
   let color = colors.shift();
 
@@ -203,7 +200,7 @@ const addLayer = (newLayers, oldLayers, name = "") => {
       format: new OlFormatGeoJSON(),
       url: diff.json
     })
-    if(diff.opacity){
+    if (diff.opacity) {
       aux = new OlLayerVector({
         source,
         style: diff.style || function (feature) {
@@ -213,9 +210,9 @@ const addLayer = (newLayers, oldLayers, name = "") => {
           }
           return style;
         },
-        opacity:diff.opacity
+        opacity: diff.opacity
       });
-    }else{
+    } else {
       aux = new OlLayerVector({
         source,
         style: diff.style || function (feature) {
@@ -232,7 +229,6 @@ const addLayer = (newLayers, oldLayers, name = "") => {
   }
 
   if (diff.name === "Polígonos de suelo afectado") {
-    compareid = aux.ol_uid;
     important = {
       name: diff.name,
       ol_uid: aux.ol_uid
@@ -242,9 +238,9 @@ const addLayer = (newLayers, oldLayers, name = "") => {
   return new Promise((resolve, reject) => {
     if (
       !map
-      .getLayers()
-      .getArray()
-      .includes(aux)
+        .getLayers()
+        .getArray()
+        .includes(aux)
     ) {
       oldLayers.push({
         item: diff,
@@ -276,9 +272,9 @@ const addLayerFromNode = (newLayers, oldLayers) => {
 
     if (
       !map
-      .getLayers()
-      .getArray()
-      .includes(aux)
+        .getLayers()
+        .getArray()
+        .includes(aux)
     ) {
       oldLayers.push({
         item: item.key,
@@ -296,6 +292,7 @@ const addLayerFromNode = (newLayers, oldLayers) => {
         return err;
       }
     }
+    return oldLayers;
   });
   return oldLayers;
 };
@@ -310,24 +307,27 @@ const removeLayer = (array, arrayN, oldLayers) => {
         if (aItem.name === lItem.item.name && aItem.json === lItem.item.json) {
           return lItem;
         }
+        return null;
       });
       if (!exist.length) {
         diff.push(lItem);
       } else {
         nlayers.push(lItem);
       }
+      return null;
     });
 
     diff.map(item => {
       if (
         map
-        .getLayers()
-        .getArray()
-        .includes(item.layer)
+          .getLayers()
+          .getArray()
+          .includes(item.layer)
       ) {
         map.removeLayer(item.layer);
         colors.push(item.color);
       }
+      return null;
     });
   } else {
     diff = oldLayers.filter(lItem => {
@@ -336,17 +336,19 @@ const removeLayer = (array, arrayN, oldLayers) => {
       } else {
         return lItem;
       }
+      return null;
     });
     diff.map(item => {
       if (
         map
-        .getLayers()
-        .getArray()
-        .includes(item.layer)
+          .getLayers()
+          .getArray()
+          .includes(item.layer)
       ) {
         map.removeLayer(item.layer);
         colors.push(item.color);
       }
+      return null;
     });
   }
 
@@ -356,24 +358,27 @@ const removeLayer = (array, arrayN, oldLayers) => {
         if (aItem.key === lItem.item && lItem.node) {
           return lItem;
         }
+        return null;
       });
       if (!exist.length) {
         diff.push(lItem);
       } else {
         nlayers2.push(lItem);
       }
+      return null;
     });
 
     diff.map(item => {
       if (
         map
-        .getLayers()
-        .getArray()
-        .includes(item.layer)
+          .getLayers()
+          .getArray()
+          .includes(item.layer)
       ) {
         map.removeLayer(item.layer);
         colors.push(item.color);
       }
+      return null;
     });
   } else {
     diff = nlayers.filter(lItem => {
@@ -382,17 +387,19 @@ const removeLayer = (array, arrayN, oldLayers) => {
       } else {
         return lItem;
       }
+      return null;
     });
     diff.map(item => {
       if (
         map
-        .getLayers()
-        .getArray()
-        .includes(item.layer)
+          .getLayers()
+          .getArray()
+          .includes(item.layer)
       ) {
         map.removeLayer(item.layer);
         colors.push(item.color);
       }
+      return null;
     });
   }
 
@@ -407,6 +414,7 @@ const showLayerByCategory = (ol_uid, interaction) => {
         .getFeatures()
         .map(feature => {
           feature.set("hoverStyle", false);
+          return null;
         });
       item
         .getSource()
@@ -421,25 +429,28 @@ const showLayerByCategory = (ol_uid, interaction) => {
               ) {
                 feature.set("hoverStyle", true);
               }
+              return null;
             });
           } else {
             interaction.data.map(category => {
               if (categoryToRoman(cat) === category.key) {
                 feature.set("hoverStyle", true);
               }
+              return null;
             });
           }
+          return null;
         });
     }
   });
 };
 
-const addLayerByGeom=(geom)=>{
+const addLayerByGeom = (geom) => {
   // var vectorSource = new OlSourceVector({
   //   features: (new OlFormatGeoJSON()).readFeatures(geom)
   // });
 
-  
+
 
   let source = new OlSourceVector({
     format: new OlFormatGeoJSON(),

@@ -29,7 +29,7 @@ export class EntitiesInv extends React.Component {
   fetchData = gid => {
     const _this = this;
     fetchInfrastructure(gid)
-      .then(function(response) {
+      .then(function (response) {
         let items = [];
         response.data.map(item => {
           if (items[item.year]) {
@@ -38,12 +38,13 @@ export class EntitiesInv extends React.Component {
             items[item.year] = [];
             items[item.year].push(item);
           }
+          return null;
         });
         _this.setState({
           items: items
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // handle error
         message.error(error.message);
       });
@@ -117,11 +118,11 @@ export class EntitiesInv extends React.Component {
             </Timeline>
           </div>
         ) : (
-          <AlertWrapper
-            message="No hay inversiones disponibles"
-            type="warning"
-          />
-        )}
+            <AlertWrapper
+              message="No hay inversiones disponibles"
+              type="warning"
+            />
+          )}
       </div>
     );
   }

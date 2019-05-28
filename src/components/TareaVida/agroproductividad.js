@@ -41,7 +41,7 @@ const numberToLetter = number => {
   };
 
   for (var j = 0; j < 6; j++) {
-    if (number == Object.keys(letters)[j]) {
+    if (number === Object.keys(letters)[j]) {
       number = Object.values(letters)[j];
       break;
     }
@@ -89,12 +89,12 @@ export default class Agroproductividad extends Component {
   fetchTotalData = () => {
     const _this = this;
     fetchAgroproductividad()
-      .then(function(response) {
+      .then(function (response) {
         _this.setState({
           total: response.data
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // handle error
         message.error(error.message);
       });
@@ -104,13 +104,13 @@ export default class Agroproductividad extends Component {
     const _this = this;
     let municipios = this.state.municipios;
     fetchAgroproductividadByMun(mun)
-      .then(function(response) {
+      .then(function (response) {
         municipios[mun] = response.data;
         _this.setState({
           municipios: municipios
         });
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // handle error
         message.error(error.message);
       });
@@ -127,7 +127,7 @@ export default class Agroproductividad extends Component {
     };
     const dataSource = [];
     if (total) {
-      Object.keys(total).forEach(function(key) {
+      Object.keys(total).forEach(function (key) {
         let cat = total[key].cat;
         let area = total[key].area;
         dataSource.push({ key: cat, value: area });
@@ -148,10 +148,6 @@ export default class Agroproductividad extends Component {
         }
       ];
 
-      const scale = {
-        key: { alias: "Categorías" },
-        value: { alias: "Valores" }
-      };
       return (
         <div>
           <Row type="flex" justify="end">
@@ -188,13 +184,9 @@ export default class Agroproductividad extends Component {
       }
     };
 
-    console.log(municipio);
-    console.log(municipios);
-    console.log(municipios[municipio]);
-
     const dataSource = [];
     if (municipios[municipio]) {
-      Object.keys(municipios[municipio]).forEach(function(key) {
+      Object.keys(municipios[municipio]).forEach(function (key) {
         let cat = municipios[municipio][key].cat;
         let area = municipios[municipio][key].area;
         dataSource.push({ key: cat, value: area });
@@ -242,7 +234,6 @@ export default class Agroproductividad extends Component {
   };
 
   onSelectMunicipioChange = selectedMunicipioRowKeys => {
-    console.log("selectedRowKeys changed: ", selectedMunicipioRowKeys);
     this.setState({ selectedMunicipioRowKeys });
   };
 
@@ -259,7 +250,7 @@ export default class Agroproductividad extends Component {
   changeLayer = (type, rows) => {
     if (type === "total") {
       rows.map(item => {
-        console.log(this.state.total[item]);
+        return null;
       });
     }
   };
@@ -280,11 +271,12 @@ export default class Agroproductividad extends Component {
     };
 
     Modal.info({
+      height: 11111,
       width: "50%",
       title: "Agroproductividad en los suelos ",
       content: (
         <div>
-          <Chart data={dataSource} scale={scale} forceFit>
+          <Chart data={dataSource} scale={scale} forceFit height={500}>
             <Axis title name="key" visible={false} />
 
             <Tooltip crosshairs={{ type: "rect" }} />
@@ -292,15 +284,13 @@ export default class Agroproductividad extends Component {
           </Chart>
         </div>
       ),
-      onOk() {}
+      onOk() { }
     });
   };
 
   setModalMunicipio = municipio => {
     let dataSource = this.state.municipios;
-    console.log(dataSource + " " + "dataSource = this.state.municipios;");
     dataSource = dataSource[municipio];
-    console.log(dataSource + " " + "dataSource = dataSource[municipio];");
     dataSource = dataSource.map(item => {
       let color = getRandomColor();
       item.area = _.floor(item.area, 2);
@@ -315,10 +305,10 @@ export default class Agroproductividad extends Component {
 
     Modal.info({
       width: "50%",
-      title: "Agroproductividad en los suelos ( " + municipio +" )",
+      title: "Agroproductividad en los suelos ( " + municipio + " )",
       content: (
         <div>
-          <Chart data={dataSource} scale={scale} forceFit>
+          <Chart data={dataSource} scale={scale} forceFit height={500}>
             <Axis title name="nombre" visible={false} />
 
             <Tooltip crosshairs={{ type: "rect" }} />
@@ -326,7 +316,7 @@ export default class Agroproductividad extends Component {
           </Chart>
         </div>
       ),
-      onOk() {}
+      onOk() { }
     });
   };
 
@@ -337,7 +327,7 @@ export default class Agroproductividad extends Component {
 
         <TabsWrapper
           size="small"
-          defaultActiveKey={this.state.selectedTab}
+          defaultActiveKey={this.state.selectedTab.toString()}
           onChange={this.changeTab}
         >
           <TabPane tab="Total" key={1}>

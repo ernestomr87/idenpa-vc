@@ -1,5 +1,5 @@
 import React from "react";
-import { Drawer, Table, Card,Popover } from "antd";
+import { Drawer, Table, Card } from "antd";
 import styled from "styled-components";
 
 import OlInteractionSelect from "ol/interaction/select";
@@ -65,7 +65,7 @@ const CardWrapper = styled(Card)`
     margin: 0;
     cursor: pointer;
     background-image: ${props =>
-      props.map !== 0 ? `url(${SateliteImg})` : `url(${MapaImg})`};
+    props.map !== 0 ? `url(${SateliteImg})` : `url(${MapaImg})`};
   }
 `;
 
@@ -98,13 +98,17 @@ class MapContainer extends React.Component {
     if (layers !== this.props.layers) {
       let array = [];
       let arrayN = [];
-      Object.keys(layers).forEach(function(key) {
+      Object.keys(layers).forEach(function (key) {
         if (Modules[key]) {
           layers[key].map(item => {
             const aux = Modules[key].filter(mitem => {
-              if (mitem.name === item) return mitem;
+              if (mitem.name === item) {
+                return mitem;
+              }
+              return null;
             });
             array.push(aux[0]);
+            return null;
           });
         } else {
           layers[key].map(item => {
@@ -114,9 +118,12 @@ class MapContainer extends React.Component {
                 if (!mitem.children && mitem.key === item) {
                   return mitem.layer;
                 }
+                return null;
               });
               if (aux[0]) arrayN.push(aux[0]);
+              return null;
             });
+            return null;
           });
         }
       });
@@ -186,18 +193,20 @@ class MapContainer extends React.Component {
     this.setState({ layers: removeLayer(array, arrayN, this.state.layers) });
   };
 
-  removeLayerTermo=()=>{
-    const { layers, nodes, interaction } = this.props;
+  removeLayerTermo = () => {
+    const { layers, nodes } = this.props;
 
     let array = [];
     let arrayN = [];
-    Object.keys(layers).forEach(function(key) {
+    Object.keys(layers).forEach(function (key) {
       if (Modules[key]) {
         layers[key].map(item => {
           const aux = Modules[key].filter(mitem => {
             if (mitem.name === item) return mitem;
+            return null;
           });
           array.push(aux[0]);
+          return null;
         });
       } else {
         layers[key].map(item => {
@@ -207,9 +216,12 @@ class MapContainer extends React.Component {
               if (!mitem.children && mitem.key === item) {
                 return mitem.layer;
               }
+              return null;
             });
             if (aux[0]) arrayN.push(aux[0]);
+            return null;
           });
+          return null;
         });
       }
     });
@@ -258,13 +270,13 @@ class MapContainer extends React.Component {
     ];
 
     if (model) {
-      Object.keys(model).forEach(function(key, index) {
+      Object.keys(model).forEach(function (key, index) {
         if (properties[key]) {
           dataSource.push({ key: model[key], value: properties[key] });
         }
       });
     } else {
-      Object.keys(properties).forEach(function(key, index) {
+      Object.keys(properties).forEach(function (key, index) {
         if (properties[key] && !(properties[key] instanceof Object)) {
           dataSource.push({ key: key, value: properties[key] });
         }
@@ -295,23 +307,23 @@ class MapContainer extends React.Component {
             {dataLayer.module !== "estructuraAgricola" ? dataLayer.layer : null}
           </p>
           {dataLayer.module !== "estructuraAgricola" ?
-          (
-            <div>
-              <TableWrapper
-                pagination={false}
-                showHeader={false}
-                dataSource={dataSource}
-                columns={columns}
-              />
-              {dataLayer && dataLayer.layer === "Entidades Inversionistas" ? (
-                <EntitiesInv
-                  model={model}
-                  properties={properties}
-                  dataLayer={dataLayer}
+            (
+              <div>
+                <TableWrapper
+                  pagination={false}
+                  showHeader={false}
+                  dataSource={dataSource}
+                  columns={columns}
                 />
-              ) : null}
-            </div>
-          ) : <CSSInfo dataSource={dataSource} oldLayers={this.state.layers} removeLayerTermo={this.removeLayerTermo}/>}
+                {dataLayer && dataLayer.layer === "Entidades Inversionistas" ? (
+                  <EntitiesInv
+                    model={model}
+                    properties={properties}
+                    dataLayer={dataLayer}
+                  />
+                ) : null}
+              </div>
+            ) : <CSSInfo dataSource={dataSource} oldLayers={this.state.layers} removeLayerTermo={this.removeLayerTermo} />}
 
         </div>
       );
@@ -332,6 +344,7 @@ class MapContainer extends React.Component {
           const model = getModelByJson(selectedLayer.getSource().url_);
           _this.changeState(feature.getProperties(), model, selectedfeatures);
         }
+        return null;
       });
     });
 
@@ -339,7 +352,7 @@ class MapContainer extends React.Component {
       <Div>
         <MapWrapper map={map} />
         <div id="popup" className="ol-popup">
-          <a href="#" id="popup-closer" className="ol-popup-closer" />
+          <a href="www" id="popup-closer" className="ol-popup-closer">dfvgrfegregregregregregreg</a>
           <div id="popup-content" />
         </div>
         <Tools map={map} drawer={this.props.drawer.toString()} />
