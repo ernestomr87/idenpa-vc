@@ -228,7 +228,23 @@ const addLayer = (newLayers, oldLayers, name = "") => {
 
   }
 
+  //Aki abajo es donde se juega con los distintos tipos de afectaciones
+
   if (diff.name === "Polígonos de suelo afectado") {
+    important = {
+      name: diff.name,
+      ol_uid: aux.ol_uid
+    };
+  }
+
+  if (diff.name === "Parcelas agrícolas afectadas") {
+    important = {
+      name: diff.name,
+      ol_uid: aux.ol_uid
+    };
+  }
+
+  if (diff.name === "Ascenso del nivel medio del mar") {
     important = {
       name: diff.name,
       ol_uid: aux.ol_uid
@@ -406,7 +422,7 @@ const removeLayer = (array, arrayN, oldLayers) => {
   return nlayers2;
 };
 
-const showLayerByCategory = (ol_uid, interaction) => {
+const showLayerByCategoryAgroproductividad = (ol_uid, interaction) => {
   map.getLayers().forEach(item => {
     if (item.ol_uid === ol_uid) {
       item
@@ -434,6 +450,84 @@ const showLayerByCategory = (ol_uid, interaction) => {
           } else {
             interaction.data.map(category => {
               if (categoryToRoman(cat) === category.key) {
+                feature.set("hoverStyle", true);
+              }
+              return null;
+            });
+          }
+          return null;
+        });
+    }
+  });
+};
+
+const showLayerByNameParcelasAfectadas = (ol_uid, interaction) => {
+  map.getLayers().forEach(item => {
+    if (item.ol_uid === ol_uid) {
+      item
+        .getSource()
+        .getFeatures()
+        .map(feature => {
+          feature.set("hoverStyle", false);
+          return null;
+        });
+      item
+        .getSource()
+        .getFeatures()
+        .map(feature => {
+          var nombre_tipo_us = feature.get("nombre_tipo_uso");
+          if (interaction.municipio) {
+            interaction.data.map(item => {
+              if (
+                nombre_tipo_us === item.key &&
+                feature.get("municipio_nombre") === interaction.municipio
+              ) {
+                feature.set("hoverStyle", true);
+              }
+              return null;
+            });
+          } else {
+            interaction.data.map(item => {
+              if (nombre_tipo_us === item.key) {
+                feature.set("hoverStyle", true);
+              }
+              return null;
+            });
+          }
+          return null;
+        });
+    }
+  });
+};
+
+const showLayerByAreaAscensoDelMar = (ol_uid, interaction) => {
+  map.getLayers().forEach(item => {
+    if (item.ol_uid === ol_uid) {
+      item
+        .getSource()
+        .getFeatures()
+        .map(feature => {
+          feature.set("hoverStyle", false);
+          return null;
+        });
+      item
+        .getSource()
+        .getFeatures()
+        .map(feature => {
+          var area = feature.get("area");
+          if (interaction.municipio) {
+            interaction.data.map(item => {
+              if (
+                area === item.area &&
+                feature.get("municipio") === interaction.municipio
+              ) {
+                feature.set("hoverStyle", true);
+              }
+              return null;
+            });
+          } else {
+            interaction.data.map(item => {
+              if (area === item.area) {
                 feature.set("hoverStyle", true);
               }
               return null;
@@ -478,6 +572,8 @@ export {
   addLayerFromNode,
   removeLayer,
   changeMap,
-  showLayerByCategory,
+  showLayerByCategoryAgroproductividad,
+  showLayerByNameParcelasAfectadas,
+  showLayerByAreaAscensoDelMar,
   addLayerByGeom
 };

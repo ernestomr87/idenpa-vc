@@ -117,12 +117,13 @@ export default class Agroproductividad extends Component {
   };
 
   renderTotal = () => {
+    const name = "Polígonos de suelo afectado";
     const { total, selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({ selectedRowKeys });
-        this.props.selectedRows(null, selectedRows);
+        this.props.selectedRows(null, selectedRows, name);
       }
     };
     const dataSource = [];
@@ -175,12 +176,13 @@ export default class Agroproductividad extends Component {
   };
 
   renderMunicipio = municipio => {
+    const name = "Polígonos de suelo afectado";
     const { municipios, selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({ selectedRowKeys });
-        this.props.selectedRows(municipio, selectedRows);
+        this.props.selectedRows(municipio, selectedRows, name);
       }
     };
 

@@ -68,6 +68,7 @@ const error = handleActions(
 const interaction = handleActions(
   {
     [showActionData](state, action) {
+      //console.log(action.payload);
       return action.payload;
     }
   },

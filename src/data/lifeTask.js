@@ -41,7 +41,7 @@ export default [
   {
     name: "Polígonos de suelo afectado",
     nomenclature: null,
-    style: function(feature) {
+    style: function (feature) {
       var color =
         colorSueloAfectado[categoryToRoman(feature.get("cat_gral10_cult"))];
 
@@ -62,12 +62,36 @@ export default [
   {
     name: "Parcelas agrícolas afectadas",
     nomenclature: null,
+    style: function (feature) {
+      if (feature.get("hoverStyle")) {
+        style.getStroke().setWidth(2);
+        style.getStroke().setColor("black");
+        style.getFill().setColor("#FF3366");
+      } else {
+        style.getFill().setColor("#ee9144");
+        style.getStroke().setColor("#777777");
+      }
+      style.getText().setText(feature.get("nombre_tipo_uso"));
+      return style;
+    },
     json:
       "http://geoservicios.enpa.vcl.minag.cu/geoserver/dbtarea_vida/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=dbtarea_vida:parcela_agricola_afectada_inap&outputFormat=application%2Fjson"
   },
   {
     name: "Ascenso del nivel medio del mar",
     nomenclature: null,
+    style: function (feature) {
+      if (feature.get("hoverStyle")) {
+        style.getStroke().setWidth(2);
+        style.getStroke().setColor("black");
+        style.getFill().setColor("#FF3366");
+      } else {
+        style.getFill().setColor("#ee9144");
+        style.getStroke().setColor("#777777");
+      }
+      style.getText().setText(feature.get("nombre_tipo_uso"));
+      return style;
+    },
     json:
       "http://geoservicios.enpa.vcl.minag.cu/geoserver/dbtarea_vida/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=dbtarea_vida:ascenso_nmm_inap&outputFormat=application%2Fjson"
   },
@@ -82,7 +106,7 @@ export default [
 /*
 dbtarea_vida
 user: root
-password: root 
+password: root
 [10:41 AM] GEOMATICA-1:
 host: 192.168.0.11
 */

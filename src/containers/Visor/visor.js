@@ -80,6 +80,11 @@ class Visor extends Component {
 
   render() {
     const { sider: { layers }, visor: { nodes, interaction } } = this.props;
+    if (interaction) {
+      //console.log(interaction.data);
+    }
+    //console.log(interaction);
+    // console.log(this.props + " " + "props");
     const radioStyle = {
       display: "block",
       height: "30px",
@@ -104,11 +109,7 @@ class Visor extends Component {
         />
         <Layout>
           <Content>
-            <Map
-              layers={layers}
-              nodes={nodes}
-              drawer={this.state.collapsed}
-              interaction={interaction}
+            <Map layers={layers} nodes={nodes} drawer={this.state.collapsed} interaction={interaction}
             />
           </Content>
         </Layout>

@@ -11,17 +11,32 @@ const fetchAgroproductividadByMun = (mun) => {
 	return axios.get(`${API}/api/afectaciones/agroproductividad/${mun}`);
 };
 
-const fetchInfrastructure = (gid) => {
-	return axios.get(`${API}/api/infrastructure/${gid}`);
-};
-
-
 const fetchParcelasAfectadas = () => {
 	return axios.get(`${API}/api/afectaciones/parcelasAfectadas`);
 };
 
 const fetchParcelasAfectadasByMun = (mun) => {
 	return axios.get(`${API}/api/afectaciones/parcelasAfectadas/${mun}`);
+};
+
+const fetchusufructuariosAfectados = () => {
+	return axios.get(`${API}/api/afectaciones/usufructuariosAfectados`);
+};
+
+const fetchusufructuariosAfectadosByMun = (mun) => {
+	return axios.get(`${API}/api/afectaciones/usufructuariosAfectados/${mun}`);
+};
+
+const fetchAscensoDelMar = () => {
+	return axios.get(`${API}/api/afectaciones/ascensoDelNivelMedioDelMar`);
+};
+
+const fetchAscensoDelMarByMun = (mun) => {
+	return axios.get(`${API}/api/afectaciones/ascensoDelNivelMedioDelMar/${mun}`);
+};
+
+const fetchInfrastructure = (gid) => {
+	return axios.get(`${API}/api/infrastructure/${gid}`);
 };
 
 const fetchFormasProductivasById = (id) => {
@@ -43,6 +58,10 @@ export {
 	fetchAgroproductividadByMun,
 	fetchParcelasAfectadas,
 	fetchParcelasAfectadasByMun,
+	fetchusufructuariosAfectados,
+	fetchusufructuariosAfectadosByMun,
+	fetchAscensoDelMar,
+	fetchAscensoDelMarByMun,
 	fetchFormasProductivasById,
 	fetchTermosByFormasProductiva,
 	fetchUsoTenenciaByFormaProductiva

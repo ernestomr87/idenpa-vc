@@ -19,7 +19,9 @@ import map, {
   listLayerByNode,
   changeMap,
   removeLayer,
-  showLayerByCategory
+  showLayerByCategoryAgroproductividad,
+  showLayerByNameParcelasAfectadas,
+  showLayerByAreaAscensoDelMar
 } from "./utils";
 
 import "ol/ol.css";
@@ -143,15 +145,46 @@ class MapContainer extends React.Component {
   };
 
   doAction = interaction => {
-    if (interaction.name === "Polígonos de suelo afectado") {
-      const important = this.state.importants.filter(
-        item => item.name === interaction.name
-      );
-      let ol_uid = null;
-      if (important.length && important[0].ol_uid) {
-        ol_uid = important[0].ol_uid;
-      }
-      showLayerByCategory(ol_uid, interaction);
+    //console.log(interaction);
+    let important = null;
+    let ol_uid = null;
+    switch (interaction.name) {
+
+      case "Polígonos de suelo afectado":
+        important = this.state.importants.filter(
+          item => item.name === interaction.name
+        );
+        if (important.length && important[0].ol_uid) {
+          ol_uid = important[0].ol_uid;
+        }
+        showLayerByCategoryAgroproductividad(ol_uid, interaction);
+        break;
+
+      case "Parcelas agrícolas afectadas":
+        important = this.state.importants.filter(
+          item => item.name === interaction.name
+        );
+        if (important.length && important[0].ol_uid) {
+          ol_uid = important[0].ol_uid;
+        }
+        showLayerByNameParcelasAfectadas(ol_uid, interaction);
+        break;
+
+      case "Ascenso del nivel medio del mar":
+        important = this.state.importants.filter(
+          item => item.name === interaction.name
+        );
+        if (important.length && important[0].ol_uid) {
+          ol_uid = important[0].ol_uid;
+          console.log(ol_uid);         
+          console.log(interaction);         
+
+        }
+        showLayerByAreaAscensoDelMar(ol_uid, interaction);
+        break;
+
+      default:
+        break;
     }
   };
 
@@ -352,7 +385,7 @@ class MapContainer extends React.Component {
       <Div>
         <MapWrapper map={map} />
         <div id="popup" className="ol-popup">
-          <a href="www" id="popup-closer" className="ol-popup-closer">dfvgrfegregregregregregreg</a>
+          {/* <a href="www" id="popup-closer" className="ol-popup-closer"></a> */}
           <div id="popup-content" />
         </div>
         <Tools map={map} drawer={this.props.drawer.toString()} />

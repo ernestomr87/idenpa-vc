@@ -6,6 +6,8 @@ import { Drawer, List, Button, Divider, Popover } from "antd";
 import _ from "lodash";
 import Agroproductividad from "./agroproductividad";
 import ParcelasAfectadas from "./parcelasAfectadas";
+import UsufructuariosAfectados from "./usufructuariosAfectados"
+import AscensoDelMar from "./ascensoDelMar"
 import styled from "styled-components";
 
 import { showActionData } from "./../../containers/Visor/actions";
@@ -118,13 +120,13 @@ class TareaVida extends Component {
     });
   };
 
-  selectedRows = (municipio, selectedRows) => {
+  selectedRows = (municipio, selectedRows, name) => {
     this.props.show({
-      name: "Polígonos de suelo afectado",
+      name: name,
       data: selectedRows,
       municipio
     });
-  };
+  };l
 
   infoAfectacion = (parametro) => {
     return (
@@ -224,17 +226,19 @@ class TareaVida extends Component {
           visible={this.state.visible}
         >
           {this.state.view === 0 ? (
-            <Agroproductividad
-              selectedRows={this.selectedRows}
-              add={this.props.add}
-            />
+            <Agroproductividad selectedRows={this.selectedRows} add={this.props.add} />
           ) : null}
 
           {this.state.view === 1 ? (
-            <ParcelasAfectadas
-              selectedRows={this.selectedRows}
-              add={this.props.add}
-            />
+            <ParcelasAfectadas selectedRows={this.selectedRows} add={this.props.add} />
+          ) : null}
+
+          {this.state.view === 2 ? (
+            <UsufructuariosAfectados selectedRows={this.selectedRows} add={this.props.add} />
+          ) : null}
+
+          {this.state.view === 4 ? (
+            <AscensoDelMar selectedRows={this.selectedRows} add={this.props.add} />
           ) : null}
 
         </Drawer>

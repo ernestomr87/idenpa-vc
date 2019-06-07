@@ -119,12 +119,13 @@ export default class ParcelasAfectadas extends Component {
   };
 
   renderTotal = () => {
+    const name = "Parcelas agrícolas afectadas";
     const { total, selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({ selectedRowKeys });
-        this.props.selectedRows(null, selectedRows);
+        this.props.selectedRows(null, selectedRows, name);
       }
     };
 
@@ -188,12 +189,13 @@ export default class ParcelasAfectadas extends Component {
   };
 
   renderMunicipio = municipio => {
+    const name = "Parcelas agrícolas afectadas";
     const { municipios, selectedRowKeys } = this.state;
     const rowSelection = {
       selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
         this.setState({ selectedRowKeys });
-        this.props.selectedRows(municipio, selectedRows);
+        this.props.selectedRows(municipio, selectedRows, name);
       }
     };
 
