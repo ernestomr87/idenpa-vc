@@ -35,6 +35,14 @@ const fetchAscensoDelMarByMun = (mun) => {
 	return axios.get(`${API}/api/afectaciones/ascensoDelNivelMedioDelMar/${mun}`);
 };
 
+const fetchAreaIntrusionMarina = () => {
+	return axios.get(`${API}/api/afectaciones/areaIntrusionMarina`);
+};
+
+const fetchAreaIntrusionMarinaByMun = (mun) => {
+	return axios.get(`${API}/api/afectaciones/areaIntrusionMarina/${mun}`);
+};
+
 const fetchInfrastructure = (gid) => {
 	return axios.get(`${API}/api/infrastructure/${gid}`);
 };
@@ -62,6 +70,8 @@ export {
 	fetchusufructuariosAfectadosByMun,
 	fetchAscensoDelMar,
 	fetchAscensoDelMarByMun,
+	fetchAreaIntrusionMarina,
+	fetchAreaIntrusionMarinaByMun,
 	fetchFormasProductivasById,
 	fetchTermosByFormasProductiva,
 	fetchUsoTenenciaByFormaProductiva

@@ -6,8 +6,9 @@ import { Drawer, List, Button, Divider, Popover } from "antd";
 import _ from "lodash";
 import Agroproductividad from "./agroproductividad";
 import ParcelasAfectadas from "./parcelasAfectadas";
-import UsufructuariosAfectados from "./usufructuariosAfectados"
-import AscensoDelMar from "./ascensoDelMar"
+import UsufructuariosAfectados from "./usufructuariosAfectados";
+import AscensoDelMar from "./ascensoDelMar";
+import AreaIntrusionMarina from "./areaIntrusionMarina";
 import styled from "styled-components";
 
 import { showActionData } from "./../../containers/Visor/actions";
@@ -59,8 +60,15 @@ const data = [
     id: 4,
     text: "Área de ascenso del nivel medio del mar",
     color: 'green'
+  },
+  {
+    id: 5,
+    text: "Área de intrusión marina",
+    color: 'orange'
   }
 ];
+
+
 
 function addItem(item, array) {
   let dif = _.difference([item], array);
@@ -98,6 +106,10 @@ class TareaVida extends Component {
             arrayAfectaciones = addItem(data[4], arrayAfectaciones);
             break;
 
+          case "Área de intrusión marina":
+            arrayAfectaciones = addItem(data[5], arrayAfectaciones);
+            break;
+
           default:
             break;
         }
@@ -126,7 +138,7 @@ class TareaVida extends Component {
       data: selectedRows,
       municipio
     });
-  };l
+  }; l
 
   infoAfectacion = (parametro) => {
     return (
@@ -239,6 +251,10 @@ class TareaVida extends Component {
 
           {this.state.view === 4 ? (
             <AscensoDelMar selectedRows={this.selectedRows} add={this.props.add} />
+          ) : null}
+
+          {this.state.view === 5 ? (
+            <AreaIntrusionMarina selectedRows={this.selectedRows} add={this.props.add} />
           ) : null}
 
         </Drawer>

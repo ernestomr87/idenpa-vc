@@ -25,7 +25,8 @@ const nodes = [
 	},
 	{
 		name: 'IDEPA UEB Pinar del Rio',
-		url: 'http://geoservicios.enpa.pri.minag.cu:8080/geoserver/cuba/wms'
+		url: 'https://idepri.enpa.minag.cu/geoserver/cuba/wms'
+		
 	},
 	{
 		name: 'IDEPA UEB Habana',
@@ -74,6 +75,10 @@ const nodes = [
 	{
 		name: 'IDEPA UEB Guantánamo',
 		url: 'http://geoservicios.enpa.gtm.minag.cu/geoserver/cuba/wms'
+	},
+	{
+		name: 'IDEPA Mi server',
+		url: 'http://localhost:8080/geoserver/cite/wms?'
 	}
 ];
 
